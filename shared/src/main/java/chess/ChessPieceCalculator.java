@@ -6,30 +6,37 @@ import java.util.List;
 
 public class ChessPieceCalculator {
 
-    public Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
+    public static Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
         ChessMove[] moves = new ChessMove[10];
-        moves[0] = new ChessMove(myPosition, new ChessPosition());
+        moves[0] = new ChessMove(myPosition, new ChessPosition(2,2), null);
         return List.of(moves);
     }
 
-    public Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition) {
-        return null;
+    public static Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition) {
+        ChessMove[] moves = new ChessMove[10];
+        moves[0] = new ChessMove(myPosition, new ChessPosition(2,2), null);
+        return List.of(moves);
     }
 
-    public Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
-        return null;
+    public static Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
+        ChessMove[] moves = new ChessMove[10];
+        moves[0] = new ChessMove(myPosition, new ChessPosition(2,2), null);
+        return List.of(moves);
     }
 
-    public Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
-        return null;
-    }
+    public static Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
+        ChessMove[] moves = new ChessMove[10];
+        moves[0] = new ChessMove(myPosition, new ChessPosition(2,2), null);
+        return List.of(moves);    }
 
-    public Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition) {
-        return null;
-    }
+    public static Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition) {
+        ChessMove[] moves = new ChessMove[10];
+        moves[0] = new ChessMove(myPosition, new ChessPosition(2,2), null);
+        return List.of(moves);    }
 
-    public Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
-        return null;
-    }
+    public static Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
+        ChessMove[] moves = new ChessMove[10];
+        moves[0] = new ChessMove(myPosition, new ChessPosition(2,2), null);
+        return List.of(moves);    }
 
 }

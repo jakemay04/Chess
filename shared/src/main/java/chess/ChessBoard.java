@@ -50,34 +50,33 @@ public class ChessBoard {
     public void resetBoard() {
         ChessPiece[][] squares = new ChessPiece[8][8]; //Create a new 8x8 chess board
         //whiteside pieces
-        addPiece(new ChessPosition(0,0), new ChessPiece(WHITE, ChessPiece.PieceType.ROOK));
-        addPiece(new ChessPosition(0,1), new ChessPiece(WHITE, ChessPiece.PieceType.KNIGHT));
-        addPiece(new ChessPosition(0,2), new ChessPiece(WHITE, ChessPiece.PieceType.BISHOP));
-        addPiece(new ChessPosition(0,3), new ChessPiece(WHITE, ChessPiece.PieceType.QUEEN));
-        addPiece(new ChessPosition(0,4), new ChessPiece(WHITE, ChessPiece.PieceType.KING));
-        addPiece(new ChessPosition(0,5), new ChessPiece(WHITE, ChessPiece.PieceType.BISHOP));
-        addPiece(new ChessPosition(0,6), new ChessPiece(WHITE, ChessPiece.PieceType.KNIGHT));
-        addPiece(new ChessPosition(0,7), new ChessPiece(WHITE, ChessPiece.PieceType.ROOK));
+        addPiece(new ChessPosition(1,1), new ChessPiece(WHITE, ChessPiece.PieceType.ROOK));
+        addPiece(new ChessPosition(1,2), new ChessPiece(WHITE, ChessPiece.PieceType.KNIGHT));
+        addPiece(new ChessPosition(1,3), new ChessPiece(WHITE, ChessPiece.PieceType.BISHOP));
+        addPiece(new ChessPosition(1,4), new ChessPiece(WHITE, ChessPiece.PieceType.QUEEN));
+        addPiece(new ChessPosition(1,5), new ChessPiece(WHITE, ChessPiece.PieceType.KING));
+        addPiece(new ChessPosition(1,6), new ChessPiece(WHITE, ChessPiece.PieceType.BISHOP));
+        addPiece(new ChessPosition(1,7), new ChessPiece(WHITE, ChessPiece.PieceType.KNIGHT));
+        addPiece(new ChessPosition(1,8), new ChessPiece(WHITE, ChessPiece.PieceType.ROOK));
 
         //whiteside pawns
-        for (int i=0;i<8;i++) {
-            addPiece(new ChessPosition(1,i), new ChessPiece(WHITE, ChessPiece.PieceType.PAWN));
+        for (int i=1;i<8;i++) {
+            addPiece(new ChessPosition(2,i), new ChessPiece(WHITE, ChessPiece.PieceType.PAWN));
         }
 
         //blackside pieces
-        addPiece(new ChessPosition(7,0), new ChessPiece(BLACK, ChessPiece.PieceType.ROOK));
-        addPiece(new ChessPosition(7,1), new ChessPiece(BLACK, ChessPiece.PieceType.KNIGHT));
-        addPiece(new ChessPosition(7,2), new ChessPiece(BLACK, ChessPiece.PieceType.BISHOP));
-        addPiece(new ChessPosition(7,3), new ChessPiece(BLACK, ChessPiece.PieceType.QUEEN));
-        addPiece(new ChessPosition(7,4), new ChessPiece(BLACK, ChessPiece.PieceType.KING));
-        addPiece(new ChessPosition(7,5), new ChessPiece(BLACK, ChessPiece.PieceType.BISHOP));
-        addPiece(new ChessPosition(7,6), new ChessPiece(BLACK, ChessPiece.PieceType.KNIGHT));
-        addPiece(new ChessPosition(7,7), new ChessPiece(BLACK, ChessPiece.PieceType.ROOK));
-
+        addPiece(new ChessPosition(8,1), new ChessPiece(BLACK, ChessPiece.PieceType.ROOK));
+        addPiece(new ChessPosition(8,2), new ChessPiece(BLACK, ChessPiece.PieceType.KNIGHT));
+        addPiece(new ChessPosition(8,3), new ChessPiece(BLACK, ChessPiece.PieceType.BISHOP));
+        addPiece(new ChessPosition(8,4), new ChessPiece(BLACK, ChessPiece.PieceType.QUEEN));
+        addPiece(new ChessPosition(8,5), new ChessPiece(BLACK, ChessPiece.PieceType.KING));
+        addPiece(new ChessPosition(8,6), new ChessPiece(BLACK, ChessPiece.PieceType.BISHOP));
+        addPiece(new ChessPosition(8,7), new ChessPiece(BLACK, ChessPiece.PieceType.KNIGHT));
+        addPiece(new ChessPosition(8,8), new ChessPiece(BLACK, ChessPiece.PieceType.ROOK));
 
         //blackside pawns
-        for (int i=0;i<8;i++) {
-            addPiece(new ChessPosition(1,i), new ChessPiece(BLACK, ChessPiece.PieceType.PAWN));
+        for (int i=1;i<8;i++) {
+            addPiece(new ChessPosition(2,i), new ChessPiece(BLACK, ChessPiece.PieceType.PAWN));
         }
     }
 
