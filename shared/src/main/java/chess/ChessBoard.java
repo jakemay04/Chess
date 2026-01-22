@@ -48,7 +48,7 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        ChessPiece[][] squares = new ChessPiece[8][8]; //Create a new 8x8 chess board
+        squares = new ChessPiece[8][8];//Create a new 8x8 chess board
         //whiteside pieces
         addPiece(new ChessPosition(1,1), new ChessPiece(WHITE, ChessPiece.PieceType.ROOK));
         addPiece(new ChessPosition(1,2), new ChessPiece(WHITE, ChessPiece.PieceType.KNIGHT));
@@ -60,8 +60,10 @@ public class ChessBoard {
         addPiece(new ChessPosition(1,8), new ChessPiece(WHITE, ChessPiece.PieceType.ROOK));
 
         //whiteside pawns
-        for (int i=1;i<8;i++) {
+        for (int i=1;i<=8;i++) {
             addPiece(new ChessPosition(2,i), new ChessPiece(WHITE, ChessPiece.PieceType.PAWN));
+            System.out.println(getPiece(new ChessPosition(2,i)));
+
         }
 
         //blackside pieces
@@ -75,9 +77,17 @@ public class ChessBoard {
         addPiece(new ChessPosition(8,8), new ChessPiece(BLACK, ChessPiece.PieceType.ROOK));
 
         //blackside pawns
-        for (int i=1;i<8;i++) {
-            addPiece(new ChessPosition(2,i), new ChessPiece(BLACK, ChessPiece.PieceType.PAWN));
+        for (int i=1;i<=8;i++) {
+            addPiece(new ChessPosition(7,i), new ChessPiece(BLACK, ChessPiece.PieceType.PAWN));
+            System.out.println(getPiece(new ChessPosition(2,i)));
         }
+    }
+
+    @Override
+    public String toString() {
+        return "ChessBoard{" +
+                "squares=" + Arrays.deepToString(squares) +
+                '}';
     }
 
     @Override
