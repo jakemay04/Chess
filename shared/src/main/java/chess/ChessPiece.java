@@ -1,5 +1,6 @@
 package chess;
 
+import javax.naming.InvalidNameException;
 import java.util.Collection;
 
 /**
@@ -51,39 +52,19 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
-    public Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
-        return null;
-    }
-
-    public Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition) {
-        return null;
-    }
-
-    public Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
-        return null;
-    }
-
-    public Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
-        return null;
-    }
-
-    public Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition) {
-        return null;
-    }
-
-    public Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
-        return null;
-    }
-
-    public Collection<ChessMove> pieceMovesCalulator(ChessBoard board, ChessPiece piece) {
-        return null;
-    }
-
 
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
-        //implement pieceMovesCalulator funtion
-        return pieceMovesCalulator(board,piece);
+        //implement pieceMovesCalculator function
+        return switch (piece.type) {
+            case PieceType.KING -> ChessPieceCalculator.kingMoves(board,myPosition);
+            case PieceType.QUEEN -> ChessPieceCalculator.queenMoves(board,myPosition);
+            case PieceType.KNIGHT -> ChessPieceCalculator.knightMoves(board,myPosition);
+            case PieceType.BISHOP -> ChessPieceCalculator.bishopMoves(board,myPosition);
+            case PieceType.ROOK -> ChessPieceCalculator.rookMoves(board,myPosition);
+            case PieceType.PAWN -> ChessPieceCalculator.pawnMoves(board,myPosition);
+        };
+
 
     }
 }
