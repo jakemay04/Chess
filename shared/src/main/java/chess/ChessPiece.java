@@ -65,8 +65,6 @@ public class ChessPiece {
             case PieceType.ROOK -> ChessPieceCalculator.rookMoves(board,myPosition);
             case PieceType.PAWN -> ChessPieceCalculator.pawnMoves(board,myPosition);
         };
-
-
     }
 
     @Override

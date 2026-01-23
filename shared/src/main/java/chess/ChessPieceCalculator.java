@@ -4,7 +4,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static chess.ChessGame.TeamColor.WHITE;
+
 public class ChessPieceCalculator {
+
+
+    public static boolean validMove(ChessBoard board, int currentRow, int currentCol) {
+        if (board.squares[currentRow][currentCol] != null) {
+            return false;
+        } else if (currentRow>8 || currentCol > 8) {
+            return false;
+        } else return currentRow != 0 && currentCol != 0;
+    }
 
     public static Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
         List<ChessMove> moves = new ArrayList<>();
@@ -125,12 +136,19 @@ public class ChessPieceCalculator {
     }
 
     public static Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
+        //valid moves
         List<ChessMove> moves = new ArrayList<>();
         int currentRow = myPosition.getRow();
         int currentCol = myPosition.getColumn();
-        moves.add(new ChessMove(myPosition, new ChessPosition(currentRow+1,currentCol+1), null));
-        moves.add(new ChessMove(myPosition, new ChessPosition(currentRow+2,currentCol+2), null));
 
+        //valid white moves
+        if (ChessPiece.PieceType == WHITE)
+        if (validMove(board,currentRow+1,currentCol)) {
+            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow+1,currentCol), null));
+        }
+        if (validMove(board,currentRow+2,currentCol) && currentRow!=2) {
+            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow+2,currentCol), null));
+        }
         return moves;
     }
 
