@@ -28,9 +28,30 @@ public class ChessPieceCalculator {
         List<ChessMove> moves = new ArrayList<>();
         int currentRow = myPosition.getRow();
         int currentCol = myPosition.getColumn();
-        if (validMove(board,currentRow,currentCol, pieceColor)) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow, currentCol), null));
-
+        if (validMove(board,currentRow+1,currentCol+1, pieceColor)) { //up right
+            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol+1), null));
+        }
+        if (validMove(board,currentRow,currentCol+1, pieceColor)) { //right
+            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow, currentCol+1), null));
+        }
+        if (validMove(board,currentRow-1,currentCol+1, pieceColor)) { //down right
+            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol+1), null));
+        }
+        if (validMove(board,currentRow-1,currentCol, pieceColor)) { //down
+            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol), null));
+        }
+        if (validMove(board,currentRow-1,currentCol-1, pieceColor)) { //down left
+            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol-1), null));
+        }
+        if (validMove(board,currentRow,currentCol-1, pieceColor)) { //left
+            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow, currentCol-1), null));
+        }
+        if (validMove(board,currentRow+1,currentCol-1, pieceColor)) { //up left
+            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol-1), null));
+        }
+        if (validMove(board,currentRow+1,currentCol, pieceColor)) { //up
+            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol), null));
+        }
         return moves;
     }
 
@@ -250,7 +271,6 @@ public class ChessPieceCalculator {
             else {
                 break;
             }
-
             r--; c--;
         }
         return moves;
@@ -364,7 +384,21 @@ public class ChessPieceCalculator {
                 }
             }
         }
-        return moves;
+
+        //promotion handler
+        List<ChessMove> finalMoves = new ArrayList<>();
+        for (ChessMove move : moves) {
+            if (move.getEndPosition().getRow() == 1 || move.getEndPosition().getRow() == 8) {
+                finalMoves.add(new ChessMove(myPosition, move.getEndPosition(), ChessPiece.PieceType.QUEEN));
+                finalMoves.add(new ChessMove(myPosition, move.getEndPosition(), ChessPiece.PieceType.KNIGHT));
+                finalMoves.add(new ChessMove(myPosition, move.getEndPosition(), ChessPiece.PieceType.ROOK));
+                finalMoves.add(new ChessMove(myPosition, move.getEndPosition(), ChessPiece.PieceType.BISHOP));
+            }
+            else {
+                finalMoves.add(move);
+            }
+        }
+        return finalMoves;
     }
 
 }
