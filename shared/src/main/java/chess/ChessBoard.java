@@ -40,7 +40,12 @@ public class ChessBoard {
      */
 
     public ChessPiece getPiece(ChessPosition position) {
-        return squares[position.getRow() - 1][position.getColumn() - 1];
+        if (squares[position.getRow() - 1][position.getColumn() - 1] == null) {
+            return null;
+        }
+        else {
+            return squares[position.getRow() - 1][position.getColumn() - 1];
+        }
     }
 
     /**
