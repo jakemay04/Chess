@@ -63,7 +63,7 @@ public class ChessPiece {
             case PieceType.KNIGHT -> ChessPieceCalculator.knightMoves(board,myPosition);
             case PieceType.BISHOP -> ChessPieceCalculator.bishopMoves(board,myPosition);
             case PieceType.ROOK -> ChessPieceCalculator.rookMoves(board,myPosition);
-            case PieceType.PAWN -> ChessPieceCalculator.pawnMoves(board,myPosition);
+            case PieceType.PAWN -> ChessPieceCalculator.pawnMoves(board,myPosition,pieceColor);
         };
     }
 
