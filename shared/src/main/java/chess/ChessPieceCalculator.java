@@ -28,6 +28,8 @@ public class ChessPieceCalculator {
         List<ChessMove> moves = new ArrayList<>();
         int currentRow = myPosition.getRow();
         int currentCol = myPosition.getColumn();
+        if (validMove(board,currentRow,currentCol, pieceColor)) {
+            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow, currentCol), null));
 
         return moves;
     }
@@ -36,41 +38,116 @@ public class ChessPieceCalculator {
         List<ChessMove> moves = new ArrayList<>();
         int currentRow = myPosition.getRow();
         int currentCol = myPosition.getColumn();
-        //for loop for all straight paths (up and down)
-        for (int i=currentRow; i < (8-currentRow); i++) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(i,currentCol), null));
-        }
-
-        //for loop for all horizontal moves(left and right)
-        for (int i=currentCol; i < (8-currentCol); i++) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow,i), null));
-        }
-
+        int c = currentCol+1;
+        int r = currentRow+1;
         //for all diagonal moves up+right
-        for (int i =currentCol; i < (8-currentCol); i++) {
-            for (int j = currentRow; j < (8 - currentRow); j++) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(j, i), null));
+        while (r <= 8 && c <= 8) {
+            if (validMove(board,r,c, pieceColor)) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(r, c), null));
+                if (board.getPiece(new ChessPosition(r,c))!=null) {
+                    break; //break after adding to prevent jumping
+                }
             }
+            else {
+                break;
+            }
+            r++; c++;
         }
 
         //for all diagonal moves up+left
-        for (int i =currentCol; i != 1; i--) {
-            for (int j = currentRow; j < (8 - currentRow); j++) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(j, i), null));
+        c = currentCol-1;
+        r = currentRow+1;
+        while (r <= 8 && c >= 1) {
+            if (validMove(board,r,c, pieceColor)) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(r, c), null));
+                if (board.getPiece(new ChessPosition(r,c))!=null) {
+                    break; //break after adding to prevent jumping
+                }
             }
+            else {
+                break;
+            }
+            r++; c--;
         }
 
         //for all diagonal moves down+right
-        for (int i =currentCol; i < (8-currentCol); i++) {
-            for (int j = currentRow; j != 1; j--) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(j, i), null));
+        c = currentCol+1;
+        r = currentRow-1;
+        while (r >= 1 && c <= 8) {
+            if (validMove(board,r,c, pieceColor)) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(r, c), null));
+                if (board.getPiece(new ChessPosition(r,c))!=null) {
+                    break; //break after adding to prevent jumping
+                }
             }
+            else {
+                break;
+            }
+            r--; c++;
         }
 
         //for all diagonal moves down+left
-        for (int i =currentCol; i != 1; i--) {
-            for (int j = currentRow; j != 1; j--) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(j, i), null));
+        c = currentCol-1;
+        r = currentRow-1;
+        while (r >= 1 && c >= 1) {
+            if (validMove(board,r,c, pieceColor)) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(r, c), null));
+                if (board.getPiece(new ChessPosition(r,c))!=null) {
+                    break; //break after adding to prevent jumping
+                }
+            }
+            else {
+                break;
+            }
+
+            r--; c--;
+        }
+
+        for (int row = currentRow+1; row <= 8; row++){
+            if (validMove(board,row,currentCol, pieceColor)){
+                moves.add(new ChessMove(myPosition, new ChessPosition(row,currentCol), null));
+
+                if (board.getPiece(new ChessPosition(row,currentCol))!=null) {
+                    break; //break after adding to prevent jumping
+                }
+            }
+            else {
+                break;
+            }
+        }
+        for (int row = currentRow-1; row >= 1; row--){
+            if (validMove(board,row,currentCol, pieceColor)){
+                moves.add(new ChessMove(myPosition, new ChessPosition(row,currentCol), null));
+
+                if (board.getPiece(new ChessPosition(row,currentCol))!=null) {
+                    break; //break after adding to prevent jumping
+                }
+            }
+            else {
+                break;
+            }
+        }
+        for (int col = currentCol+1; col <= 8; col++){
+            if (validMove(board,currentRow,col, pieceColor)){
+                moves.add(new ChessMove(myPosition, new ChessPosition(currentRow,col), null));
+
+                if (board.getPiece(new ChessPosition(currentRow,col))!=null) {
+                    break; //break after adding to prevent jumping
+                }
+            }
+            else {
+                break;
+            }
+        }
+        for (int col = currentCol-1; col >= 1; col--){
+            if (validMove(board,currentRow,col, pieceColor)){
+                moves.add(new ChessMove(myPosition, new ChessPosition(currentRow,col), null));
+                if (board.getPiece(new ChessPosition(currentRow,col))!=null) {
+                    break; //break after adding to prevent jumping
+                }
+            }
+            else {
+                break;
             }
         }
 
