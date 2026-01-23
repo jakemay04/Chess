@@ -58,10 +58,10 @@ public class ChessPiece {
         ChessPiece piece = board.getPiece(myPosition);
         //implement pieceMovesCalculator function
         return switch (piece.type) {
-            case PieceType.KING -> ChessPieceCalculator.kingMoves(board,myPosition);
-            case PieceType.QUEEN -> ChessPieceCalculator.queenMoves(board,myPosition);
-            case PieceType.KNIGHT -> ChessPieceCalculator.knightMoves(board,myPosition);
-            case PieceType.BISHOP -> ChessPieceCalculator.bishopMoves(board,myPosition);
+            case PieceType.KING -> ChessPieceCalculator.kingMoves(board,myPosition,pieceColor);
+            case PieceType.QUEEN -> ChessPieceCalculator.queenMoves(board,myPosition,pieceColor);
+            case PieceType.KNIGHT -> ChessPieceCalculator.knightMoves(board,myPosition,pieceColor);
+            case PieceType.BISHOP -> ChessPieceCalculator.bishopMoves(board,myPosition,pieceColor);
             case PieceType.ROOK -> ChessPieceCalculator.rookMoves(board,myPosition,pieceColor);
             case PieceType.PAWN -> ChessPieceCalculator.pawnMoves(board,myPosition,pieceColor);
         };
