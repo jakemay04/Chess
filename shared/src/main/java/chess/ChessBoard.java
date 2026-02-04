@@ -63,7 +63,6 @@ public class ChessBoard {
         for (int i=1;i<=8;i++) {
             addPiece(new ChessPosition(2,i), new ChessPiece(WHITE, ChessPiece.PieceType.PAWN));
             System.out.println(getPiece(new ChessPosition(2,i)));
-
         }
 
         //blackside pieces

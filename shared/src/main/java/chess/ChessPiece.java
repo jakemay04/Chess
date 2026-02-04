@@ -1,6 +1,5 @@
 package chess;
 
-import javax.naming.InvalidNameException;
 import java.util.Collection;
 import java.util.Objects;
 
