@@ -14,7 +14,7 @@ import java.util.Objects;
 public class ChessGame {
 
     int moveTracker = 0;
-    Boolean teamTurn;
+    TeamColor teamTurn;
     ChessBoard gameboard;
 
     public ChessGame() {
@@ -26,12 +26,7 @@ public class ChessGame {
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        if (moveTracker % 2 == 0) {
-            return TeamColor.WHITE;
-        }
-        else {
-            return TeamColor.BLACK;
-        }
+        return teamTurn;
     }
 
     /**
@@ -40,12 +35,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        if (team == TeamColor.BLACK) {
-            teamTurn = true;
-        }
-        else {
-            teamTurn = false;
-        }
+        this.teamTurn = team;
     }
 
     /**
@@ -89,6 +79,10 @@ public class ChessGame {
             throw new InvalidMoveException();
         }
 
+//        if (piece.getPieceType() == ChessPiece.PieceType.KING || isInCheck(piece.getTeamColor())) {
+//            throw new InvalidMoveException();
+//        }
+
         if (endPosition.getColumn() > 0 && endPosition.getColumn() <= 8 && endPosition.getRow() <= 8 && endPosition.getRow() > 0) {
             if (move.getPromotionPiece() != null) {
                 //handle promotion pieces
@@ -104,6 +98,12 @@ public class ChessGame {
         }
         //erase old piece
         gameboard.addPiece(startPosition,null);
+        if (piece.getTeamColor() == TeamColor.WHITE) {
+            teamTurn = TeamColor.BLACK;
+        }
+        else {
+            teamTurn = TeamColor.WHITE;
+        }
         moveTracker++;
     }
 
