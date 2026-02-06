@@ -99,10 +99,6 @@ public class ChessGame {
             throw new InvalidMoveException();
         }
 
-//        if (piece.getPieceType() == ChessPiece.PieceType.KING || isInCheck(piece.getTeamColor())) {
-//            throw new InvalidMoveException();
-//        }
-
         if (endPosition.getColumn() > 0 && endPosition.getColumn() <= 8 && endPosition.getRow() <= 8 && endPosition.getRow() > 0) {
             if (move.getPromotionPiece() != null) {
                 //handle promotion pieces
