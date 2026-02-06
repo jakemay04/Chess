@@ -99,7 +99,7 @@ public class ChessGame {
             throw new InvalidMoveException();
         }
 
-        if (endPosition.getColumn() > 0 && endPosition.getColumn() <= 8 && endPosition.getRow() <= 8 && endPosition.getRow() > 0) {
+        if (MockMoves.moveOutOfBounds(endPosition)) {
             if (move.getPromotionPiece() != null) {
                 //handle promotion pieces
                 gameboard.addPiece(endPosition,new ChessPiece(piece.getTeamColor(),move.getPromotionPiece()));
@@ -130,16 +130,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        ChessPosition myKing = null;
-        for (int r = 1; r <= 8; r++) {
-            for (int c = 1; c <= 8; c++) {
-                ChessPiece piece = gameboard.getPiece(new ChessPosition(r,c)) ;
-                //find king on board, store king position
-                if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == teamColor) {
-                    myKing = new ChessPosition(r,c);
-                }
-            }
-        }
+        ChessPosition myKing = MockMoves.findKing(gameboard,teamColor);
 
         //determine if the king is in check
         //make list of all possible moves on board
