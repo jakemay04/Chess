@@ -138,7 +138,7 @@ public class ChessGame {
         for (int r = 1; r <= 8; r++) {
             for (int c = 1; c <= 8; c++) {
                 ChessPiece piece = gameboard.getPiece(new ChessPosition(r,c)) ;
-                //find opposing king on board, store king position
+                //find king on board, store king position
                 if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == teamColor) {
                     myKing = new ChessPosition(r,c);
                 }
@@ -161,7 +161,7 @@ public class ChessGame {
             }
         }
         for (ChessMove moves : possibleMoves) {
-            if (moves.getEndPosition().equals(myKing) && getTeamTurn() == teamColor) {
+            if (moves.getEndPosition().equals(myKing)) {
                 return true;
             }
         }
@@ -175,18 +175,21 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        //find King
+        if(!isInCheck(teamColor)) {
+            return false;
+        }
+
         for (int r = 1; r <= 8; r++) {
             for (int c = 1; c <= 8; c++) {
                 ChessPiece piece = gameboard.getPiece(new ChessPosition(r,c)) ;
-                //find opposing king on board, store king position
-                if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == teamColor) {
-                    myKing = new ChessPosition(r,c);
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    if (!validMoves(new ChessPosition(r,c)).isEmpty()) {
+                        return false; //if team has any possible moves, not checkmate
+                    }
                 }
             }
         }
-
-
+        return true;
     }
 
     /**
@@ -198,45 +201,21 @@ public class ChessGame {
      */
 
     public boolean isInStalemate(TeamColor teamColor) {
-        if (isInCheck(teamColor)) {
+        if(isInCheck(teamColor)) {
             return false;
         }
-        else {
-            //get list of all teamcolor pieces
-            ChessPosition opposingKing = null;
-            for (int r = 1; r <= 8; r++) {
-                for (int c = 1; c <= 8; c++) {
-                    ChessPiece piece = gameboard.getPiece(new ChessPosition(r,c)) ;
-                    //find opposing king on board, store king position
-                    if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == teamColor) {
-                        opposingKing = new ChessPosition(r,c);
-                    }
-                }
-            }
 
-            //determine if the king is in check
-            //make list of all possible moves on board
-            ArrayList<ChessMove> possibleMoves = new ArrayList<>();
-            for (int r = 1; r <= 8; r++) {
-                for (int c = 1; c <= 8; c++) {
-                    ChessPiece piece = gameboard.getPiece(new ChessPosition(r,c)) ;
-                    if (piece != null) {
-                        for (ChessMove move : piece.pieceMoves(gameboard,new ChessPosition(r,c))) {
-                            if (piece.getTeamColor() != teamColor) {
-                                possibleMoves.add(move); //add all possible moves from opposing team
-                            }
-                        }
+        for (int r = 1; r <= 8; r++) {
+            for (int c = 1; c <= 8; c++) {
+                ChessPiece piece = gameboard.getPiece(new ChessPosition(r,c)) ;
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    if (!validMoves(new ChessPosition(r,c)).isEmpty()) {
+                        return false; //if team has any possible moves, not checkmate
                     }
                 }
             }
-            //check all moves of all pieces, if empty return true
-            for (ChessMove move : possibleMoves) {
-                if (validMoves(move.getStartPosition()) == null) {
-                    return true;
-                }
-            }
-            return false;
         }
+        return true;
     }
 
     /**
