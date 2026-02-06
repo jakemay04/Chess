@@ -88,8 +88,10 @@ public class ChessGame {
         ChessPosition endPosition = move.getEndPosition();
         ChessPosition startPosition = move.getStartPosition();
         ChessPiece piece = gameboard.getPiece(startPosition);
+        TeamColor teamColor = piece.getTeamColor();
+
         //check turn
-        if (piece == null || getTeamTurn() != piece.getTeamColor()) {
+        if (getTeamTurn() != teamColor) {
             throw new InvalidMoveException();
         }
 
@@ -102,7 +104,7 @@ public class ChessGame {
         if (MockMoves.moveOutOfBounds(endPosition)) {
             if (move.getPromotionPiece() != null) {
                 //handle promotion pieces
-                gameboard.addPiece(endPosition,new ChessPiece(piece.getTeamColor(),move.getPromotionPiece()));
+                gameboard.addPiece(endPosition,new ChessPiece(teamColor,move.getPromotionPiece()));
             }
             else {
                 gameboard.addPiece(endPosition,piece); //change piece position
@@ -114,7 +116,7 @@ public class ChessGame {
         }
         //erase old piece
         gameboard.addPiece(startPosition,null);
-        if (piece.getTeamColor() == TeamColor.WHITE) {
+        if (teamColor == TeamColor.WHITE) {
             teamTurn = TeamColor.BLACK;
         }
         else {
