@@ -1,12 +1,14 @@
 package dataaccess;
 
+import model.AuthData;
 import model.UserData;
 
 public interface AuthDAO {
-    default void createAuth(UserData u) throws DataAccessException {}
-    default void getAuth(UserData u) throws DataAccessException {}
-    default void updateAuth(UserData u) throws DataAccessException {}
-    default void deleteAuth(UserData u) throws DataAccessException {}
-    default void gameList(UserData u) throws DataAccessException {}
+    default void insertAuth(AuthData a) throws DataAccessException {}
+    default void getAuth(AuthData a) throws DataAccessException {}
+    default void updateAuth(AuthData a) throws DataAccessException {}
+    default void deleteAuth(AuthData a) throws DataAccessException {}
+    default void gameList(AuthData a) throws DataAccessException {}
+
 }
 

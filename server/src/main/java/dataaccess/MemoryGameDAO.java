@@ -7,16 +7,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MemoryGameDAO implements UserDAO{
-    private final Map<String,List<String>> users = new HashMap<String,List<String>>();
+public class MemoryGameDAO implements UserDAO {
+    private final Map<String, List<String>> users = new HashMap<String, List<String>>();
 
     public void insertUser(UserData u) throws DataAccessException {
-        if (u.email() != null || users.containsKey(u.email())) {
-            users.put(u.email(),new ArrayList<>());
-            users.get(u.email()).add(u.username());
-            users.get(u.email()).add(u.password());
-
-
+        if (u.username() != null || users.containsKey(u.username())) {
+            users.put(u.username(), new ArrayList<>());
+            users.get(u.username()).add(u.email());
+            users.get(u.username()).add(u.password());
+        }
+        else {
+            throw new DataAccessException("User already exists");
         }
     }
+
+//    public UserData getUser(UserData u) throws DataAccessException {
+//        if ((u.username() != null ||users.containsKey(u.username()))) {
+//            return users.get(u.username());
+//        }
+//    }
 }
+
