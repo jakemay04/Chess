@@ -8,7 +8,7 @@ import model.UserData;
 
 import java.util.UUID;
 
-record RegisterRequest(String username, String email, String password){};
+public record RegisterRequest(String username, String email, String password){};
 record RegisterResult(String username, String authToken){};
 
 public class UserService {
