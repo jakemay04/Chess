@@ -18,6 +18,8 @@ public class Server {
         // Register your endpoints and exception handlers here.
         var userService = new UserService(userDAO,authDAO);
 
+        var handler = new Handler(userService);
+
         javalin.post("/user", handler::register);
 
     }
