@@ -20,7 +20,7 @@ public class Handler {
         try {
             var request = gson.fromJson(ctx.body(), RegisterRequest.class);
             var result = userService.register(request);
-            ctx.status(200).json(result);
+            ctx.status(200).result(gson.toJson(result));
         } catch (DataAccessException e) {
             if (e.getMessage().contains("bad request")) ctx.status(400).json(Map.of("message", e.getMessage()));
         }
