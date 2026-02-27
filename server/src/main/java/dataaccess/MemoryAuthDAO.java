@@ -19,8 +19,23 @@ public class MemoryAuthDAO implements AuthDAO{
         }
     }
 
-    public void getAuth(AuthData a) throws DataAccessException {
-        AuthDAO.super.getAuth(a);
+    public AuthData getAuth(AuthData a) throws DataAccessException {
+        if (a.username() != null && auth.containsKey(a.username())) {
+            return new AuthData(a.username(), auth.get(a.username()));
+
+        }
+        else {
+            throw new DataAccessException("Invalid session");
+        }
+    }
+
+    public void deleteAuth(AuthData a) throws DataAccessException {
+        if (a.username() != null && auth.containsKey(a.username())) {
+            auth.remove(a.username());
+        }
+        else {
+            throw new DataAccessException("Invalid session");
+        }
     }
 
     public void clear() {
