@@ -28,7 +28,7 @@ public class GameService {
         //create blank gamedata obj
         GameData game = new GameData(0,null,null,req.gameName(),new ChessGame());
         int id = gameDAO.insertGame(game);
-
+        System.out.println(id);
         return new CreateGameResult(id);
     }
 }
