@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import org.jetbrains.annotations.NotNull;
+import service.ClearService;
 import service.LoginRequest;
 import service.RegisterRequest;
 import service.UserService;
@@ -36,6 +37,15 @@ public class Handler {
         } catch (DataAccessException e) {
             ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
 
+        }
+    }
+
+    public void clear(Context ctx) {
+        try {
+            ClearService.clear();
+            ctx.status(200).json("{}");
+        } catch (Exception e) {
+            ctx.status(500).json("Error:" + e);
         }
     }
 }

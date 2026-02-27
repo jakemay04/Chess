@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MemoryGameDAO implements GameDAO {
+    public void clear() {
 
+    }
 }
 
