@@ -13,8 +13,8 @@ public class MemoryGameDAO implements GameDAO {
     private Map<Integer, GameData> game = new HashMap<Integer, GameData>();
     private int id = 0;
 
-    public int insertGame(UserData u, GameData g) throws DataAccessException {
-        if (u != null && g != null) {
+    public int insertGame(GameData g) throws DataAccessException {
+        if (g != null) {
             id++;
             game.put(id, g);
             return id;
