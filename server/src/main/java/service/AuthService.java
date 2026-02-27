@@ -1,4 +1,15 @@
-package service;
-
-public class AuthService {
-}
+//package service;
+//
+//import dataaccess.AuthDAO;
+//
+//public class AuthService {
+//    private final AuthDAO authDAO;
+//
+//    public AuthService(AuthDAO authDAO) {
+//        this.authDAO = authDAO;
+//    }
+//
+//    public LoginRequest(String authToken) {
+//
+//    }
+//}
