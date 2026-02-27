@@ -8,13 +8,14 @@ import java.util.*;
 
 public class MemoryGameDAO implements GameDAO {
     private Map<Integer, GameData> game = new HashMap<Integer, GameData>();
-    private int id = 0;
+    private int id = 1;
 
     public int insertGame(GameData g) throws DataAccessException {
         if (g != null) {
-            id++;
-            game.put(id, g);
-            return id;
+            int nid = id++;
+            GameData withID = new GameData(nid, g.whiteUsername(), g.blackUsername(), g.gameName(), g.game());
+            game.put(nid, withID);
+            return nid;
         }
         else {
             throw new DataAccessException("Invalid");
