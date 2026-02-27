@@ -14,8 +14,10 @@ public class Handler {
     private final GameService gameService;
     private final ClearService clearService;
 
-    public Handler(UserService u) {
+    public Handler(UserService u, GameService g, ClearService c) {
         this.userService = u;
+        this.gameService = g;
+        this.clearService = c;
     }
 
     public void register (Context ctx) {
