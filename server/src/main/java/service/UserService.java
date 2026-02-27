@@ -9,6 +9,8 @@ import model.UserData;
 import java.util.UUID;
 
 
+;
+
 public class UserService {
     private final UserDAO userDAO;
     private final AuthDAO authDAO;
@@ -16,6 +18,12 @@ public class UserService {
     public UserService(UserDAO userDAO, AuthDAO authDAO) {
         this.userDAO = userDAO;
         this.authDAO = authDAO;
+    }
+
+    public ClearResult clear(ClearRequest req) {
+        userDAO.clearUser();
+        gameDAO.clearGame();
+        authDAO.clearAuth();
     }
 
     public RegisterResult register(RegisterRequest req) throws DataAccessException {
