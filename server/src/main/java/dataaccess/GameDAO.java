@@ -9,4 +9,5 @@ public interface GameDAO {
     default void updateGame(UserData u, GameData g) throws DataAccessException {}
     default void deleteGame(UserData u, GameData g) throws DataAccessException {}
     default void gameList(UserData u, GameData g) throws DataAccessException {}
+    void clear();
 }

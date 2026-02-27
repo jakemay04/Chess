@@ -20,12 +20,6 @@ public class UserService {
         this.authDAO = authDAO;
     }
 
-    public ClearResult clear(ClearRequest req) {
-        userDAO.clearUser();
-        gameDAO.clearGame();
-        authDAO.clearAuth();
-    }
-
     public RegisterResult register(RegisterRequest req) throws DataAccessException {
         userDAO.insertUser(new UserData(req.username(), req.email(), req.password()));
         String token = UUID.randomUUID().toString();

@@ -8,12 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 public class MemoryUserDAO implements UserDAO{
-    private final Map<String, List<String>> users = new HashMap<String, List<String>>();
+    private Map<String, List<String>> users = new HashMap<String, List<String>>();
 
-    public void deleteUser(UserData u) throws DataAccessException{
-        if (u.username() != null || users.containsKey(u.username())) {
-            users.remove(u.username());
-        }
+    public void clear() {
+        users = null;
     }
 
     public void insertUser(UserData u) throws DataAccessException {

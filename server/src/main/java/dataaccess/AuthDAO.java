@@ -9,6 +9,6 @@ public interface AuthDAO {
     default void updateAuth(AuthData a) throws DataAccessException {}
     default void deleteAuth(AuthData a) throws DataAccessException {}
     default void gameList(AuthData a) throws DataAccessException {}
-
+    void clear();
 }
 
