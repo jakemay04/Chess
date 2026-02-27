@@ -56,9 +56,11 @@ public class Handler {
             String authToken = ctx.header("authorization");
             System.out.println("Logout token received: " + authToken);
             userService.logout(new LogoutRequest(authToken));
-            ctx.status(200).json("{}");
+            System.out.println("Logout successful");
+            ctx.status(200).result(gson.toJson(Map.of()));
         } catch (DataAccessException e) {
             ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
+            e.printStackTrace();
 
         }
     }

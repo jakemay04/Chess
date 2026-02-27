@@ -21,17 +21,17 @@ public class UserService {
     public RegisterResult register(RegisterRequest req) throws DataAccessException {
         userDAO.insertUser(new UserData(req.username(), req.email(), req.password()));
         String token = UUID.randomUUID().toString();
-        authDAO.insertAuth(new AuthData(req.username(), token));
+        authDAO.insertAuth(new AuthData(token,req.username()));
         return new RegisterResult(req.username(), token);
     }
 
     public LoginResult login(LoginRequest req) throws DataAccessException {
-        UserData user = userDAO.getUser(new UserData(req.username(), req.email(), req.password()));
+        UserData user = userDAO.getUser(req.username());
         if (!req.password().equals(user.password())) {
             throw new DataAccessException("Invalid password");
         }
         String token = UUID.randomUUID().toString();
-        authDAO.insertAuth(new AuthData(req.username(), token));
+        authDAO.insertAuth(new AuthData(token,req.username()));
         return new LoginResult(req.username(), token);
     }
 

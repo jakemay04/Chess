@@ -25,9 +25,9 @@ public class MemoryUserDAO implements UserDAO{
         }
     }
 
-    public UserData getUser(UserData u) throws DataAccessException {
-        if ((u.username() != null && users.containsKey(u.username()))) {
-            return new UserData(u.username(), users.get(u.username()).getFirst(), users.get(u.username()).getLast());
+    public UserData getUser(String u) throws DataAccessException {
+        if ((u != null && users.containsKey(u))) {
+            return new UserData(u, users.get(u).getFirst(), users.get(u).getLast());
         }
         else {
             throw new DataAccessException("Invalid login");
