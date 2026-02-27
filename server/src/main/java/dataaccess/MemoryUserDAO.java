@@ -28,7 +28,7 @@ public class MemoryUserDAO implements UserDAO{
     }
 
     public UserData getUser(UserData u) throws DataAccessException {
-        if ((u.username() != null ||users.containsKey(u.username()))) {
+        if ((u.username() != null && users.containsKey(u.username()))) {
             return new UserData(u.username(), users.get(u.username()).getFirst(), users.get(u.username()).getLast());
         }
         else {

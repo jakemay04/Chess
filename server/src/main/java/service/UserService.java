@@ -19,16 +19,19 @@ public class UserService {
     }
 
     public RegisterResult register(RegisterRequest req) throws DataAccessException {
-        userDAO.insertUser(new UserData(req.username(),req.email(), req.password()));
+        userDAO.insertUser(new UserData(req.username(), req.email(), req.password()));
         String token = UUID.randomUUID().toString();
         authDAO.insertAuth(new AuthData(req.username(), token));
-        return new RegisterResult(req.username(),token);
+        return new RegisterResult(req.username(), token);
     }
 
     public LoginResult login(LoginRequest req) throws DataAccessException {
-        userDAO.getUser(new UserData(req.username(),req.email(), req.password()));
+        UserData user = userDAO.getUser(new UserData(req.username(), req.email(), req.password()));
+        if (!req.password().equals(user.password())) {
+            throw new DataAccessException("Invalid password");
+        }
         String token = UUID.randomUUID().toString();
         authDAO.insertAuth(new AuthData(req.username(), token));
-        return new LoginResult(req.username(),token);
+        return new LoginResult(req.username(), token);
     }
 }
