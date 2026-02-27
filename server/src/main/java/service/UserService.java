@@ -9,8 +9,6 @@ import model.UserData;
 import java.util.UUID;
 
 
-;
-
 public class UserService {
     private final UserDAO userDAO;
     private final AuthDAO authDAO;
@@ -25,5 +23,12 @@ public class UserService {
         String token = UUID.randomUUID().toString();
         authDAO.insertAuth(new AuthData(req.username(), token));
         return new RegisterResult(req.username(),token);
+    }
+
+    public LoginResult login(LoginRequest req) throws DataAccessException {
+        userDAO.getUser(new UserData(req.username(),req.email(), req.password()));
+        String token = UUID.randomUUID().toString();
+        authDAO.insertAuth(new AuthData(req.username(), token));
+        return new LoginResult(req.username(),token);
     }
 }

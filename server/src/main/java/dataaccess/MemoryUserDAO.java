@@ -10,6 +10,12 @@ import java.util.Map;
 public class MemoryUserDAO implements UserDAO{
     private final Map<String, List<String>> users = new HashMap<String, List<String>>();
 
+    public void deleteUser(UserData u) throws DataAccessException{
+        if (u.username() != null || users.containsKey(u.username())) {
+            users.remove(u.username());
+        }
+    }
+
     public void insertUser(UserData u) throws DataAccessException {
         if (u.username() != null || users.containsKey(u.username())) {
             users.put(u.username(), new ArrayList<>());
@@ -21,9 +27,12 @@ public class MemoryUserDAO implements UserDAO{
         }
     }
 
-//    public UserData getUser(UserData u) throws DataAccessException {
-//        if ((u.username() != null ||users.containsKey(u.username()))) {
-//            return users.get(u.username());
-//        }
-//    }
+    public UserData getUser(UserData u) throws DataAccessException {
+        if ((u.username() != null ||users.containsKey(u.username()))) {
+            return new UserData(u.username(), users.get(u.username()).getFirst(), users.get(u.username()).getLast());
+        }
+        else {
+            throw new DataAccessException("Invalid login");
+        }
+    }
 }

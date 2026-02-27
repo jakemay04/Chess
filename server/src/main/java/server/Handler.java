@@ -2,6 +2,8 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
+import org.jetbrains.annotations.NotNull;
+import service.LoginRequest;
 import service.RegisterRequest;
 import service.UserService;
 
@@ -20,6 +22,16 @@ public class Handler {
         try {
             var request = gson.fromJson(ctx.body(), RegisterRequest.class);
             var result = userService.register(request);
+            ctx.status(200).result(gson.toJson(result));
+        } catch (DataAccessException e) {
+            if (e.getMessage().contains("bad request")) ctx.status(400).json(Map.of("message", e.getMessage()));
+        }
+    }
+
+    public void login(Context ctx) {
+        try {
+            var request = gson.fromJson(ctx.body(), LoginRequest.class);
+            var result = userService.login(request);
             ctx.status(200).result(gson.toJson(result));
         } catch (DataAccessException e) {
             if (e.getMessage().contains("bad request")) ctx.status(400).json(Map.of("message", e.getMessage()));

@@ -21,6 +21,7 @@ public class Server {
         var handler = new Handler(userService);
 
         javalin.post("/user", handler::register);
+        javalin.post("/login", handler::login);
 
     }
 
