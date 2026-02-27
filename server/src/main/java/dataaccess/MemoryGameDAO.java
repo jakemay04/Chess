@@ -6,6 +6,9 @@ import model.UserData;
 
 import java.util.*;
 
+import static chess.ChessGame.TeamColor.BLACK;
+import static chess.ChessGame.TeamColor.WHITE;
+
 public class MemoryGameDAO implements GameDAO {
     private Map<Integer, GameData> game = new HashMap<Integer, GameData>();
     private int id = 1;
@@ -26,12 +29,33 @@ public class MemoryGameDAO implements GameDAO {
 
     }
 
-    public void updateGame(UserData u, GameData g) throws DataAccessException {
-
-    }
-
-    public void deleteGame(UserData u, GameData g) throws DataAccessException {
-
+    public void updateGame(String playerColor, int gameID, String username) throws DataAccessException {
+        if (playerColor != null) {
+            GameData currentGame = game.get(gameID);
+            if (playerColor.equals(WHITE)) {
+                GameData newGame = new GameData(
+                        gameID,
+                        username,
+                        currentGame.blackUsername(),
+                        currentGame.gameName(),
+                        currentGame.game()
+                );
+                game.put(gameID, newGame);
+            }
+            else if (playerColor.equals(BLACK)){
+                GameData newGame = new GameData(
+                        gameID,
+                        currentGame.whiteUsername(),
+                        username,
+                        currentGame.gameName(),
+                        currentGame.game()
+                );
+                game.put(gameID, newGame);
+            }
+            else {
+                throw new DataAccessException("Invalid create game");
+            }
+        }
     }
 
     public Collection<GameData> gameList() throws DataAccessException {
