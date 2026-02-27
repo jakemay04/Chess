@@ -36,7 +36,8 @@ public class UserService {
     }
 
     public void logout(LogoutRequest req) throws DataAccessException {
-        AuthDAO.getAuth(req.authToken());
+        authDAO.getAuth(req.authToken());
+        authDAO.deleteAuth(req.authToken());
     }
 
 

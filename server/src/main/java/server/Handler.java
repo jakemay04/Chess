@@ -3,10 +3,7 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import org.jetbrains.annotations.NotNull;
-import service.ClearService;
-import service.LoginRequest;
-import service.RegisterRequest;
-import service.UserService;
+import service.*;
 
 import io.javalin.http.Context;
 import java.util.Map;
@@ -43,6 +40,15 @@ public class Handler {
     public void clear(Context ctx) {
         try {
             ClearService.clear();
+            ctx.status(200).json("{}");
+        } catch (Exception e) {
+            ctx.status(500).json("Error:" + e);
+        }
+    }
+
+    public void logout(Context ctx) {
+        try {
+            userService.logout(new LogoutRequest(ctx.header("authorization")));
             ctx.status(200).json("{}");
         } catch (Exception e) {
             ctx.status(500).json("Error:" + e);
