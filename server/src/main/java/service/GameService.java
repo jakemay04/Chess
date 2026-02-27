@@ -7,6 +7,8 @@ import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import model.GameData;
 
+import java.util.Collection;
+
 
 public class GameService {
     private final UserDAO userDAO;
@@ -30,5 +32,10 @@ public class GameService {
         int id = gameDAO.insertGame(game);
         System.out.println(id);
         return new CreateGameResult(id);
+    }
+
+    public ListGamesResult listGames(ListGamesRequest req) throws DataAccessException {
+        authDAO.getAuth(req.authToken());
+        return new ListGamesResult(gameDAO.gameList());
     }
 }

@@ -4,10 +4,7 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MemoryGameDAO implements GameDAO {
     private Map<Integer, GameData> game = new HashMap<Integer, GameData>();
@@ -36,8 +33,8 @@ public class MemoryGameDAO implements GameDAO {
 
     }
 
-    public void gameList(UserData u, GameData g) throws DataAccessException {
-
+    public Collection<GameData> gameList() throws DataAccessException {
+        return game.values();
     }
 
     public void clear() {
