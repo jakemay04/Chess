@@ -27,9 +27,8 @@ public class GameService {
         }
         //create blank gamedata obj
         GameData game = new GameData(0,null,null,req.gameName(),new ChessGame());
+        int id = gameDAO.insertGame(game);
 
-        gameDAO.insertGame(req.UserData, game) {
-
-        }
+        return new CreateGameResult(id);
     }
 }

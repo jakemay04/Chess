@@ -4,10 +4,10 @@ import model.GameData;
 import model.UserData;
 
 public interface GameDAO {
-    default int insertGame(GameData g) throws DataAccessException {}
-    default void getGame(UserData u, GameData g) throws DataAccessException {}
-    default void updateGame(UserData u, GameData g) throws DataAccessException {}
-    default void deleteGame(UserData u, GameData g) throws DataAccessException {}
-    default void gameList(UserData u, GameData g) throws DataAccessException {}
+    int insertGame(GameData g) throws DataAccessException;
+    void getGame(UserData u, GameData g) throws DataAccessException;
+    void updateGame(UserData u, GameData g) throws DataAccessException;
+    void deleteGame(UserData u, GameData g) throws DataAccessException;
+    void gameList(UserData u, GameData g) throws DataAccessException;
     void clear();
 }

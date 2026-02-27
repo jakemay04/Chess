@@ -24,6 +24,22 @@ public class MemoryGameDAO implements GameDAO {
         }
     }
 
+    public void getGame(UserData u, GameData g) throws DataAccessException {
+
+    }
+
+    public void updateGame(UserData u, GameData g) throws DataAccessException {
+
+    }
+
+    public void deleteGame(UserData u, GameData g) throws DataAccessException {
+
+    }
+
+    public void gameList(UserData u, GameData g) throws DataAccessException {
+
+    }
+
     public void clear() {
         game = null;
     }

@@ -54,13 +54,23 @@ public class Handler {
     public void logout(Context ctx) {
         try {
             String authToken = ctx.header("authorization");
-            System.out.println("Logout token received: " + authToken);
             userService.logout(new LogoutRequest(authToken));
-            System.out.println("Logout successful");
             ctx.status(200).result(gson.toJson(Map.of()));
         } catch (DataAccessException e) {
             ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
-            e.printStackTrace();
+
+        }
+    }
+
+    public void createGame(Context ctx) {
+        try {
+            var body = gson.fromJson(ctx.body(), Map.class);
+            var req = new CreateGameRequest(ctx.header("authorization"), (String) body.get("gameName"));
+            var result = gameService.createGame(req);
+            ctx.status(200).result(gson.toJson(Map.of()));
+
+        } catch (DataAccessException e) {
+            ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
 
         }
     }
