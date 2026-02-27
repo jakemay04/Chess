@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 public class MemoryAuthDAO implements AuthDAO{
-    private Map<String, String> auth = new HashMap<String, String>();
+    private Map<String, AuthData> auth = new HashMap<String, AuthData>();
 
     public void insertAuth(AuthData a) throws DataAccessException {
         if (a.username() != null) {
-            auth.put(a.authToken(), a.username());
+            auth.put(a.authToken(), a);
         }
         else {
             throw new DataAccessException("Invalid session");
@@ -21,16 +21,16 @@ public class MemoryAuthDAO implements AuthDAO{
 
     public AuthData getAuth(String authToken) throws DataAccessException {
         if (authToken != null && auth.containsKey(authToken)) {
-            return new AuthData(auth.get(authToken), authToken);
+            return auth.get(authToken);
         }
         else {
             throw new DataAccessException("Invalid session");
         }
     }
 
-    public void deleteAuth(AuthData a) throws DataAccessException {
-        if (a.username() != null && auth.containsKey(a.username())) {
-            auth.remove(a.username());
+    public void deleteAuth(String authToken) throws DataAccessException {
+        if (authToken != null && auth.containsKey(authToken)) {
+            auth.remove(authToken);
         }
         else {
             throw new DataAccessException("Invalid session");

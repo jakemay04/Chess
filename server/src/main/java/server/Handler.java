@@ -11,6 +11,8 @@ import java.util.Map;
 public class Handler {
     private final Gson gson = new Gson();
     private final UserService userService;
+    private final GameService gameService;
+    private final ClearService clearService;
 
     public Handler(UserService u) {
         this.userService = u;
@@ -41,17 +43,21 @@ public class Handler {
         try {
             ClearService.clear();
             ctx.status(200).json("{}");
-        } catch (Exception e) {
-            ctx.status(500).json("Error:" + e);
+        }  catch (DataAccessException e) {
+            ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
+
         }
     }
 
     public void logout(Context ctx) {
         try {
-            userService.logout(new LogoutRequest(ctx.header("authorization")));
+            String authToken = ctx.header("authorization");
+            System.out.println("Logout token received: " + authToken);
+            userService.logout(new LogoutRequest(authToken));
             ctx.status(200).json("{}");
-        } catch (Exception e) {
-            ctx.status(500).json("Error:" + e);
+        } catch (DataAccessException e) {
+            ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
+
         }
     }
 }
