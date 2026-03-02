@@ -46,6 +46,10 @@ public class GameService {
             throw new DataAccessException("Error: bad request");
         }
         GameData game = gameDAO.getGame(req.gameID());
+        System.out.println("this is the problem" + game);
+        if (game == null) {
+            throw new DataAccessException("Error: bad request");
+        }
         String username = user.username();
 
         if (req.playerColor().equals("WHITE") && game.whiteUsername() != null) {

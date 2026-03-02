@@ -123,9 +123,14 @@ public class Handler {
 
         }
     }
+
     public void joinGame(Context ctx) {
         try {
             var body = gson.fromJson(ctx.body(), Map.class);
+            if (body.get("gameID") == null) {
+                ctx.status(400).result(gson.toJson(Map.of("message", "Error: bad request")));
+                return;
+            }
             var req = new JoinGameRequest(
                     ctx.header("authorization"),
                     (String) body.get("playerColor"),
@@ -140,10 +145,14 @@ public class Handler {
             else if (e.getMessage().contains("Error: bad request")) {
                 ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
             }
+            else if (e.getMessage().contains("Error: already taken")) {
+                ctx.status(403).result(gson.toJson(Map.of("message", e.getMessage())));
+            }
             else {
                 ctx.status(500).result(gson.toJson(Map.of("message", e.getMessage())));
             }
-
+        } catch (Exception e) {
+            ctx.status(500).result(gson.toJson(Map.of("message", "Error" + e.getMessage())));
         }
     }
 
