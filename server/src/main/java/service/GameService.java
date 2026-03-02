@@ -42,12 +42,19 @@ public class GameService {
 
     public void joinGame(JoinGameRequest req) throws DataAccessException {
         AuthData user = authDAO.getAuth(req.authToken());
-        String username = user.username();
-
-        if (username == null || req.playerColor() == null) {
+        if (req.playerColor() == null) {
             throw new DataAccessException("Error: bad request");
         }
-        gameDAO.getGame(req.gameID());
+        GameData game = gameDAO.getGame(req.gameID());
+        String username = user.username();
+
+        if (req.playerColor().equals("WHITE") && game.whiteUsername() != null) {
+            throw new DataAccessException("Error: already taken");
+        }
+        if (req.playerColor().equals("BLACK") && game.blackUsername() != null) {
+            throw new DataAccessException("Error: already taken");
+
+        }
         gameDAO.updateGame(req.playerColor(), req.gameID(), username);
     }
 }

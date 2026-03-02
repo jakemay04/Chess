@@ -20,49 +20,30 @@ public class MemoryGameDAO implements GameDAO {
         }
     }
 
-    public void getGame(int gameID) throws DataAccessException {
+    public GameData getGame(int gameID) throws DataAccessException {
         GameData game = games.get(gameID);
         if (game == null) {
             throw new DataAccessException("Error: bad request");
         }
+        return game;
     }
 
     public void updateGame(String playerColor, int gameID, String username) throws DataAccessException {
-        if (playerColor != null) {
-            GameData currentGame = games.get(gameID);
-            if (playerColor.equals("WHITE")) {
-                if (username != null) {
-                    GameData newGame = new GameData(
-                            gameID,
-                            username,
-                            currentGame.blackUsername(),
-                            currentGame.gameName(),
-                            currentGame.game()
-                    );
-                    games.put(gameID, newGame);
-                }
-                else {
-                    throw new DataAccessException("Error: bad request");
-                }
-            }
-            else if (playerColor.equals("BLACK")){
-                if (username != null) {
-                    GameData newGame = new GameData(
-                            gameID,
-                            currentGame.whiteUsername(),
-                            username,
-                            currentGame.gameName(),
-                            currentGame.game()
-                    );
-                    games.put(gameID, newGame);
-                } else {
-                    throw new DataAccessException("Error: bad request");
-                }
-            }
-            else {
-                throw new DataAccessException("Error: bad request");
-            }
+        GameData currentGame = games.get(gameID);
+        if (currentGame == null) {
+            throw new DataAccessException("Error: bad request");
         }
+        GameData newGame;
+        if (playerColor.equals("WHITE")) {
+            newGame = new GameData(gameID, username, currentGame.blackUsername(), currentGame.gameName(), currentGame.game());
+        }
+        else if (playerColor.equals("BLACK")){
+            newGame = new GameData(gameID, currentGame.whiteUsername(), username, currentGame.gameName(), currentGame.game());
+        }
+        else {
+            throw new DataAccessException("Error: bad request");
+        }
+        games.put(gameID, newGame);
     }
 
     public Collection<GameData> gameList() throws DataAccessException {
