@@ -26,7 +26,7 @@ public class Handler {
             var result = userService.register(request);
             ctx.status(200).result(gson.toJson(result));
         } catch (DataAccessException e) {
-            if (e.getMessage().contains("bad request")) {
+            if (e.getMessage().contains("Error: bad request")) {
                 ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
             }
             else if (e.getMessage().contains("already taken")) {
@@ -44,10 +44,10 @@ public class Handler {
             var result = userService.login(request);
             ctx.status(200).result(gson.toJson(result));
         } catch (DataAccessException e) {
-            if (e.getMessage().contains("Unauthorized")) {
+            if (e.getMessage().contains("Error: unauthorized")) {
                 ctx.status(401).result(gson.toJson(Map.of("message", e.getMessage())));
             }
-            else if (e.getMessage().contains("Bad request")) {
+            else if (e.getMessage().contains("Error: bad request")) {
                 ctx.status(401).result(gson.toJson(Map.of("message", e.getMessage())));
             }
             else {

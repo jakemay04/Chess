@@ -15,7 +15,7 @@ public class MemoryAuthDAO implements AuthDAO{
             auth.put(a.authToken(), a);
         }
         else {
-            throw new DataAccessException("Invalid session");
+            throw new DataAccessException("Error: unauthorized");
         }
     }
 
@@ -24,7 +24,7 @@ public class MemoryAuthDAO implements AuthDAO{
             return auth.get(authToken);
         }
         else {
-            throw new DataAccessException("Invalid session");
+            throw new DataAccessException("Error: unauthorized");
         }
     }
 
@@ -33,7 +33,7 @@ public class MemoryAuthDAO implements AuthDAO{
             auth.remove(authToken);
         }
         else {
-            throw new DataAccessException("Invalid session");
+            throw new DataAccessException("Error: unauthorized");
         }
     }
 

@@ -16,10 +16,10 @@ public class MemoryUserDAO implements UserDAO{
 
     public void insertUser(UserData u) throws DataAccessException {
         if (u.username() == null) {
-            throw new DataAccessException("Bad request");
+            throw new DataAccessException("Error: bad request");
         }
         if (users.containsKey(u.username())){
-            throw new DataAccessException(("Already taken"));
+            throw new DataAccessException(("Error: already taken"));
         }
 
         users.put(u.username(), u);
@@ -28,7 +28,7 @@ public class MemoryUserDAO implements UserDAO{
     public UserData getUser(String u) throws DataAccessException {
         UserData user = users.get(u);
         if (user == null) {
-            throw new DataAccessException("Unauthorized");
+            throw new DataAccessException("Error: unauthorized");
         }
         return user;
     }

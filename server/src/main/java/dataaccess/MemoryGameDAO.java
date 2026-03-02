@@ -16,14 +16,14 @@ public class MemoryGameDAO implements GameDAO {
             return nid;
         }
         else {
-            throw new DataAccessException("Invalid");
+            throw new DataAccessException("Error: unauthorized");
         }
     }
 
     public void getGame(int gameID) throws DataAccessException {
         GameData game = games.get(gameID);
         if (game == null) {
-            throw new DataAccessException("game does not exist");
+            throw new DataAccessException("Error: bad request");
         }
     }
 
@@ -42,7 +42,7 @@ public class MemoryGameDAO implements GameDAO {
                     games.put(gameID, newGame);
                 }
                 else {
-                    throw new DataAccessException("Invalid username");
+                    throw new DataAccessException("Error: bad request");
                 }
             }
             else if (playerColor.equals("BLACK")){
@@ -56,11 +56,11 @@ public class MemoryGameDAO implements GameDAO {
                     );
                     games.put(gameID, newGame);
                 } else {
-                    throw new DataAccessException("Invalid username");
+                    throw new DataAccessException("Error: bad request");
                 }
             }
             else {
-                throw new DataAccessException("Invalid team color");
+                throw new DataAccessException("Error: bad request");
             }
         }
     }

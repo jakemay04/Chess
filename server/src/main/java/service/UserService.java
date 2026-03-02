@@ -20,13 +20,13 @@ public class UserService {
 
     public RegisterResult register(RegisterRequest req) throws DataAccessException {
         if (req.username() == null || req.password() == null || req.email() == null) {
-            throw new DataAccessException("Bad request");
+            throw new DataAccessException("Error: bad request");
         }
         try {
             userDAO.getUser(req.username());
-            throw new DataAccessException("Already taken");
+            throw new DataAccessException("Error: already taken");
         } catch (DataAccessException e) {
-            if (e.getMessage().equals("Already taken")) {
+            if (e.getMessage().equals("Error: already taken")) {
                 throw e;
             }
         }
@@ -39,7 +39,7 @@ public class UserService {
     public LoginResult login(LoginRequest req) throws DataAccessException {
         UserData user = userDAO.getUser(req.username());
         if (!req.password().equals(user.password())) {
-            throw new DataAccessException("Unauthorized");
+            throw new DataAccessException("Error: unauthorized");
         }
         String token = UUID.randomUUID().toString();
         authDAO.insertAuth(new AuthData(token,req.username()));

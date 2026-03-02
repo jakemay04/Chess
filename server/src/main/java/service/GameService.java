@@ -27,7 +27,7 @@ public class GameService {
         //get auth data
         authDAO.getAuth(req.authToken());
         if (req.gameName() == null) {
-            throw new DataAccessException("bad request");
+            throw new DataAccessException("Error: bad request");
         }
         //create blank gamedata obj
         GameData game = new GameData(0,null,null,req.gameName(),new ChessGame());
@@ -45,7 +45,7 @@ public class GameService {
         String username = user.username();
 
         if (username == null || req.playerColor() == null) {
-            throw new DataAccessException("bad request");
+            throw new DataAccessException("Error: bad request");
         }
         gameDAO.getGame(req.gameID());
         gameDAO.updateGame(req.playerColor(), req.gameID(), username);
