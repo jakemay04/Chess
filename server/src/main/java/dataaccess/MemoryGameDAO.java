@@ -5,7 +5,7 @@ import model.GameData;
 import java.util.*;
 
 public class MemoryGameDAO implements GameDAO {
-    private final Map<Integer, GameData> games = new HashMap<>();
+    private Map<Integer, GameData> games = new HashMap<>();
     private int id = 1;
 
     public int insertGame(GameData g) throws DataAccessException {
