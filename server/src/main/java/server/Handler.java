@@ -48,13 +48,11 @@ public class Handler {
                 ctx.status(401).result(gson.toJson(Map.of("message", e.getMessage())));
             }
             else if (e.getMessage().contains("Error: bad request")) {
-                ctx.status(401).result(gson.toJson(Map.of("message", e.getMessage())));
+                ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
             }
             else {
                 ctx.status(500).result(gson.toJson(Map.of("message", e.getMessage())));
             }
-
-
         }
     }
 
@@ -63,7 +61,7 @@ public class Handler {
             clearService.clear();
             ctx.status(200).json("{}");
         }  catch (DataAccessException e) {
-            ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
+            ctx.status(500).result(gson.toJson(Map.of("message", e.getMessage())));
 
         }
     }
