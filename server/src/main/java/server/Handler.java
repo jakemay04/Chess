@@ -72,8 +72,15 @@ public class Handler {
             userService.logout(new LogoutRequest(authToken));
             ctx.status(200).result(gson.toJson(Map.of()));
         } catch (DataAccessException e) {
-            ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
-
+            if (e.getMessage().contains("Error: unauthorized")) {
+                ctx.status(401).result(gson.toJson(Map.of("message", e.getMessage())));
+            }
+            else if (e.getMessage().contains("Error: bad request")) {
+                ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
+            }
+            else {
+                ctx.status(500).result(gson.toJson(Map.of("message", e.getMessage())));
+            }
         }
     }
 
@@ -85,7 +92,15 @@ public class Handler {
             ctx.status(200).result(gson.toJson(result));
 
         } catch (DataAccessException e) {
-            ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
+            if (e.getMessage().contains("Error: unauthorized")) {
+                ctx.status(401).result(gson.toJson(Map.of("message", e.getMessage())));
+            }
+            else if (e.getMessage().contains("Error: bad request")) {
+                ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
+            }
+            else {
+                ctx.status(500).result(gson.toJson(Map.of("message", e.getMessage())));
+            }
 
         }
     }
@@ -96,7 +111,15 @@ public class Handler {
             var result = gameService.listGames(req);
             ctx.status(200).result(gson.toJson(result));
         } catch (DataAccessException e) {
-            ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
+            if (e.getMessage().contains("Error: unauthorized")) {
+                ctx.status(401).result(gson.toJson(Map.of("message", e.getMessage())));
+            }
+            else if (e.getMessage().contains("Error: bad request")) {
+                ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
+            }
+            else {
+                ctx.status(500).result(gson.toJson(Map.of("message", e.getMessage())));
+            }
 
         }
     }
@@ -111,7 +134,15 @@ public class Handler {
             gameService.joinGame(req);
             ctx.status(200).json("{}");
         } catch (DataAccessException e) {
-            ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
+            if (e.getMessage().contains("Error: unauthorized")) {
+                ctx.status(401).result(gson.toJson(Map.of("message", e.getMessage())));
+            }
+            else if (e.getMessage().contains("Error: bad request")) {
+                ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
+            }
+            else {
+                ctx.status(500).result(gson.toJson(Map.of("message", e.getMessage())));
+            }
 
         }
     }

@@ -20,21 +20,24 @@ public class MemoryAuthDAO implements AuthDAO{
     }
 
     public AuthData getAuth(String authToken) throws DataAccessException {
-        if (authToken != null && auth.containsKey(authToken)) {
-            return auth.get(authToken);
+        if (authToken == null) {
+            throw new DataAccessException("Error: bad request");
         }
-        else {
+        else if (!auth.containsKey(authToken)){
             throw new DataAccessException("Error: unauthorized");
         }
+        return auth.get(authToken);
     }
 
     public void deleteAuth(String authToken) throws DataAccessException {
-        if (authToken != null && auth.containsKey(authToken)) {
-            auth.remove(authToken);
+        if (authToken == null) {
+            throw new DataAccessException("Error: bad request");
         }
-        else {
+        else if (!auth.containsKey(authToken)){
             throw new DataAccessException("Error: unauthorized");
         }
+        auth.remove(authToken);
+
     }
 
     public void clear() {
