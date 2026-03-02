@@ -44,6 +44,7 @@ public class GameService {
             throw new DataAccessException("bad request");
         }
         authDAO.getAuth(req.authToken());
+        GameData game = gameDAO.
         gameDAO.updateGame(req.playerColor(), req.gameID(), req.username());
     }
 }

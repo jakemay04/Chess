@@ -1,23 +1,18 @@
 package dataaccess;
 
-import model.AuthData;
 import model.GameData;
-import model.UserData;
 
 import java.util.*;
 
-import static chess.ChessGame.TeamColor.BLACK;
-import static chess.ChessGame.TeamColor.WHITE;
-
 public class MemoryGameDAO implements GameDAO {
-    private Map<Integer, GameData> game = new HashMap<Integer, GameData>();
+    private final Map<Integer, GameData> games = new HashMap<>();
     private int id = 1;
 
     public int insertGame(GameData g) throws DataAccessException {
         if (g != null) {
             int nid = id++;
             GameData withID = new GameData(nid, g.whiteUsername(), g.blackUsername(), g.gameName(), g.game());
-            game.put(nid, withID);
+            games.put(nid, withID);
             return nid;
         }
         else {
@@ -25,13 +20,16 @@ public class MemoryGameDAO implements GameDAO {
         }
     }
 
-    public void getGame(UserData u, GameData g) throws DataAccessException {
-
+    public void getGame(int gameID) throws DataAccessException {
+        GameData game = games.get(gameID);
+        if (game == null) {
+            throw new DataAccessException("game does not exist");
+        }
     }
 
     public void updateGame(String playerColor, int gameID, String username) throws DataAccessException {
         if (playerColor != null) {
-            GameData currentGame = game.get(gameID);
+            GameData currentGame = games.get(gameID);
             if (playerColor.equals("WHITE")) {
                 if (username != null) {
                     GameData newGame = new GameData(
@@ -41,7 +39,7 @@ public class MemoryGameDAO implements GameDAO {
                             currentGame.gameName(),
                             currentGame.game()
                     );
-                    game.put(gameID, newGame);
+                    games.put(gameID, newGame);
                 }
                 else {
                     throw new DataAccessException("Invalid username");
@@ -56,7 +54,7 @@ public class MemoryGameDAO implements GameDAO {
                             currentGame.gameName(),
                             currentGame.game()
                     );
-                    game.put(gameID, newGame);
+                    games.put(gameID, newGame);
                 } else {
                     throw new DataAccessException("Invalid username");
                 }
@@ -68,11 +66,11 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     public Collection<GameData> gameList() throws DataAccessException {
-        return game.values();
+        return games.values();
     }
 
     public void clear() {
-        game = null;
+        games = null;
     }
 }
 
