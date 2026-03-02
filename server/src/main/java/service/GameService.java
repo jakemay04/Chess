@@ -40,6 +40,9 @@ public class GameService {
     }
 
     public void joinGame(JoinGameRequest req) throws DataAccessException {
+        if (req.username() == null || req.playerColor() != null) {
+            throw new DataAccessException("bad request");
+        }
         authDAO.getAuth(req.authToken());
         gameDAO.updateGame(req.playerColor(), req.gameID(), req.username());
     }
