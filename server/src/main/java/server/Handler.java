@@ -88,7 +88,11 @@ public class Handler {
     public void joinGame(Context ctx) {
         try {
             var body = gson.fromJson(ctx.body(), Map.class);
-            var req = new JoinGameRequest(ctx.header("authorization"), (String) body.get("playerColor"), ((Double) body.get("gameID")).intValue());
+            var req = new JoinGameRequest(
+                    ctx.header("authorization"),
+                    (String) body.get("playerColor"),
+                    ((Double) body.get("gameID")).intValue()
+            );
             gameService.joinGame(req);
             ctx.status(200).json("{}");
         } catch (DataAccessException e) {

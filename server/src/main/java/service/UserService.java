@@ -26,7 +26,9 @@ public class UserService {
             userDAO.getUser(req.username());
             throw new DataAccessException("Already taken");
         } catch (DataAccessException e) {
-            if (e.getMessage().equals("Error: already taken")) throw e);
+            if (e.getMessage().equals("Error: already taken")) {
+                throw e;
+            }
         }
         userDAO.insertUser(new UserData(req.username(), req.email(), req.password()));
         String token = UUID.randomUUID().toString();
@@ -37,7 +39,7 @@ public class UserService {
     public LoginResult login(LoginRequest req) throws DataAccessException {
         UserData user = userDAO.getUser(req.username());
         if (!req.password().equals(user.password())) {
-            throw new DataAccessException("Invalid password");
+            throw new DataAccessException("Unauthorized");
         }
         String token = UUID.randomUUID().toString();
         authDAO.insertAuth(new AuthData(token,req.username()));

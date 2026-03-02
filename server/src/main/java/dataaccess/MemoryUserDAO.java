@@ -30,7 +30,7 @@ public class MemoryUserDAO implements UserDAO{
             return new UserData(u, users.get(u).getFirst(), users.get(u).getLast());
         }
         else {
-            throw new DataAccessException("Invalid login");
+            throw new DataAccessException("Unauthorized");
         }
     }
 }
