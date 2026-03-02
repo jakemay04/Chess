@@ -26,11 +26,10 @@ public class MemoryUserDAO implements UserDAO{
     }
 
     public UserData getUser(String u) throws DataAccessException {
-        if ((u != null && users.containsKey(u))) {
-            return new UserData(u, users.get(u).getFirst(), users.get(u).getLast());
-        }
-        else {
+        UserData user = users.get(u);
+        if (user == null) {
             throw new DataAccessException("Unauthorized");
         }
+        return user;
     }
 }

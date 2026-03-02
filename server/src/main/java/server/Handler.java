@@ -44,7 +44,16 @@ public class Handler {
             var result = userService.login(request);
             ctx.status(200).result(gson.toJson(result));
         } catch (DataAccessException e) {
-            ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
+            if (e.getMessage().contains("Unauthorized")) {
+                ctx.status(401).result(gson.toJson(Map.of("message", e.getMessage())));
+            }
+            else if (e.getMessage().contains("Bad request")) {
+                ctx.status(401).result(gson.toJson(Map.of("message", e.getMessage())));
+            }
+            else {
+                ctx.status(500).result(gson.toJson(Map.of("message", e.getMessage())));
+            }
+
 
         }
     }

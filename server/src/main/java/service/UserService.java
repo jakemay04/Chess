@@ -26,11 +26,11 @@ public class UserService {
             userDAO.getUser(req.username());
             throw new DataAccessException("Already taken");
         } catch (DataAccessException e) {
-            if (e.getMessage().equals("Error: already taken")) {
+            if (e.getMessage().equals("Already taken")) {
                 throw e;
             }
         }
-        userDAO.insertUser(new UserData(req.username(), req.email(), req.password()));
+        userDAO.insertUser(new UserData(req.username(), req.password(), req.email()));
         String token = UUID.randomUUID().toString();
         authDAO.insertAuth(new AuthData(token,req.username()));
         return new RegisterResult(req.username(), token);
