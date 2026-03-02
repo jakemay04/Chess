@@ -70,7 +70,7 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     public void clear() {
-        games = null;
+        games.clear();
     }
 }
 

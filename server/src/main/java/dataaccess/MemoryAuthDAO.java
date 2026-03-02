@@ -38,6 +38,6 @@ public class MemoryAuthDAO implements AuthDAO{
     }
 
     public void clear() {
-        auth = null;
+        auth.clear();
     }
 }

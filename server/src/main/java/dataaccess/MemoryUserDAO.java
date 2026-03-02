@@ -11,11 +11,11 @@ public class MemoryUserDAO implements UserDAO{
     private Map<String, List<String>> users = new HashMap<String, List<String>>();
 
     public void clear() {
-        users = null;
+        users.clear();
     }
 
     public void insertUser(UserData u) throws DataAccessException {
-        if (u.username() != null || users.containsKey(u.username())) {
+        if (u.username() != null) {
             users.put(u.username(), new ArrayList<>());
             users.get(u.username()).add(u.email());
             users.get(u.username()).add(u.password());

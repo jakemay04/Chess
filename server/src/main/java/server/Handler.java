@@ -43,7 +43,7 @@ public class Handler {
 
     public void clear(Context ctx) {
         try {
-            ClearService.clear();
+            clearService.clear();
             ctx.status(200).json("{}");
         }  catch (DataAccessException e) {
             ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
@@ -88,7 +88,7 @@ public class Handler {
     public void joinGame(Context ctx) {
         try {
             var body = gson.fromJson(ctx.body(), Map.class);
-            var req = new JoinGameRequest(ctx.header("authorization"), (String) body.get("playerColor"), (int) body.get("gameID"), (String) body.get("username"));
+            var req = new JoinGameRequest(ctx.header("authorization"), (String) body.get("playerColor"), ((Double) body.get("gameID")).intValue());
             gameService.joinGame(req);
             ctx.status(200).json("{}");
         } catch (DataAccessException e) {

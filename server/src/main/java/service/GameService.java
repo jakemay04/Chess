@@ -5,6 +5,7 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
+import model.AuthData;
 import model.GameData;
 
 import java.util.Collection;
@@ -40,11 +41,13 @@ public class GameService {
     }
 
     public void joinGame(JoinGameRequest req) throws DataAccessException {
-        if (req.username() == null || req.playerColor() != null) {
+        AuthData user = authDAO.getAuth(req.authToken());
+        String username = user.username();
+
+        if (username == null || req.playerColor() != null) {
             throw new DataAccessException("bad request");
         }
-        authDAO.getAuth(req.authToken());
         gameDAO.getGame(req.gameID());
-        gameDAO.updateGame(req.playerColor(), req.gameID(), req.username());
+        gameDAO.updateGame(req.playerColor(), req.gameID(), username);
     }
 }
