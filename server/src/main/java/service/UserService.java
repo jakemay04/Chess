@@ -19,6 +19,15 @@ public class UserService {
     }
 
     public RegisterResult register(RegisterRequest req) throws DataAccessException {
+        if (req.username() == null || req.password() == null || req.email() == null) {
+            throw new DataAccessException("Bad request");
+        }
+        try {
+            userDAO.getUser(req.username());
+            throw new DataAccessException("Already taken");
+        } catch (DataAccessException e) {
+            if (e.getMessage().equals("Error: already taken")) throw e);
+        }
         userDAO.insertUser(new UserData(req.username(), req.email(), req.password()));
         String token = UUID.randomUUID().toString();
         authDAO.insertAuth(new AuthData(token,req.username()));
