@@ -8,21 +8,21 @@ import java.util.List;
 import java.util.Map;
 
 public class MemoryUserDAO implements UserDAO{
-    private Map<String, List<String>> users = new HashMap<String, List<String>>();
+    private Map<String, UserData> users = new HashMap<>();
 
     public void clear() {
         users.clear();
     }
 
     public void insertUser(UserData u) throws DataAccessException {
-        if (u.username() != null) {
-            users.put(u.username(), new ArrayList<>());
-            users.get(u.username()).add(u.email());
-            users.get(u.username()).add(u.password());
+        if (u.username() == null) {
+            throw new DataAccessException("Bad request");
         }
-        else {
-            throw new DataAccessException("User already exists");
+        if (users.containsKey(u.username())){
+            throw new DataAccessException(("Already taken"));
         }
+
+        users.put(u.username(), u);
     }
 
     public UserData getUser(String u) throws DataAccessException {
