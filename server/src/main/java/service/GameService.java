@@ -9,6 +9,7 @@ import model.GameData;
 
 import java.util.Collection;
 
+;
 
 public class GameService {
     private final UserDAO userDAO;
@@ -30,12 +31,16 @@ public class GameService {
         //create blank gamedata obj
         GameData game = new GameData(0,null,null,req.gameName(),new ChessGame());
         int id = gameDAO.insertGame(game);
-        System.out.println(id);
         return new CreateGameResult(id);
     }
 
     public ListGamesResult listGames(ListGamesRequest req) throws DataAccessException {
         authDAO.getAuth(req.authToken());
         return new ListGamesResult(gameDAO.gameList());
+    }
+
+    public void joinGame(JoinGameRequest req) throws DataAccessException {
+        authDAO.getAuth(req.authToken());
+        gameDAO.updateGame(req.playerColor(), req.gameID(), req.username());
     }
 }

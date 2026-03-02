@@ -85,4 +85,15 @@ public class Handler {
 
         }
     }
+    public void listGames(Context ctx) {
+        try {
+            var req = new ListGamesRequest(ctx.header("authorization"));
+            var result = gameService.listGames(req);
+            ctx.status(200).result(gson.toJson(result));
+        } catch (DataAccessException e) {
+            ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
+
+        }
+    }
+
 }
