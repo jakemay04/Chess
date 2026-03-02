@@ -44,7 +44,7 @@ public class GameService {
         AuthData user = authDAO.getAuth(req.authToken());
         String username = user.username();
 
-        if (username == null || req.playerColor() != null) {
+        if (username == null || req.playerColor() == null) {
             throw new DataAccessException("bad request");
         }
         gameDAO.getGame(req.gameID());
