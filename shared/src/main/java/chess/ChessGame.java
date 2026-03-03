@@ -172,8 +172,9 @@ public class ChessGame {
         for (int r = 1; r <= 8; r++) {
             for (int c = 1; c <= 8; c++) {
                 ChessPiece piece = gameboard.getPiece(new ChessPosition(r,c));
-                return isValidTakePos(piece, teamColor, myKing, r, c);
-
+                if (isValidTakePos(piece, teamColor, myKing, r, c)) {
+                    return true;
+                }
             }
         }
         return false;
