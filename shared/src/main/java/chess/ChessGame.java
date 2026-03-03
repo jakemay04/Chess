@@ -160,7 +160,7 @@ public class ChessGame {
         for (int r = 1; r <= 8; r++) {
             for (int c = 1; c <= 8; c++) {
                 ChessPiece piece = gameboard.getPiece(new ChessPosition(r,c)) ;
-                if (piece != null && piece.getTeamColor() == teamColor) {
+                if (piece != null && piece.getTeamColor() != teamColor) {
                     for (ChessMove move : piece.pieceMoves(gameboard,new ChessPosition(r,c))) {
                         if (move.getEndPosition().equals(myKing)) {
                             return true;
@@ -179,12 +179,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        if(!isInCheck(teamColor)) {
-            return false;
-        }
-
-        teamHasValidMoves(teamColor);
-        return true;
+        return isInCheck(teamColor) && !teamHasValidMoves(teamColor);
     }
 
     /**
@@ -200,8 +195,7 @@ public class ChessGame {
             return false;
         }
 
-        teamHasValidMoves(teamColor);
-        return true;
+        return !teamHasValidMoves(teamColor);
     }
 
     /**
