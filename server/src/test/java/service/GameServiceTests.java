@@ -47,5 +47,28 @@ public class GameServiceTests {
         }
     }
 
+    @Test
+    void gameListSuccess() throws DataAccessException {
+        var createGame1 = gameService.createGame(new CreateGameRequest(validToken,"testgame"));
+        var createGame2 = gameService.createGame(new CreateGameRequest(validToken,"testgame"));
 
+        var gameList = gameService.listGames(new ListGamesRequest(validToken));
+        assertEquals(2, gameList.games().size());
+    }
+
+    @Test
+    void gameListFail() throws DataAccessException {
+        var createGame1 = gameService.createGame(new CreateGameRequest(validToken,"testgame"));
+        try {
+            var gameList = gameService.listGames(new ListGamesRequest("badToken"));
+            fail("Should throw auth error");
+        } catch (DataAccessException e) {
+            assertEquals("Error: unauthorized", e.getMessage());
+        }
+    }
+
+    @Test
+    void joinGameSuccess() throws DataAccessException {
+
+    }
 }
