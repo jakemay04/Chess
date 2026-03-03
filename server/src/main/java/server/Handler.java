@@ -24,6 +24,9 @@ public class Handler {
         if (e.getMessage().contains("Error: bad request")) {
             ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
         }
+        else if (e.getMessage().contains("unauthorized")){
+            ctx.status(401).result(gson.toJson(Map.of("message", e.getMessage())));
+        }
         else if (e.getMessage().contains("already taken")) {
             ctx.status(403).result(gson.toJson(Map.of("message", e.getMessage())));
         }
