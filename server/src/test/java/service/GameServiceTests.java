@@ -58,7 +58,7 @@ public class GameServiceTests {
 
     @Test
     void gameListFail() throws DataAccessException {
-        var createGame1 = gameService.createGame(new CreateGameRequest(validToken,"testgame"));
+        var createGame = gameService.createGame(new CreateGameRequest(validToken,"testgame"));
         try {
             var gameList = gameService.listGames(new ListGamesRequest("badToken"));
             fail("Should throw auth error");
@@ -69,6 +69,22 @@ public class GameServiceTests {
 
     @Test
     void joinGameSuccess() throws DataAccessException {
+        var createGame = gameService.createGame(new CreateGameRequest(validToken,"testgame"));
+        try {
+            gameService.joinGame(new JoinGameRequest(validToken, "WHITE", createGame.gameID()));
+        } catch (DataAccessException e) {
+            fail("Should not throw error");
+        }
+    }
 
+    @Test
+    void joinGameFailed() throws DataAccessException {
+        var createGame = gameService.createGame(new CreateGameRequest(validToken,"testgame"));
+        try {
+            gameService.joinGame(new JoinGameRequest("badToken", "WHITE", createGame.gameID()));
+            fail("Should throw auth error");
+        } catch (DataAccessException e) {
+            assertEquals("Error: unauthorized", e.getMessage());
+        }
     }
 }
