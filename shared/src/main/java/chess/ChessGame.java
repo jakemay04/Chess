@@ -157,22 +157,16 @@ public class ChessGame {
 
         //determine if the king is in check
         //make list of all possible moves on board
-        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
         for (int r = 1; r <= 8; r++) {
             for (int c = 1; c <= 8; c++) {
                 ChessPiece piece = gameboard.getPiece(new ChessPosition(r,c)) ;
-                if (piece != null) {
+                if (piece != null && piece.getTeamColor() == teamColor) {
                     for (ChessMove move : piece.pieceMoves(gameboard,new ChessPosition(r,c))) {
-                        if (piece.getTeamColor() != teamColor) {
-                            possibleMoves.add(move); //add all possible moves from opposing team
+                        if (move.getEndPosition().equals(myKing)) {
+                            return true;
                         }
                     }
                 }
-            }
-        }
-        for (ChessMove moves : possibleMoves) {
-            if (moves.getEndPosition().equals(myKing)) {
-                return true;
             }
         }
         return false;
