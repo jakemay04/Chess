@@ -152,6 +152,18 @@ public class ChessGame {
      * @param teamColor which team to check for check
      * @return True if the specified team is in check
      */
+
+    boolean isValidTakePos(ChessPiece piece, TeamColor teamColor, ChessPosition myKing, int row, int col) {
+        if (piece != null && piece.getTeamColor() != teamColor) {
+            for (ChessMove move : piece.pieceMoves(gameboard,new ChessPosition(row,col))) {
+                if (move.getEndPosition().equals(myKing)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean isInCheck(TeamColor teamColor) {
         ChessPosition myKing = MockMoves.findKing(gameboard,teamColor);
 
@@ -159,14 +171,9 @@ public class ChessGame {
         //make list of all possible moves on board
         for (int r = 1; r <= 8; r++) {
             for (int c = 1; c <= 8; c++) {
-                ChessPiece piece = gameboard.getPiece(new ChessPosition(r,c)) ;
-                if (piece != null && piece.getTeamColor() != teamColor) {
-                    for (ChessMove move : piece.pieceMoves(gameboard,new ChessPosition(r,c))) {
-                        if (move.getEndPosition().equals(myKing)) {
-                            return true;
-                        }
-                    }
-                }
+                ChessPiece piece = gameboard.getPiece(new ChessPosition(r,c));
+                return isValidTakePos(piece, teamColor, myKing, r, c);
+
             }
         }
         return false;
