@@ -9,6 +9,13 @@ import static chess.ChessGame.TeamColor.WHITE;
 
 public class ChessPieceCalculator {
 
+    public static void addStepMove(List<ChessMove> moves, ChessBoard board, ChessPosition from,
+                                    int toRow, int toCol, ChessGame.TeamColor pieceColor) {
+        if (validMove(board, toRow, toCol, pieceColor)) {
+            moves.add(new ChessMove(from, new ChessPosition(toRow, toCol), null));
+        }
+    }
+
 
     public static boolean validMove(ChessBoard board, int currentRow, int currentCol, ChessGame.TeamColor pieceColor) {
         //check out-of-bounds first
@@ -28,30 +35,11 @@ public class ChessPieceCalculator {
         List<ChessMove> moves = new ArrayList<>();
         int currentRow = myPosition.getRow();
         int currentCol = myPosition.getColumn();
-        if (validMove(board,currentRow+1,currentCol+1, pieceColor)) { //up right
-            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol+1), null));
+        int[][] offsets = {{2,1},{1,2},{-1,2},{-2,1},{-2,-1},{-1,-2},{1,-2},{2,-1}};
+        for (int[] offset : offsets) {
+            addStepMove(moves, board, myPosition, currentRow + offset[0], currentCol + offset[1], pieceColor);
         }
-        if (validMove(board,currentRow,currentCol+1, pieceColor)) { //right
-            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow, currentCol+1), null));
-        }
-        if (validMove(board,currentRow-1,currentCol+1, pieceColor)) { //down right
-            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol+1), null));
-        }
-        if (validMove(board,currentRow-1,currentCol, pieceColor)) { //down
-            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol), null));
-        }
-        if (validMove(board,currentRow-1,currentCol-1, pieceColor)) { //down left
-            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol-1), null));
-        }
-        if (validMove(board,currentRow,currentCol-1, pieceColor)) { //left
-            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow, currentCol-1), null));
-        }
-        if (validMove(board,currentRow+1,currentCol-1, pieceColor)) { //up left
-            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol-1), null));
-        }
-        if (validMove(board,currentRow+1,currentCol, pieceColor)) { //up
-            moves.add(new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol), null));
-        }
+
         return moves;
     }
 
