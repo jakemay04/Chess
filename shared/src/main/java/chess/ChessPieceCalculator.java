@@ -84,70 +84,9 @@ public class ChessPieceCalculator {
 
     public static Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor pieceColor) {
         List<ChessMove> moves = new ArrayList<>();
-        int currentRow = myPosition.getRow();
-        int currentCol = myPosition.getColumn();
-        int c = currentCol+1;
-        int r = currentRow+1;
-        //for all diagonal moves up+right
-        while (r <= 8 && c <= 8) {
-            if (validMove(board,r,c, pieceColor)) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(r, c), null));
-                if (board.getPiece(new ChessPosition(r,c))!=null) {
-                    break; //break after adding to prevent jumping
-                }
-            }
-            else {
-                break;
-            }
-            r++; c++;
-        }
-
-        //for all diagonal moves up+left
-        c = currentCol-1;
-        r = currentRow+1;
-        while (r <= 8 && c >= 1) {
-            if (validMove(board,r,c, pieceColor)) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(r, c), null));
-                if (board.getPiece(new ChessPosition(r,c))!=null) {
-                    break; //break after adding to prevent jumping
-                }
-            }
-            else {
-                break;
-            }
-            r++; c--;
-        }
-
-        //for all diagonal moves down+right
-        c = currentCol+1;
-        r = currentRow-1;
-        while (r >= 1 && c <= 8) {
-            if (validMove(board,r,c, pieceColor)) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(r, c), null));
-                if (board.getPiece(new ChessPosition(r,c))!=null) {
-                    break; //break after adding to prevent jumping
-                }
-            }
-            else {
-                break;
-            }
-            r--; c++;
-        }
-
-        //for all diagonal moves down+left
-        c = currentCol-1;
-        r = currentRow-1;
-        while (r >= 1 && c >= 1) {
-            if (validMove(board,r,c, pieceColor)) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(r, c), null));
-                if (board.getPiece(new ChessPosition(r,c))!=null) {
-                    break; //break after adding to prevent jumping
-                }
-            }
-            else {
-                break;
-            }
-            r--; c--;
+        int[][] directions = {{1,1},{1,-1},{-1,1},{-1,-1}};
+        for (int [] direction : directions) {
+            addSlidingMoves(moves, board, myPosition, direction[0], direction[1], pieceColor);
         }
         return moves;
     }
