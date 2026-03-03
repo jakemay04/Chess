@@ -12,7 +12,7 @@ public class UserServiceTests {
     static UserService userService;
 
     @BeforeEach
-    void Setup() {
+    void setup() {
         userDAO = new MemoryUserDAO();
         authDAO = new MemoryAuthDAO();
         userService = new UserService(userDAO, authDAO);
