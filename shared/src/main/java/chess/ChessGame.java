@@ -53,6 +53,20 @@ public class ChessGame {
      * @return Set of valid moves for requested piece, or null if no piece at
      * startPosition
      */
+    public boolean teamHasValidMoves(TeamColor teamColor) {
+        for (int r = 1; r <= 8; r++) {
+            for (int c = 1; c <= 8; c++) {
+                ChessPiece piece = gameboard.getPiece(new ChessPosition(r, c));
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    if (!validMoves(new ChessPosition(r, c)).isEmpty()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         //check for valid move and if move results in check
         ChessPiece piece = gameboard.getPiece(startPosition);
@@ -175,16 +189,7 @@ public class ChessGame {
             return false;
         }
 
-        for (int r = 1; r <= 8; r++) {
-            for (int c = 1; c <= 8; c++) {
-                ChessPiece piece = gameboard.getPiece(new ChessPosition(r,c)) ;
-                if (piece != null && piece.getTeamColor() == teamColor) {
-                    if (!validMoves(new ChessPosition(r,c)).isEmpty()) {
-                        return false; //if team has any possible moves, not checkmate
-                    }
-                }
-            }
-        }
+        teamHasValidMoves(teamColor);
         return true;
     }
 
@@ -201,16 +206,7 @@ public class ChessGame {
             return false;
         }
 
-        for (int r = 1; r <= 8; r++) {
-            for (int c = 1; c <= 8; c++) {
-                ChessPiece piece = gameboard.getPiece(new ChessPosition(r,c)) ;
-                if (piece != null && piece.getTeamColor() == teamColor) {
-                    if (!validMoves(new ChessPosition(r,c)).isEmpty()) {
-                        return false; //if team has any possible moves, not checkmate
-                    }
-                }
-            }
-        }
+        teamHasValidMoves(teamColor);
         return true;
     }
 
