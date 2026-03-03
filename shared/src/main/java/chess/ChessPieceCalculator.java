@@ -93,55 +93,9 @@ public class ChessPieceCalculator {
 
     public static Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor pieceColor) {
         List<ChessMove> moves = new ArrayList<>();
-        int currentRow = myPosition.getRow();
-        int currentCol = myPosition.getColumn();
-        //for loop for all straight paths (up)
-        for (int r = currentRow+1; r <= 8; r++){
-            if (validMove(board,r,currentCol, pieceColor)){
-                moves.add(new ChessMove(myPosition, new ChessPosition(r,currentCol), null));
-
-                if (board.getPiece(new ChessPosition(r,currentCol))!=null) {
-                    break; //break after adding to prevent jumping
-                }
-            }
-            else {
-                break;
-            }
-        }
-        for (int r = currentRow-1; r >= 1; r--){
-            if (validMove(board,r,currentCol, pieceColor)){
-                moves.add(new ChessMove(myPosition, new ChessPosition(r,currentCol), null));
-
-                if (board.getPiece(new ChessPosition(r,currentCol))!=null) {
-                    break; //break after adding to prevent jumping
-                }
-            }
-            else {
-                break;
-            }
-        }
-        for (int c = currentCol+1; c <= 8; c++){
-            if (validMove(board,currentRow,c, pieceColor)){
-                moves.add(new ChessMove(myPosition, new ChessPosition(currentRow,c), null));
-
-                if (board.getPiece(new ChessPosition(currentRow,c))!=null) {
-                    break; //break after adding to prevent jumping
-                }
-            }
-            else {
-                break;
-            }
-        }
-        for (int c = currentCol-1; c >= 1; c--){
-            if (validMove(board,currentRow,c, pieceColor)){
-                moves.add(new ChessMove(myPosition, new ChessPosition(currentRow,c), null));
-                if (board.getPiece(new ChessPosition(currentRow,c))!=null) {
-                    break; //break after adding to prevent jumping
-                }
-            }
-            else {
-                break;
-            }
+        int [][] directions = {{1,0},{-1,0},{0,1},{0,-1}};
+        for (int[] direction : directions) {
+            addSlidingMoves(moves, board, myPosition, direction[0], direction[1], pieceColor);
         }
         return moves;
     }
