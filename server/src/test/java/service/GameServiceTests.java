@@ -1,10 +1,12 @@
 package service;
 
 import dataaccess.*;
+import model.AuthData;
+import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GameServiceTests {
     static UserDAO userDAO;
@@ -12,6 +14,7 @@ public class GameServiceTests {
     static GameDAO gameDAO;
     static UserService userService;
     static GameService gameService;
+    static String validToken;
 
     @BeforeEach
     void Setup() {
@@ -19,11 +22,30 @@ public class GameServiceTests {
         authDAO = new MemoryAuthDAO();
         gameDAO = new MemoryGameDAO();
         gameService = new GameService(userDAO,authDAO,gameDAO);
+
+        try {
+            userDAO.insertUser(new UserData("testUser", "password", "test@test.com"));
+            validToken = "valid-token-123";
+            authDAO.insertAuth(new AuthData(validToken, "testUser"));
+        } catch (Exception ignored) {}
+
     }
+
     @Test
     void createGameSuccess() throws DataAccessException {
-        var result = userService.register(new RegisterRequest("test","pass","test@test.com"));
-        var createGame = gameService.createGame(CreateGameRequest())
-        assertEquals("test", result.username());
+        var createGame = gameService.createGame(new CreateGameRequest(validToken,"testgame"));
+        assertTrue(createGame.gameID()>0);
     }
+
+    @Test
+    void createGameFail() throws DataAccessException {
+        try {
+            var createGame = gameService.createGame(new CreateGameRequest("badAuthToken","testgame"));
+            fail("Game creating should have thrown error with bad auth");
+        } catch (DataAccessException e) {
+            assertEquals(e.getMessage(), "Error: unauthorized");
+        }
+    }
+
+
 }
