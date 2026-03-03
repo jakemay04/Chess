@@ -16,6 +16,24 @@ public class ChessPieceCalculator {
         }
     }
 
+    public static void addSlidingMoves(List<ChessMove> moves, ChessBoard board, ChessPosition from,
+                                       int toRow, int toCol, ChessGame.TeamColor pieceColor) {
+        int row = from.getRow() + toRow;
+        int col = from.getColumn() + toCol;
+        while (row >= 1 && row <= 8 && col >= 1 && col <= 8) {
+            if (validMove(board, row, col, pieceColor)) {
+                moves.add(new ChessMove(from, new ChessPosition(row, col),null));
+                if (board.getPiece(new ChessPosition(row, col)) != null) {
+                    break;
+                }
+            } else {
+                break;
+            }
+            row += toRow;
+            col += toCol;
+        }
+    }
+
 
     public static boolean validMove(ChessBoard board, int currentRow, int currentCol, ChessGame.TeamColor pieceColor) {
         //check out-of-bounds first
