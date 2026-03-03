@@ -109,22 +109,26 @@ public class ChessPieceCalculator {
         //valid white moves
         if (pieceColor == WHITE) {
 
-            if (validMove(board,currentRow+1,currentCol,pieceColor) && board.getPiece(new ChessPosition(currentRow+1,currentCol))==null) { //not on home row, moves once
+            if (validMove(board,currentRow+1,currentCol,pieceColor) &&
+                    board.getPiece(new ChessPosition(currentRow+1,currentCol))==null) { //not on home row, moves once
                 moves.add(new ChessMove(myPosition, new ChessPosition(currentRow+1,currentCol), null));
-                if (validMove(board,currentRow+2,currentCol,pieceColor) && currentRow==2 && board.getPiece(new ChessPosition(currentRow+2,currentCol))==null) { //home row, moves twice
+                if (validMove(board,currentRow+2,currentCol,pieceColor) && currentRow==2 &&
+                        board.getPiece(new ChessPosition(currentRow+2,currentCol))==null) { //home row, moves twice
                     moves.add(new ChessMove(myPosition, new ChessPosition(currentRow+2,currentCol), null));
                 };
             }
 
             if (validMove(board,currentRow+1,currentCol+1,pieceColor)) {
                 //check if up right is an opponent piece
-                if (board.getPiece(new ChessPosition(currentRow+1,currentCol+1)) != null && board.getPiece(new ChessPosition(currentRow+1,currentCol+1)).getTeamColor() == BLACK) {
+                if (board.getPiece(new ChessPosition(currentRow+1,currentCol+1)) != null &&
+                        board.getPiece(new ChessPosition(currentRow+1,currentCol+1)).getTeamColor() == BLACK) {
                     moves.add(new ChessMove(myPosition, new ChessPosition(currentRow+1,currentCol+1), null));
                 }
             }
             if (validMove(board,currentRow+1,currentCol-1,pieceColor)) {
                 //check if up left is an opponent piece
-                if (board.getPiece(new ChessPosition(currentRow+1,currentCol-1)) != null && board.getPiece(new ChessPosition(currentRow+1,currentCol-1)).getTeamColor() == BLACK) {
+                if (board.getPiece(new ChessPosition(currentRow+1,currentCol-1)) != null &&
+                        board.getPiece(new ChessPosition(currentRow+1,currentCol-1)).getTeamColor() == BLACK) {
                     moves.add(new ChessMove(myPosition, new ChessPosition(currentRow+1,currentCol-1), null));
                 }
             }
@@ -133,22 +137,26 @@ public class ChessPieceCalculator {
 
         //valid black moves
         if (pieceColor == BLACK) {
-            if (validMove(board,currentRow-1,currentCol,pieceColor) && board.getPiece(new ChessPosition(currentRow-1,currentCol))==null) { //not on home row, moves once
+            if (validMove(board,currentRow-1,currentCol,pieceColor) &&
+                    board.getPiece(new ChessPosition(currentRow-1,currentCol))==null) { //not on home row, moves once
                 moves.add(new ChessMove(myPosition, new ChessPosition(currentRow-1,currentCol), null));
-                if (validMove(board,currentRow-2,currentCol,pieceColor) && currentRow==7 && board.getPiece(new ChessPosition(currentRow-2,currentCol))==null) { //home row, moves twice
+                if (validMove(board,currentRow-2,currentCol,pieceColor) && currentRow==7 &&
+                        board.getPiece(new ChessPosition(currentRow-2,currentCol))==null) { //home row, moves twice
                     moves.add(new ChessMove(myPosition, new ChessPosition(currentRow-2,currentCol), null));
                 };
             }
 
             if (validMove(board,currentRow-1,currentCol+1,pieceColor)) {
                 //check if down right is an opponent piece
-                if (board.getPiece(new ChessPosition(currentRow-1,currentCol+1)) != null && board.getPiece(new ChessPosition(currentRow-1,currentCol+1)).getTeamColor() == WHITE) {
+                if (board.getPiece(new ChessPosition(currentRow-1,currentCol+1)) != null &&
+                        board.getPiece(new ChessPosition(currentRow-1,currentCol+1)).getTeamColor() == WHITE) {
                     moves.add(new ChessMove(myPosition, new ChessPosition(currentRow-1,currentCol+1), null));
                 }
             }
             if (validMove(board,currentRow-1,currentCol-1,pieceColor)) {
                 //check if down left is an opponent piece
-                if (board.getPiece(new ChessPosition(currentRow-1,currentCol-1)) != null && board.getPiece(new ChessPosition(currentRow-1,currentCol-1)).getTeamColor() == WHITE) {
+                if (board.getPiece(new ChessPosition(currentRow-1,currentCol-1)) != null &&
+                        board.getPiece(new ChessPosition(currentRow-1,currentCol-1)).getTeamColor() == WHITE) {
                     moves.add(new ChessMove(myPosition, new ChessPosition(currentRow-1,currentCol-1), null));
                 }
             }
