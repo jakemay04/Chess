@@ -17,7 +17,7 @@ public class GameServiceTests {
     static String validToken;
 
     @BeforeEach
-    void Setup() {
+    void setup() {
         userDAO = new MemoryUserDAO();
         authDAO = new MemoryAuthDAO();
         gameDAO = new MemoryGameDAO();

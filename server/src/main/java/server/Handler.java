@@ -20,21 +20,25 @@ public class Handler {
         this.clearService = c;
     }
 
+    private void handleException (Context ctx, DataAccessException e) {
+        if (e.getMessage().contains("Error: bad request")) {
+            ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
+        }
+        else if (e.getMessage().contains("already taken")) {
+            ctx.status(403).result(gson.toJson(Map.of("message", e.getMessage())));
+        }
+        else {
+            ctx.status(500).result(gson.toJson(Map.of("message", e.getMessage())));
+        }
+    }
+
     public void register (Context ctx) {
         try {
             var request = gson.fromJson(ctx.body(), RegisterRequest.class);
             var result = userService.register(request);
             ctx.status(200).result(gson.toJson(result));
         } catch (DataAccessException e) {
-            if (e.getMessage().contains("Error: bad request")) {
-                ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
-            }
-            else if (e.getMessage().contains("already taken")) {
-                ctx.status(403).result(gson.toJson(Map.of("message", e.getMessage())));
-            }
-            else {
-                ctx.status(500).result(gson.toJson(Map.of("message", e.getMessage())));
-            }
+            handleException(ctx,e);
         }
     }
 
@@ -44,15 +48,7 @@ public class Handler {
             var result = userService.login(request);
             ctx.status(200).result(gson.toJson(result));
         } catch (DataAccessException e) {
-            if (e.getMessage().contains("Error: unauthorized")) {
-                ctx.status(401).result(gson.toJson(Map.of("message", e.getMessage())));
-            }
-            else if (e.getMessage().contains("Error: bad request")) {
-                ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
-            }
-            else {
-                ctx.status(500).result(gson.toJson(Map.of("message", e.getMessage())));
-            }
+            handleException(ctx,e);
         }
     }
 
@@ -62,7 +58,6 @@ public class Handler {
             ctx.status(200).json("{}");
         }  catch (DataAccessException e) {
             ctx.status(500).result(gson.toJson(Map.of("message", e.getMessage())));
-
         }
     }
 
@@ -72,15 +67,7 @@ public class Handler {
             userService.logout(new LogoutRequest(authToken));
             ctx.status(200).result(gson.toJson(Map.of()));
         } catch (DataAccessException e) {
-            if (e.getMessage().contains("Error: unauthorized")) {
-                ctx.status(401).result(gson.toJson(Map.of("message", e.getMessage())));
-            }
-            else if (e.getMessage().contains("Error: bad request")) {
-                ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
-            }
-            else {
-                ctx.status(500).result(gson.toJson(Map.of("message", e.getMessage())));
-            }
+            handleException(ctx,e);
         }
     }
 
@@ -92,16 +79,7 @@ public class Handler {
             ctx.status(200).result(gson.toJson(result));
 
         } catch (DataAccessException e) {
-            if (e.getMessage().contains("Error: unauthorized")) {
-                ctx.status(401).result(gson.toJson(Map.of("message", e.getMessage())));
-            }
-            else if (e.getMessage().contains("Error: bad request")) {
-                ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
-            }
-            else {
-                ctx.status(500).result(gson.toJson(Map.of("message", e.getMessage())));
-            }
-
+            handleException(ctx,e);
         }
     }
 
@@ -111,16 +89,7 @@ public class Handler {
             var result = gameService.listGames(req);
             ctx.status(200).result(gson.toJson(result));
         } catch (DataAccessException e) {
-            if (e.getMessage().contains("Error: unauthorized")) {
-                ctx.status(401).result(gson.toJson(Map.of("message", e.getMessage())));
-            }
-            else if (e.getMessage().contains("Error: bad request")) {
-                ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
-            }
-            else {
-                ctx.status(500).result(gson.toJson(Map.of("message", e.getMessage())));
-            }
-
+            handleException(ctx,e);
         }
     }
 
