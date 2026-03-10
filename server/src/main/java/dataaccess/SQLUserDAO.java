@@ -3,13 +3,18 @@ package dataaccess;
 import model.UserData;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class SQLUserDAO
 
 {
-    public SQLUserDAO() throws DataAccessException {
+    public SQLUserDAO() throws DataAccessException, SQLException {
         DatabaseManager.createDatabase();
         DatabaseManager.createTable("user");
 
@@ -38,4 +43,5 @@ public class SQLUserDAO
         }
         return user;
     }
+
 }
