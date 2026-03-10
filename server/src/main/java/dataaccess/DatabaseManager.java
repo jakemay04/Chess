@@ -75,8 +75,6 @@ public class DatabaseManager {
         connectionUrl = String.format("jdbc:mysql://%s:%d", host, port);
     }
 
-    //create table function that takes in param for table name
-
     private static final String[] createStatementsUsers = {
             """
             CREATE TABLE IF NOT EXISTS users (
@@ -91,9 +89,8 @@ public class DatabaseManager {
             """
     };
 
-
-
-    private static void createTable(String tableName) {
+    //create table function that takes in param for table name
+    private static void createTable(String tableName) throws DataAccessException, SQLException {
         DatabaseManager.createDatabase();
         try (Connection conn = DatabaseManager.getConnection()) {
             for (String statement : createStatementsUsers) {
@@ -102,7 +99,10 @@ public class DatabaseManager {
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException('Error: bad request');
+            throw new SQLException(ex);
+        } catch (DataAccessException e) {
+            throw new DataAccessException("Error: bad request");
+
         }
     }
 }

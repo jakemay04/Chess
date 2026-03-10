@@ -2,13 +2,14 @@ package dataaccess;
 
 import model.UserData;
 
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SQLUserDAO
 
 {
-    private Map<String, UserData> users = new HashMap<>();
+    DatabaseManager.createDatabase();
 
     public void clear() {
         users.clear();
