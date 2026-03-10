@@ -1,6 +1,7 @@
 package dataaccess;
 
 import java.sql.*;
+import java.util.Objects;
 import java.util.Properties;
 
 public class DatabaseManager {
@@ -90,12 +91,13 @@ public class DatabaseManager {
     };
 
     //create table function that takes in param for table name
-    private static void createTable(String tableName) throws DataAccessException, SQLException {
-        DatabaseManager.createDatabase();
+    public static void createTable(String tableName) throws DataAccessException, SQLException {
         try (Connection conn = DatabaseManager.getConnection()) {
-            for (String statement : createStatementsUsers) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
+            if (Objects.equals(tableName, "Users")) {
+                for (String statement : createStatementsUsers) {
+                    try (var preparedStatement = conn.prepareStatement(statement)) {
+                        preparedStatement.executeUpdate();
+                    }
                 }
             }
         } catch (SQLException ex) {

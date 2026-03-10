@@ -9,7 +9,12 @@ import java.util.Map;
 public class SQLUserDAO
 
 {
-    DatabaseManager.createDatabase();
+    public SQLUserDAO() throws DataAccessException {
+        DatabaseManager.createDatabase();
+        DatabaseManager.createTable("user");
+
+    }
+
 
     public void clear() {
         users.clear();
