@@ -74,4 +74,35 @@ public class DatabaseManager {
         var port = Integer.parseInt(props.getProperty("db.port"));
         connectionUrl = String.format("jdbc:mysql://%s:%d", host, port);
     }
+
+    //create table function that takes in param for table name
+
+    private static final String[] createStatementsUsers = {
+            """
+            CREATE TABLE IF NOT EXISTS users (
+              `id` int NOT NULL AUTO_INCREMENT,
+              `username` varchar(256) NOT NULL,
+              `email` varchar(256) NOT NULL,
+              `password` TEXT DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              INDEX(username),
+              INDEX(email)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            """
+    };
+
+
+
+    private static void createTable(String tableName) {
+        DatabaseManager.createDatabase();
+        try (Connection conn = DatabaseManager.getConnection()) {
+            for (String statement : createStatementsUsers) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException('Error: bad request');
+        }
+    }
 }

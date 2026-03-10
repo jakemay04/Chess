@@ -13,6 +13,7 @@ public class MemoryAuthDAO implements AuthDAO{
     public void insertAuth(AuthData a) throws DataAccessException {
         if (a.username() != null) {
             auth.put(a.authToken(), a);
+
         }
         else {
             throw new DataAccessException("Error: unauthorized");
