@@ -11,6 +11,8 @@ import java.util.Map;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
+
+
 public class SQLUserDAO
 
 {
@@ -21,19 +23,21 @@ public class SQLUserDAO
     }
 
 
-    public void clear() {
-        users.clear();
+    public void clear() throws DataAccessException {
+        String statement = "DROP TABLE IF EXISTS users";
+
+        SQLFunctions.executeUpdate(statement);
+
     }
 
-    public void insertUser(UserData u) throws DataAccessException {
+    public int insertUser(UserData u) throws DataAccessException {
         if (u.username() == null) {
             throw new DataAccessException("Error: bad request");
         }
-        if (users.containsKey(u.username())){
-            throw new DataAccessException(("Error: already taken"));
-        }
 
-        users.put(u.username(), u);
+        String statement = "INSERT INTO users (username, email, password) VALUES (?,?,?)";
+
+        return SQLFunctions.executeUpdate(statement, u.username(), u.email(), u.password());
     }
 
     public UserData getUser(String u) throws DataAccessException {
