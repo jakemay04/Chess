@@ -3,23 +3,25 @@ package dataaccess;
 import java.sql.SQLException;
 
 
-public class SQLUserDAO
+public class SQLUserDAO implements UserDAO {
 
-{
     public SQLUserDAO() throws DataAccessException, SQLException {
         try {
             DatabaseManager.createDatabase();
             DatabaseManager.createTable("user");
+        } catch(DataAccessException | SQLException e) {
+            throw new DataAccessException("Error: bad request");
         }
 
     }
 
+    public void clear() {
+        try {
+            String statement = "DROP TABLE IF EXISTS users";
+            SQLFunctions.executeUpdate(statement);
 
-    public int clear() throws DataAccessException {
-        String statement = "DROP TABLE IF EXISTS users";
-
-        return SQLFunctions.executeUpdate(statement);
-
+        } catch (DataAccessException ignored) {
+        }
     }
 
 //    public int insertUser(UserData u) throws DataAccessException {
