@@ -6,15 +6,17 @@ import service.ClearService;
 import service.GameService;
 import service.UserService;
 
+import java.sql.SQLException;
+
 public class Server {
 
     private final Javalin javalin;
-    private final UserDAO userDAO = new MemoryUserDAO();
+    private final UserDAO userDAO = new SQLUserDAO();
     private final GameDAO gameDAO = new MemoryGameDAO();
     private final AuthDAO authDAO = new MemoryAuthDAO();
 
 
-    public Server() {
+    public Server() throws SQLException, DataAccessException {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
         // Register your endpoints and exception handlers here.
