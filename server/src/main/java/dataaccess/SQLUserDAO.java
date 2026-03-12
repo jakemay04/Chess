@@ -11,12 +11,12 @@ import java.sql.SQLException;
 
 public class SQLUserDAO implements UserDAO {
 
-    public SQLUserDAO() throws DataAccessException {
+    public SQLUserDAO() {
         try {
             DatabaseManager.createDatabase();
-            DatabaseManager.createTable("user");
+            DatabaseManager.createTable("users");
         } catch (DataAccessException | SQLException e) {
-            throw new DataAccessException("Error: bad request");
+            throw new RuntimeException("Failed to initialize DB:" + e.getMessage());
         }
 
     }

@@ -14,7 +14,7 @@ public class Server {
     private final AuthDAO authDAO = new MemoryAuthDAO();
 
 
-    public Server() throws DataAccessException {
+    public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
         // Register your endpoints and exception handlers here.
