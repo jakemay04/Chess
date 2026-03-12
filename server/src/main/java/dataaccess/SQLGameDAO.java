@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import com.mysql.cj.xdevapi.PreparableStatement;
 import model.GameData;
@@ -87,6 +88,18 @@ public class SQLGameDAO implements GameDAO{
 
     public Collection<GameData> gameList() throws DataAccessException {
         return games.values();
+    }
+
+    //helper function that takes sql data and turns into GameData POJO
+    //Also converts json back to chess game object
+    private GameData gameHelper(ResultSet rs) throws SQLException {
+        int gameID = rs.getInt("gameID");
+        String whiteUsername = rs.getString("whiteUsername");
+        String blackUsername = rs.getString("blackUsername");
+        String gameName = rs.getString("gameName");
+        ChessGame game = gson.fromJson(rs.getString("game"), ChessGame.class);
+        return new GameData(gameID, whiteUsername, blackUsername, gameName, game);
+
     }
 
 
