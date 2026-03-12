@@ -32,4 +32,35 @@ public class GameDAOTests {
         assertEquals("Test", result.gameName());
     }
 
+    @Test
+    void insertGameFail() throws DataAccessException {
+        try {
+            gameDAO.insertGame(null);
+            fail("Expected DAE to be thrown");
+        } catch (DataAccessException e){
+            assertNotNull(e.getMessage());
+        }
+    }
+
+    @Test
+    void getGameSuccess() throws DataAccessException {
+        GameData game = new GameData(0, null, null, "Test", new ChessGame());
+        int gameID = gameDAO.insertGame(game);
+
+        GameData result = gameDAO.getGame(gameID);
+        assertEquals("Test", result.gameName());
+    }
+
+    @Test
+    void getGameFail() throws DataAccessException {
+        try {
+            GameData game = new GameData(0, null, null, "Test", new ChessGame());
+            gameDAO.getGame(100000000);
+            fail("Expected DAE to be thrown");
+        } catch (DataAccessException e){
+            assertNotNull(e.getMessage());
+        }
+    }
+
+
 }
