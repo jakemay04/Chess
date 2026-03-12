@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static dataaccess.SQLFunctions.executeUpdate;
+
 public class SQLAuthDAO implements AuthDAO{
     public SQLAuthDAO() {
         try {
@@ -24,7 +26,7 @@ public class SQLAuthDAO implements AuthDAO{
     public void clear() {
         try {
             String statement = "DROP TABLE IF EXISTS auth";
-            SQLFunctions.executeUpdate(statement);
+            executeUpdate(statement);
 
         } catch (DataAccessException ignored) {
         }
@@ -38,7 +40,7 @@ public class SQLAuthDAO implements AuthDAO{
         else {
             String statement = "INSERT INTO auth (authToken, username) VALUES (?,?)";
 
-            SQLFunctions.executeUpdate(statement, a.authToken(), a.username());
+            executeUpdate(statement, a.authToken(), a.username());
         }
     }
 
@@ -69,6 +71,8 @@ public class SQLAuthDAO implements AuthDAO{
 
         try (Connection conn = DatabaseManager.getConnection(); PreparedStatement ps = conn.prepareStatement(statement)) {
             ps.setString(1, authToken);
+
+            ps.executeUpdate();
 
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
