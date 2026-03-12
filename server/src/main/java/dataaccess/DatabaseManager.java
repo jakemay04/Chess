@@ -78,7 +78,7 @@ public class DatabaseManager {
         connectionUrl = String.format("jdbc:mysql://%s:%d", host, port);
     }
 
-    private static final String[] CreateStatementsUsers = {
+    private static final String[] CREATE_STATEMENT_USERS = {
             """
             CREATE TABLE IF NOT EXISTS users (
               `id` int NOT NULL AUTO_INCREMENT,
@@ -92,7 +92,7 @@ public class DatabaseManager {
             """
     };
 
-    private static final String[] CreateStatementsAuth = {
+    private static final String[] CREATE_STATEMENT_AUTH = {
             """
             CREATE TABLE IF NOT EXISTS auth (
               `id` int NOT NULL AUTO_INCREMENT,
@@ -105,7 +105,7 @@ public class DatabaseManager {
             """
     };
 
-    private static final String[] CreateStatementsGame = {
+    private static final String[] CREATE_STATEMENT_GAME = {
             """
             CREATE TABLE IF NOT EXISTS game (
               `gameID` int NOT NULL AUTO_INCREMENT,
@@ -123,19 +123,19 @@ public class DatabaseManager {
     public static void createTable(String tableName) throws DataAccessException, SQLException {
         try (Connection conn = DatabaseManager.getConnection()) {
             if (Objects.equals(tableName, "users")) {
-                for (String statement : CreateStatementsUsers) {
+                for (String statement : CREATE_STATEMENT_USERS) {
                     try (var preparedStatement = conn.prepareStatement(statement)) {
                         preparedStatement.executeUpdate();
                     }
                 }
             } else if (Objects.equals(tableName, "auth")) {
-                for (String statement : CreateStatementsAuth) {
+                for (String statement : CREATE_STATEMENT_AUTH) {
                     try (var preparedStatement = conn.prepareStatement(statement)) {
                         preparedStatement.executeUpdate();
                     }
                 }
             } else if (Objects.equals(tableName, "game")) {
-                for (String statement : CreateStatementsGame) {
+                for (String statement : CREATE_STATEMENT_GAME) {
                     try (var preparedStatement = conn.prepareStatement(statement)) {
                         preparedStatement.executeUpdate();
                     }
