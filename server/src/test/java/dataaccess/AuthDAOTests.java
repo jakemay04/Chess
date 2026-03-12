@@ -44,36 +44,25 @@ public class AuthDAOTests {
         }
     }
 
-//    @Test
-//    void getUserSuccess() throws DataAccessException {
-//        userDAO.insertUser(testData);
-//        UserData result = userDAO.getUser(testData.username());
-//        assertNotNull(result);
-//        assertEquals(result.username(),testData.username());
-//        assertEquals(result.email(),testData.email());
-//    }
-//
-//    @Test
-//    void getUserFail() throws DataAccessException {
-//        try {
-//            userDAO.insertUser(testData);
-//            userDAO.getUser("WRONG");
-//            fail("Expected DAE to be thrown");
-//        } catch (DataAccessException e) {
-//            assertNotNull(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    void clearUserSuccess() throws DataAccessException {
-//        userDAO.insertUser(testData);
-//        userDAO.clear();
-//
-//        try {
-//            userDAO.getUser(testData.username());
-//            fail("Expected DAE to be thrown");
-//        } catch (DataAccessException e) {
-//            assertNotNull(e.getMessage());
-//        }
-//    }
+    @Test
+    void getAuthSuccess() throws DataAccessException {
+        authDAO.insertAuth(testData);
+        AuthData result = authDAO.getAuth(testData.authToken());
+        assertEquals(testData.username(), result.username());
+        assertEquals(testData.authToken(), result.authToken());
+
+    }
+
+    @Test
+    void getAuthFail() throws DataAccessException {
+        try {
+            authDAO.insertAuth(testData);
+            authDAO.getAuth("WRONG TOKEN");
+            fail("Expected DAE to be thrown");
+        } catch (DataAccessException e) {
+            assertNotNull(e.getMessage());
+        }
+    }
+
+
 }
