@@ -112,9 +112,9 @@ public class DatabaseManager {
               `whiteUsername` varchar(256) DEFAULT NULL,
               `blackUsername` varchar(256) DEFAULT NULL,
               `gameName` varchar(256) NOT NULL,
-              'game' TEXT DEFAULT NULL,
+              `game` TEXT DEFAULT NULL,
               PRIMARY KEY (`gameID`),
-              INDEX(gameName),
+              INDEX(gameName)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
