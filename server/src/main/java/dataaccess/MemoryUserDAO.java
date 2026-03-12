@@ -19,7 +19,7 @@ public class MemoryUserDAO implements UserDAO{
             throw new DataAccessException("Error: bad request");
         }
         if (users.containsKey(u.username())){
-            throw new DataAccessException(("Error: already taken"));
+            throw new DataAccessException("Error: already taken");
         }
 
         users.put(u.username(), u);

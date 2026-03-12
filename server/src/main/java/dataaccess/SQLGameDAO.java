@@ -24,7 +24,7 @@ public class SQLGameDAO implements GameDAO{
             DatabaseManager.createDatabase();
             DatabaseManager.createTable("game");
         } catch (DataAccessException | SQLException e) {
-            throw new RuntimeException("Failed to initialize DB:" + e.getMessage());
+            throw new RuntimeException("Error: failed to initialize DB:" + e.getMessage());
         }
 
     }
@@ -35,12 +35,15 @@ public class SQLGameDAO implements GameDAO{
             executeUpdate(statement);
 
         } catch (DataAccessException ignored) {
+//            throw new DataAccessException("Failed to clear game table: " + e.getMessage(), e);
         }
     }
 
     public int insertGame(GameData g) throws DataAccessException {
         if (g == null) {
             throw new DataAccessException("Error: unauthorized");
+        } else if (g.gameName() == null) {
+            throw new DataAccessException("Error: bad request");
         }
         else {
             String game = gson.toJson(g.game());
@@ -76,7 +79,7 @@ public class SQLGameDAO implements GameDAO{
 
         if (playerColor.equals("WHITE")) {
             statement = "UPDATE game SET whiteUsername = ? WHERE gameID = ?";
-        } else if (playerColor.equals("black")) {
+        } else if (playerColor.equals("BLACK")) {
             statement = "UPDATE game SET blackUsername = ? WHERE gameID = ?";
         } else {
             throw new DataAccessException("Error: bad request");

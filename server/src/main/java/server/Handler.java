@@ -24,10 +24,10 @@ public class Handler {
         if (e.getMessage().contains("Error: bad request")) {
             ctx.status(400).result(gson.toJson(Map.of("message", e.getMessage())));
         }
-        else if (e.getMessage().contains("unauthorized")){
+        else if (e.getMessage().contains("Error: unauthorized")){
             ctx.status(401).result(gson.toJson(Map.of("message", e.getMessage())));
         }
-        else if (e.getMessage().contains("already taken")) {
+        else if (e.getMessage().contains("Error: already taken")) {
             ctx.status(403).result(gson.toJson(Map.of("message", e.getMessage())));
         }
         else {
@@ -61,6 +61,8 @@ public class Handler {
             ctx.status(200).json("{}");
         }  catch (DataAccessException e) {
             ctx.status(500).result(gson.toJson(Map.of("message", e.getMessage())));
+        } catch (Exception e) {
+            ctx.status(500).result(gson.toJson(Map.of("message", "Error: " + e.getMessage())));
         }
     }
 
@@ -83,6 +85,8 @@ public class Handler {
 
         } catch (DataAccessException e) {
             handleException(ctx,e);
+        } catch (Exception e) {
+            ctx.status(500).result(gson.toJson(Map.of("message", "Error: " + e.getMessage())));
         }
     }
 
@@ -93,6 +97,10 @@ public class Handler {
             ctx.status(200).result(gson.toJson(result));
         } catch (DataAccessException e) {
             handleException(ctx,e);
+        } catch (Exception e) {
+            System.out.println("listGames exception type: " + e.getClass().getName());
+            System.out.println("listGames exception message: " + e.getMessage());
+            ctx.status(500).result(gson.toJson(Map.of("message", "Error: " + e.getMessage())));
         }
     }
 
@@ -124,7 +132,7 @@ public class Handler {
                 ctx.status(500).result(gson.toJson(Map.of("message", e.getMessage())));
             }
         } catch (Exception e) {
-            ctx.status(500).result(gson.toJson(Map.of("message", "Error" + e.getMessage())));
+            ctx.status(500).result(gson.toJson(Map.of("message", "Error: " + e.getMessage())));
         }
     }
 

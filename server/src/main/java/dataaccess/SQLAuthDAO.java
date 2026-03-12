@@ -62,7 +62,7 @@ public class SQLAuthDAO implements AuthDAO{
             }
 
         } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
+            throw new DataAccessException("Error:" + e.getMessage());
         }
     }
 
@@ -75,7 +75,7 @@ public class SQLAuthDAO implements AuthDAO{
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
+            throw new DataAccessException("Error:" + e.getMessage());
         }
     }
 }
