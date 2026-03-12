@@ -2,19 +2,39 @@ package dataaccess;
 
 import model.AuthData;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SQLAuthDAO {
-    private Map<String, AuthData> auth = new HashMap<String, AuthData>();
+    public SQLAuthDAO() {
+        try {
+            DatabaseManager.createDatabase();
+            DatabaseManager.createTable("auth");
+        } catch (DataAccessException | SQLException e) {
+            throw new RuntimeException("Failed to initialize DB:" + e.getMessage());
+        }
+
+    }
+
+    public void clear() {
+        try {
+            String statement = "DROP TABLE IF EXISTS auth";
+            SQLFunctions.executeUpdate(statement);
+
+        } catch (DataAccessException ignored) {
+        }
+    }
 
     public void insertAuth(AuthData a) throws DataAccessException {
-        if (a.username() != null) {
-            auth.put(a.authToken(), a);
+        if (a.username() == null) {
+            throw new DataAccessException("Error: unauthorized");
 
         }
         else {
-            throw new DataAccessException("Error: unauthorized");
+            String statement = "INSERT INTO auth (authToken, username) VALUES (?,?)";
+
+            SQLFunctions.executeUpdate(statement, a.authToken(), a.username());
         }
     }
 
@@ -39,7 +59,4 @@ public class SQLAuthDAO {
 
     }
 
-    public void clear() {
-        auth.clear();
-    }
 }
