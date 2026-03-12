@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserDAOTests {
     private static SQLUserDAO userDAO;
     private static UserData testData = new UserData("test", "pass", "email");
-    private static UserData testData2 = new UserData("test2", "pass2", "email2");
 
     @BeforeAll
     static void setup() throws Exception {
