@@ -4,6 +4,8 @@ import chess.ChessGame;
 import model.GameData;
 import org.junit.jupiter.api.*;
 
+import java.util.Collection;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameDAOTests {
@@ -86,6 +88,23 @@ public class GameDAOTests {
         } catch (DataAccessException e){
             assertNotNull(e.getMessage());
         }
+    }
+
+    @Test
+    void gameListSuccess() throws DataAccessException {
+        GameData game = new GameData(0, null, null, "Test", new ChessGame());
+        gameDAO.insertGame(game);
+
+        Collection<GameData> gameList = gameDAO.gameList();
+
+        assertEquals(1, gameList.toArray().length);
+    }
+
+    @Test
+    void gameListFail() throws DataAccessException {
+        Collection<GameData> gameList = gameDAO.gameList();
+
+        assertEquals(0, gameList.toArray().length);
     }
 
 
