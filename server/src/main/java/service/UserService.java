@@ -42,10 +42,6 @@ public class UserService {
             throw new DataAccessException("Error: bad request");
         }
         UserData user = userDAO.getUser(req.username());
-        System.out.println("Found user: " + user.username());
-        System.out.println("Stored hash: " + user.password());
-        System.out.println("Provided password: " + req.password());
-        System.out.println("BCrypt match: " + BCrypt.checkpw(req.password(), user.password()));
 
         if (!BCrypt.checkpw(req.password(),user.password())) {
             throw new DataAccessException("Error: unauthorized");
