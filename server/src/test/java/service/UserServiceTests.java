@@ -12,10 +12,12 @@ public class UserServiceTests {
     static UserService userService;
 
     @BeforeEach
-    void setup() {
-        userDAO = new MemoryUserDAO();
-        authDAO = new MemoryAuthDAO();
+    void setup() throws DataAccessException {
+        userDAO = new SQLUserDAO();
+        authDAO = new SQLAuthDAO();
         userService = new UserService(userDAO, authDAO);
+        userDAO.clear();
+        authDAO.clear();
     }
 
     @Test

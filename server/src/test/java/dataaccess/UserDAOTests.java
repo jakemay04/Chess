@@ -3,6 +3,8 @@ package dataaccess;
 import model.UserData;
 import org.junit.jupiter.api.*;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class UserDAOTests {
     private static SQLUserDAO userDAO;
     private static UserData testData = new UserData("test", "pass", "email");
@@ -18,7 +20,14 @@ public class UserDAOTests {
         userDAO.clear();
     }
 
+    @Test
+    void insertUserSuccess() throws DataAccessException {
+        userDAO.insertUser(testData);
+        UserData result = userDAO.getUser(testData.username());
+        assertEquals(testData.username(), result.username());
+        assertEquals(testData.email(), result.email());
 
+    }
 
 
 

@@ -17,11 +17,14 @@ public class GameServiceTests {
     static String validToken;
 
     @BeforeEach
-    void setup() {
-        userDAO = new MemoryUserDAO();
-        authDAO = new MemoryAuthDAO();
-        gameDAO = new MemoryGameDAO();
+    void setup() throws DataAccessException {
+        userDAO = new SQLUserDAO();
+        authDAO = new SQLAuthDAO();
+        gameDAO = new SQLGameDAO();
         gameService = new GameService(userDAO,authDAO,gameDAO);
+        userDAO.clear();
+        authDAO.clear();
+        gameDAO.clear();
 
         try {
             userDAO.insertUser(new UserData("testUser", "password", "test@test.com"));

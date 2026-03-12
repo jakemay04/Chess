@@ -18,9 +18,9 @@ public class ClearServiceTests {
 
     @BeforeEach
     void setup() {
-        userDAO = new MemoryUserDAO();
-        authDAO = new MemoryAuthDAO();
-        gameDAO = new MemoryGameDAO();
+        userDAO = new SQLUserDAO();
+        authDAO = new SQLAuthDAO();
+        gameDAO = new SQLGameDAO();
         clearService = new ClearService(userDAO, gameDAO, authDAO);
         try {
             userDAO.insertUser(new UserData("testUser2", "password", "test@test.com"));
