@@ -64,5 +64,17 @@ public class AuthDAOTests {
         }
     }
 
+    @Test
+    void clearSuccess() throws DataAccessException {
+        try {
+            authDAO.insertAuth(testData);
+            authDAO.clear();
+            authDAO.getAuth(testData.authToken());
+            fail("Expected DAE to be thrown");
+        } catch (DataAccessException e) {
+            assertNotNull(e.getMessage());
+        }
+    }
+
 
 }
