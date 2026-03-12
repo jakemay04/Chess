@@ -1,5 +1,7 @@
 package dataaccess;
 
+import chess.ChessGame;
+
 import java.sql.*;
 import java.util.Objects;
 import java.util.Properties;
@@ -90,11 +92,50 @@ public class DatabaseManager {
             """
     };
 
+    private static final String[] createStatementsAuth = {
+            """
+            CREATE TABLE IF NOT EXISTS users (
+              `id` int NOT NULL AUTO_INCREMENT,
+              `authToken` varchar(256) NOT NULL,
+              `username` varchar(256) NOT NULL,
+              PRIMARY KEY (`id`),
+              INDEX(authToken),
+              INDEX(username)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            """
+    };
+
+    private static final String[] createStatementsGame = {
+            """
+            CREATE TABLE IF NOT EXISTS users (
+              `gameID` int NOT NULL AUTO_INCREMENT,
+              `whiteUsername` varchar(256) NOT NULL,
+              `blackUsername` varchar(256) NOT NULL,
+              `gameName` varchar(256) NOT NULL,
+              'game' TEXT DEFAULT NULL,
+              PRIMARY KEY (`gameID`),
+              INDEX(gameName),
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            """
+    };
+
     //create table function that takes in param for table name
     public static void createTable(String tableName) throws DataAccessException, SQLException {
         try (Connection conn = DatabaseManager.getConnection()) {
             if (Objects.equals(tableName, "users")) {
                 for (String statement : createStatementsUsers) {
+                    try (var preparedStatement = conn.prepareStatement(statement)) {
+                        preparedStatement.executeUpdate();
+                    }
+                }
+            } else if (Objects.equals(tableName, "auth")) {
+                for (String statement : createStatementsAuth) {
+                    try (var preparedStatement = conn.prepareStatement(statement)) {
+                        preparedStatement.executeUpdate();
+                    }
+                }
+            } else if (Objects.equals(tableName, "game")) {
+                for (String statement : createStatementsGame) {
                     try (var preparedStatement = conn.prepareStatement(statement)) {
                         preparedStatement.executeUpdate();
                     }
