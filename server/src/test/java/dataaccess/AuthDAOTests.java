@@ -33,16 +33,16 @@ public class AuthDAOTests {
 
     }
 
-//    @Test
-//    void insertUserFail() throws DataAccessException {
-//        try {
-//            UserData wrongUser = new UserData(null, "WRONG", "WRONG");
-//            userDAO.insertUser(wrongUser);
-//            fail("Expected DAE to be thrown");
-//        } catch (DataAccessException e) {
-//            assertNotNull(e.getMessage());
-//        }
-//    }
+    @Test
+    void insertAuthFail() throws DataAccessException {
+        try {
+            AuthData wrongUser = new AuthData(null, "WRONG");
+            authDAO.insertAuth(wrongUser);
+            fail("Expected DAE to be thrown");
+        } catch (DataAccessException e) {
+            assertNotNull(e.getMessage());
+        }
+    }
 
 //    @Test
 //    void getUserSuccess() throws DataAccessException {
