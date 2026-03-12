@@ -23,12 +23,13 @@ public class SQLAuthDAO implements AuthDAO{
 
     }
 
-    public void clear() {
+    public void clear() throws DataAccessException {
         try {
             String statement = "TRUNCATE TABLE auth";
             executeUpdate(statement);
 
-        } catch (DataAccessException ignored) {
+        } catch (DataAccessException e) {
+            throw new DataAccessException("Error: failed to clear game table: " + e.getMessage(), e);
         }
     }
 

@@ -17,17 +17,18 @@ public class SQLUserDAO implements UserDAO {
             DatabaseManager.createDatabase();
             DatabaseManager.createTable("users");
         } catch (DataAccessException | SQLException e) {
-            throw new RuntimeException("Failed to initialize DB:" + e.getMessage());
+            throw new RuntimeException("Error: failed to initialize DB:" + e.getMessage());
         }
 
     }
 
-    public void clear() {
+    public void clear() throws DataAccessException {
         try {
             String statement = "TRUNCATE TABLE users";
             SQLFunctions.executeUpdate(statement);
 
-        } catch (DataAccessException ignored) {
+        } catch (DataAccessException e) {
+            throw new DataAccessException("Error: failed to clear game table: " + e.getMessage(), e);
         }
     }
 

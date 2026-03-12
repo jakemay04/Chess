@@ -29,13 +29,13 @@ public class SQLGameDAO implements GameDAO{
 
     }
 
-    public void clear() {
+    public void clear() throws DataAccessException{
         try {
             String statement = "TRUNCATE TABLE game";
             executeUpdate(statement);
 
-        } catch (DataAccessException ignored) {
-//            throw new DataAccessException("Failed to clear game table: " + e.getMessage(), e);
+        } catch (DataAccessException e) {
+            throw new DataAccessException("Error: failed to clear game table: " + e.getMessage(), e);
         }
     }
 
