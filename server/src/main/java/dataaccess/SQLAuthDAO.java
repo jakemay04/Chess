@@ -1,12 +1,16 @@
 package dataaccess;
 
 import model.AuthData;
+import model.UserData;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SQLAuthDAO {
+public class SQLAuthDAO implements AuthDAO{
     public SQLAuthDAO() {
         try {
             DatabaseManager.createDatabase();
@@ -39,24 +43,35 @@ public class SQLAuthDAO {
     }
 
     public AuthData getAuth(String authToken) throws DataAccessException {
-        if (authToken == null) {
-            throw new DataAccessException("Error: bad request");
+        String statement = "SELECT authToken, username FROM auth WHERE authToken = ?";
+
+        try (Connection conn = DatabaseManager.getConnection(); PreparedStatement ps = conn.prepareStatement(statement)) {
+            ps.setString(1, authToken);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new AuthData(
+                            rs.getString("authToken"),
+                            rs.getString("username")
+                    );
+                } else {
+                    throw new DataAccessException("Error: unauthorized");
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
         }
-        else if (!auth.containsKey(authToken)){
-            throw new DataAccessException("Error: unauthorized");
-        }
-        return auth.get(authToken);
     }
 
     public void deleteAuth(String authToken) throws DataAccessException {
-        if (authToken == null) {
-            throw new DataAccessException("Error: bad request");
-        }
-        else if (!auth.containsKey(authToken)){
-            throw new DataAccessException("Error: unauthorized");
-        }
-        auth.remove(authToken);
+        String statement = "DELETE FROM auth WHERE authToken = ?";
 
+        try (Connection conn = DatabaseManager.getConnection(); PreparedStatement ps = conn.prepareStatement(statement)) {
+            ps.setString(1, authToken);
+
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
-
 }
