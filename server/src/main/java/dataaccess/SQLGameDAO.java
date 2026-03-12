@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -86,7 +87,20 @@ public class SQLGameDAO implements GameDAO{
     }
 
     public Collection<GameData> gameList() throws DataAccessException {
-        return games.values();
+        String statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM game";
+        Collection<GameData> games = new ArrayList<>();
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(statement);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                games.add(gameHelper(rs));
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Error:" + e.getMessage());
+        }
+        return games;
     }
 
     //helper function that takes sql data and turns into GameData POJO
