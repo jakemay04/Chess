@@ -69,21 +69,20 @@ public class SQLGameDAO implements GameDAO{
     }
 
     public void updateGame(String playerColor, int gameID, String username) throws DataAccessException {
-        GameData currentGame = games.get(gameID);
-        if (currentGame == null) {
-            throw new DataAccessException("Error: bad request");
-        }
-        GameData newGame;
+        getGame(gameID); //verify game exists
+
+        String statement;
+
         if (playerColor.equals("WHITE")) {
-            newGame = new GameData(gameID, username, currentGame.blackUsername(), currentGame.gameName(), currentGame.game());
-        }
-        else if (playerColor.equals("BLACK")){
-            newGame = new GameData(gameID, currentGame.whiteUsername(), username, currentGame.gameName(), currentGame.game());
-        }
-        else {
+            statement = "UPDATE game SET whiteUsername = ? WHERE gameID = ?";
+        } else if (playerColor.equals("black")) {
+            statement = "UPDATE game SET blackUsername = ? WHERE gameID = ?";
+        } else {
             throw new DataAccessException("Error: bad request");
         }
-        games.put(gameID, newGame);
+
+        executeUpdate(statement, username, gameID);
+        //create statement based on which player joins;
     }
 
     public Collection<GameData> gameList() throws DataAccessException {
