@@ -47,9 +47,9 @@ public class AuthDAOTests {
     @Test
     void getAuthSuccess() throws DataAccessException {
         authDAO.insertAuth(testData);
-        AuthData result = authDAO.getAuth(testData.authToken());
-        assertEquals(testData.username(), result.username());
-        assertEquals(testData.authToken(), result.authToken());
+        AuthData newResult = authDAO.getAuth("authToken");
+        assertEquals(testData.username(), newResult.username());
+        assertEquals(testData.authToken(), newResult.authToken());
 
     }
 

@@ -78,13 +78,13 @@ public class DatabaseManager {
         connectionUrl = String.format("jdbc:mysql://%s:%d", host, port);
     }
 
-    private static final String[] createStatementsUsers = {
+    private static final String[] CreateStatementsUsers = {
             """
             CREATE TABLE IF NOT EXISTS users (
               `id` int NOT NULL AUTO_INCREMENT,
               `username` varchar(256) NOT NULL,
               `password` varchar(256) NOT NULL,
-              `email` TEXT DEFAULT NULL,
+              `email` varchar(256) DEFAULT NULL,
               PRIMARY KEY (`id`),
               INDEX(username),
               INDEX(email)
@@ -92,7 +92,7 @@ public class DatabaseManager {
             """
     };
 
-    private static final String[] createStatementsAuth = {
+    private static final String[] CreateStatementsAuth = {
             """
             CREATE TABLE IF NOT EXISTS auth (
               `id` int NOT NULL AUTO_INCREMENT,
@@ -105,7 +105,7 @@ public class DatabaseManager {
             """
     };
 
-    private static final String[] createStatementsGame = {
+    private static final String[] CreateStatementsGame = {
             """
             CREATE TABLE IF NOT EXISTS game (
               `gameID` int NOT NULL AUTO_INCREMENT,
@@ -123,19 +123,19 @@ public class DatabaseManager {
     public static void createTable(String tableName) throws DataAccessException, SQLException {
         try (Connection conn = DatabaseManager.getConnection()) {
             if (Objects.equals(tableName, "users")) {
-                for (String statement : createStatementsUsers) {
+                for (String statement : CreateStatementsUsers) {
                     try (var preparedStatement = conn.prepareStatement(statement)) {
                         preparedStatement.executeUpdate();
                     }
                 }
             } else if (Objects.equals(tableName, "auth")) {
-                for (String statement : createStatementsAuth) {
+                for (String statement : CreateStatementsAuth) {
                     try (var preparedStatement = conn.prepareStatement(statement)) {
                         preparedStatement.executeUpdate();
                     }
                 }
             } else if (Objects.equals(tableName, "game")) {
-                for (String statement : createStatementsGame) {
+                for (String statement : CreateStatementsGame) {
                     try (var preparedStatement = conn.prepareStatement(statement)) {
                         preparedStatement.executeUpdate();
                     }

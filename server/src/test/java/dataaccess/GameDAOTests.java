@@ -14,6 +14,8 @@ public class GameDAOTests {
 
     private static String white ="white";
     private static String black ="black";
+    GameData game = new GameData(0, null, null, "Test", new ChessGame());
+
 
     @BeforeAll
     static void setup() throws Exception{
@@ -27,7 +29,6 @@ public class GameDAOTests {
 
     @Test
     void insertGameSuccess() throws DataAccessException {
-        GameData game = new GameData(0, null, null, "Test", new ChessGame());
         int gameID = gameDAO.insertGame(game);
 
         GameData result = gameDAO.getGame(gameID);
@@ -46,10 +47,9 @@ public class GameDAOTests {
 
     @Test
     void getGameSuccess() throws DataAccessException {
-        GameData game = new GameData(0, null, null, "Test", new ChessGame());
-        int gameID = gameDAO.insertGame(game);
+        int newGameID = gameDAO.insertGame(game);
 
-        GameData result = gameDAO.getGame(gameID);
+        GameData result = gameDAO.getGame(newGameID);
         assertEquals("Test", result.gameName());
     }
 
