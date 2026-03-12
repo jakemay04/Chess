@@ -25,11 +25,9 @@ public class SQLFunctions {
 
                 return 0;
             }
-        } catch (RuntimeException e) {
-            throw new DataAccessException("Error: unauthorized");
+        } catch (RuntimeException | SQLException e) {
+            throw new DataAccessException("Error:" + e.getMessage());
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 }

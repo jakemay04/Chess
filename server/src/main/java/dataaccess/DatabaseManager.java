@@ -93,17 +93,15 @@ public class DatabaseManager {
     //create table function that takes in param for table name
     public static void createTable(String tableName) throws DataAccessException, SQLException {
         try (Connection conn = DatabaseManager.getConnection()) {
-            if (Objects.equals(tableName, "Users")) {
+            if (Objects.equals(tableName, "users")) {
                 for (String statement : createStatementsUsers) {
                     try (var preparedStatement = conn.prepareStatement(statement)) {
                         preparedStatement.executeUpdate();
                     }
                 }
             }
-        } catch (SQLException ex) {
-            throw new SQLException(ex);
-        } catch (DataAccessException e) {
-            throw new DataAccessException("Error: bad request");
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException("Error:" + e.getMessage());
 
         }
     }
