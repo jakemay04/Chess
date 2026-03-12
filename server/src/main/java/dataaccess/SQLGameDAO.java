@@ -1,8 +1,12 @@
 package dataaccess;
 
 import com.google.gson.Gson;
+import com.mysql.cj.xdevapi.PreparableStatement;
 import model.GameData;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -44,11 +48,23 @@ public class SQLGameDAO implements GameDAO{
     }
 
     public GameData getGame(int gameID) throws DataAccessException {
-        GameData game = games.get(gameID);
-        if (game == null) {
-            throw new DataAccessException("Error: bad request");
+        String statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM game WHERE gameID = ?";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(statement)) {
+             ps.setInt(1, gameID);
+
+             try (ResultSet rs = ps.executeQuery()) {
+                 if (rs.next()) {
+                     return gameHelper(rs);
+
+                 } else {
+                     throw new DataAccessException("Error: bad request");
+                 }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Error:" + e.getMessage());
         }
-        return game;
     }
 
     public void updateGame(String playerColor, int gameID, String username) throws DataAccessException {
