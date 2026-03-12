@@ -121,6 +121,7 @@ public class DatabaseManager {
 
     //create table function that takes in param for table name
     public static void createTable(String tableName) throws DataAccessException, SQLException {
+        System.out.println("Creating table: " + tableName);
         try (Connection conn = DatabaseManager.getConnection()) {
             if (Objects.equals(tableName, "users")) {
                 for (String statement : createStatementsUsers) {
