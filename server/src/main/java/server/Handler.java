@@ -56,7 +56,6 @@ public class Handler {
     }
 
     public void clear(Context ctx) {
-        System.out.println("clear called, connectionUrl: " + "");
         try {
             clearService.clear();
             ctx.status(200).json("{}");
@@ -97,11 +96,8 @@ public class Handler {
             var result = gameService.listGames(req);
             ctx.status(200).result(gson.toJson(result));
         } catch (DataAccessException e) {
-            System.out.println("listGames DataAccessException: " + e.getMessage());
             handleException(ctx,e);
         } catch (Exception e) {
-            System.out.println("listGames exception type: " + e.getClass().getName());
-            System.out.println("listGames exception message: " + e.getMessage());
             ctx.status(500).result(gson.toJson(Map.of("message", "Error: " + e.getMessage())));
         }
     }
