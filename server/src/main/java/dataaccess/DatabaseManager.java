@@ -83,8 +83,8 @@ public class DatabaseManager {
             CREATE TABLE IF NOT EXISTS users (
               `id` int NOT NULL AUTO_INCREMENT,
               `username` varchar(256) NOT NULL,
-              `email` varchar(256) NOT NULL,
-              `password` TEXT DEFAULT NULL,
+              `password` varchar(256) NOT NULL,
+              `email` TEXT DEFAULT NULL,
               PRIMARY KEY (`id`),
               INDEX(username),
               INDEX(email)

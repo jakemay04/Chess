@@ -25,7 +25,7 @@ public class SQLAuthDAO implements AuthDAO{
 
     public void clear() {
         try {
-            String statement = "DROP TABLE IF EXISTS auth";
+            String statement = "TRUNCATE TABLE auth";
             executeUpdate(statement);
 
         } catch (DataAccessException ignored) {

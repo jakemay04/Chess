@@ -24,7 +24,7 @@ public class SQLUserDAO implements UserDAO {
 
     public void clear() {
         try {
-            String statement = "DROP TABLE IF EXISTS users";
+            String statement = "TRUNCATE TABLE users";
             SQLFunctions.executeUpdate(statement);
 
         } catch (DataAccessException ignored) {
@@ -36,13 +36,13 @@ public class SQLUserDAO implements UserDAO {
             throw new DataAccessException("Error: bad request");
         }
         String hashedPassword = BCrypt.hashpw(u.password(), BCrypt.gensalt());
-        String statement = "INSERT INTO users (username, email, password) VALUES (?,?,?)";
+        String statement = "INSERT INTO users (username, password, email) VALUES (?,?,?)";
 
-        SQLFunctions.executeUpdate(statement, u.username(), u.email(), hashedPassword);
+        SQLFunctions.executeUpdate(statement, u.username(),hashedPassword, u.email());
     }
 
     public UserData getUser(String u) throws DataAccessException {
-        String statement = "SELECT username, email, password FROM users WHERE username = ?";
+        String statement = "SELECT username, password, email FROM users WHERE username = ?";
 
         try (Connection conn = DatabaseManager.getConnection(); PreparedStatement ps = conn.prepareStatement(statement)) {
             ps.setString(1, u);
@@ -51,8 +51,8 @@ public class SQLUserDAO implements UserDAO {
                 if (rs.next()) {
                     return new UserData(
                             rs.getString("username"),
-                            rs.getString("email"),
-                            rs.getString("password")
+                            rs.getString("password"),
+                            rs.getString("email")
                     );
                 } else {
                     throw new DataAccessException("Error: unauthorized");
