@@ -49,6 +49,28 @@ public class UserDAOTests {
         assertEquals(result.email(),testData.email());
     }
 
+    @Test
+    void getUserFail() throws DataAccessException {
+        try {
+            userDAO.insertUser(testData);
+            userDAO.getUser("WRONG");
+            fail("Expected DAE to be thrown");
+        } catch (DataAccessException e) {
+            assertNotNull(e.getMessage());
+        }
+    }
 
+    @Test
+    void clearUserSuccess() throws DataAccessException {
+        userDAO.insertUser(testData);
+        userDAO.clear();
+
+        try {
+            userDAO.getUser(testData.username());
+            fail("Expected DAE to be thrown");
+        } catch (DataAccessException e) {
+            assertNotNull(e.getMessage());
+        }
+    }
 
 }
