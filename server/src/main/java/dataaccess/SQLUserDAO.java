@@ -2,6 +2,7 @@ package dataaccess;
 
 import com.mysql.cj.jdbc.PreparedStatementWrapper;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -34,10 +35,10 @@ public class SQLUserDAO implements UserDAO {
         if (u.username() == null) {
             throw new DataAccessException("Error: bad request");
         }
-
+        String hashedPassword = BCrypt.hashpw(u.password(), BCrypt.gensalt());
         String statement = "INSERT INTO users (username, email, password) VALUES (?,?,?)";
 
-        SQLFunctions.executeUpdate(statement, u.username(), u.email(), u.password());
+        SQLFunctions.executeUpdate(statement, u.username(), u.email(), hashedPassword);
     }
 
     public UserData getUser(String u) throws DataAccessException {
