@@ -65,13 +65,17 @@ public class DrawBoard {
         }
 
         ChessPiece piece = board.getPiece(new ChessPosition(row + 1, col + 1));
-        String textColor;
-        boolean isWhite = piece.getTeamColor() == ChessGame.TeamColor.WHITE;
-        if (isWhite)
+        String textColor = "";
         String symbol = "";
         if (piece == null) {
             symbol = "   ";
+            textColor = "";
         } else {
+            if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                textColor = SET_TEXT_COLOR_RED;
+            } else {
+                textColor = SET_TEXT_COLOR_BLUE;
+            }
             switch(piece.getPieceType()) {
                 case KING -> symbol = " K ";
                 case QUEEN -> symbol = " Q ";
@@ -82,7 +86,7 @@ public class DrawBoard {
             }
         }
 
-        System.out.print(background + symbol);
+        System.out.print(background + textColor + symbol + RESET_TEXT_COLOR);
     }
 
     private static void printBorder(String[] cols, String playerColor) {
