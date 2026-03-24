@@ -21,6 +21,7 @@ public class PostLogin {
     }
 
     public String eval(String line) {
+
         if (line.equals("Help") || line.equals("help")) {
             System.out.println("Here is how to navigate the Chess Game: ");
             System.out.println("To Logout, simply type Logout");
@@ -66,7 +67,7 @@ public class PostLogin {
                     String whitePlayer = gamesList.get(i).whiteUsername();
                     String blackPlayer = gamesList.get(i).blackUsername();
 
-                    sb.append(i + 1).append(". ").append(gameName).append(" White: ").append(whitePlayer).append(" Black: ").append(blackPlayer).append("\n");
+                    sb.append(i + 1).append(". ").append(gameName).append("- White: ").append(whitePlayer).append("- Black: ").append(blackPlayer).append("\n");
 
                 }
                 return sb.toString();

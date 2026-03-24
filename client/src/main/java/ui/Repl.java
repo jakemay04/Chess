@@ -30,7 +30,7 @@ public class Repl {
                         loggedIn = false;
                         postLogin = null;
                         authToken = null;
-                        result = "Logged out!";
+                        result = "Logged out! Type Help, Login, Register or Quit to continue";
                     }
                 } else {
                     result = preLogin.eval(line);
@@ -38,7 +38,7 @@ public class Repl {
                         authToken = result.split(":")[1];
                         loggedIn = true;
                         postLogin = new PostLogin(facade, authToken);
-                        result = "Logged in!";
+                        result = "You are now Logged in! Type Help, List, Join, Create, Observe or Quit to continue";
                     }
                 }
                 System.out.println(result);
