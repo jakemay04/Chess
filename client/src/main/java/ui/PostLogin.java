@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessGame;
 import client.ServerFacade;
 import model.GameData;
 import records.*;
@@ -100,8 +101,12 @@ public class PostLogin {
                 try {
                     System.out.print("Color (WHITE/BLACK): ");
                     String playerColor = scanner.nextLine().toUpperCase();
-                    int game = gamesList.get(gameID - 1).gameID();
-                    facade.joinGame(new JoinGameRequest(authToken, playerColor, game), authToken);
+                    int gameNumber = gamesList.get(gameID - 1).gameID();
+                    facade.joinGame(new JoinGameRequest(authToken, playerColor, gameNumber), authToken);
+
+                    ChessGame game = gamesList.get(gameNumber).game();
+                    DrawBoard.printOutBoard(game, playerColor);
+
                     return "Game Joined!";
                 } catch (Exception e) {
                     return e.getMessage();
