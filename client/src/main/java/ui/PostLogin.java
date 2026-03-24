@@ -97,7 +97,6 @@ public class PostLogin {
                 return "Please enter a valid number.";
             }
             try {
-                facade.observeGame(new JoinGameRequest(authToken, playerColor, gameID), authToken);
                 return "Game Joined!";
             } catch (Exception e) {
                 return "Error: " + e.getMessage();

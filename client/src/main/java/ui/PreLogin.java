@@ -36,7 +36,7 @@ public class PreLogin {
 
             try {
                 var result = facade.register(new RegisterRequest(username, password, email));
-                return "Registered as " + username;
+                return "loggedin:" + result.authToken();
             } catch (Exception e) {
                 return "Error: " + e.getMessage();
             }
@@ -50,7 +50,7 @@ public class PreLogin {
 
             try {
                 var result = facade.login(new LoginRequest(username, password));
-                return "Logged in as " + username;
+                return "loggedin:" + result.authToken();
             } catch (Exception e) {
                 return "Error: " + e.getMessage();
             }

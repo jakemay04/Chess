@@ -24,10 +24,19 @@ public class ResponseException extends Exception {
     }
 
     public static ResponseException fromJson(String json) {
-        var map = new Gson().fromJson(json, HashMap.class);
-        var status = Code.valueOf(map.get("status").toString());
-        String message = map.get("message").toString();
-        return new ResponseException(status, message);
+        try {
+            var map = new Gson().fromJson(json, HashMap.class);
+            var message = map.get("message") != null ? map.get("message").toString() : json;
+            Code status = Code.ServerError; // default
+            if (map.get("status") != null) {
+                try {
+                    status = Code.valueOf(map.get("status").toString());
+                } catch (IllegalArgumentException ignored) {}
+            }
+            return new ResponseException(status, message);
+        } catch (Exception e) {
+            return new ResponseException(Code.ServerError, json);
+        }
     }
 
     public Code code() {
