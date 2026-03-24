@@ -21,6 +21,9 @@ public class DrawBoard {
         ChessBoard board = game.getBoard();
         String[] columns = {"a", "b", "c", "d", "e", "f", "g", "h"};
 
+        //top border
+        printBorder(columns,playerColor);
+
         if (playerColor.equals("WHITE")) {
             for (int row = 7; row >= 0; row--) {
                 printRow(board, row, playerColor);
@@ -31,6 +34,7 @@ public class DrawBoard {
             }
         }
 
+        //bottom border
         printBorder(columns,playerColor);
     }
 
@@ -55,26 +59,28 @@ public class DrawBoard {
         boolean isLight = (row + col) % 2 == 1;
         String background;
         if (isLight) {
-            background = SET_BG_COLOR_WHITE;
+            background = SET_BG_COLOR_LIGHT_GREY;
         } else {
             background = SET_BG_COLOR_DARK_GREY;
         }
 
         ChessPiece piece = board.getPiece(new ChessPosition(row + 1, col + 1));
+        String textColor;
+        boolean isWhite = piece.getTeamColor() == ChessGame.TeamColor.WHITE;
+        if (isWhite)
         String symbol = "";
         if (piece == null) {
-            symbol = "";
+            symbol = "   ";
         } else {
             switch(piece.getPieceType()) {
-                case KING -> symbol = "K";
-                case QUEEN -> symbol = "Q";
-                case BISHOP -> symbol = "B";
-                case KNIGHT -> symbol = "N";
-                case ROOK -> symbol = "R";
-                case PAWN -> symbol = "P";
+                case KING -> symbol = " K ";
+                case QUEEN -> symbol = " Q ";
+                case BISHOP -> symbol = " B ";
+                case KNIGHT -> symbol = " N ";
+                case ROOK -> symbol = " R ";
+                case PAWN -> symbol = " P ";
             }
         }
-
 
         System.out.print(background + symbol);
     }
