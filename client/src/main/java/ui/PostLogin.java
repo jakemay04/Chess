@@ -1,5 +1,7 @@
 package ui;
 
+import client.ServerFacade;
+
 public class PostLogin {
 
     private final ServerFacade facade;
