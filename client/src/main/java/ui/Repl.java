@@ -16,7 +16,7 @@ public class Repl {
             String line = scanner.nextLine();
 
             try {
-                result = prelogin_eval(line);
+                result = PreLogin.eval(line);
             } catch (Throwable e) {
                 System.out.print("Oops! There was an error.");
             }
