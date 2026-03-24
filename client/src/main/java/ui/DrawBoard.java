@@ -2,6 +2,8 @@ package ui;
 
 import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessPiece;
+import chess.ChessPosition;
 
 import static ui.EscapeSequences.*;
 
@@ -36,11 +38,11 @@ public class DrawBoard {
         System.out.print(SET_BG_COLOR_BLUE + SET_TEXT_COLOR_WHITE + " " + (row + 1) + " " + RESET_BG_COLOR);
 
         if (playerColor.equals("WHITE")) {
-            for (int column = 0; column <= 7; column--) {
+            for (int column = 0; column <= 7; column++) {
                 printSquare(board, row, column);
             }
         } else if (playerColor.equals("BLACK")) {
-            for (int column = 7; column >= 0; column++) {
+            for (int column = 7; column >= 0; column--) {
                 printSquare(board, row, column);
             }
         }
@@ -50,7 +52,25 @@ public class DrawBoard {
     }
 
     private static void printSquare(ChessBoard board, int row, int col) {
+        boolean isLight = (row + col) % 2 == 1;
+        String background;
+        if (isLight) {
+            background = SET_BG_COLOR_WHITE;
+        } else {
+            background = SET_BG_COLOR_DARK_GREY;
+        }
 
+        ChessPiece piece = board.getPiece(new ChessPosition(row + 1, col + 1));
+        String symbol = "";
+        switch(piece.getPieceType()) {
+            case KING -> symbol = "K";
+            case QUEEN -> symbol = "Q";
+            case BISHOP -> symbol = "B";
+            case KNIGHT -> symbol = "N";
+            case ROOK -> symbol = "R";
+            case PAWN -> symbol = "P";
+        }
 
+        System.out.print(background + symbol);
     }
 }
