@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessBoard;
 import chess.ChessGame;
 import client.ServerFacade;
 import model.GameData;
@@ -120,13 +121,19 @@ public class PostLogin {
             int gameID;
             try {
                 gameID = Integer.parseInt(scanner.nextLine());
+                if (gameID < 1 || gameID > gamesList.size()) {
+                    return "Invalid game number. Please run 'list' to see available games.";
+                }
             } catch (NumberFormatException e) {
                 return "Please enter a valid number.";
             }
             try {
+                ChessGame game = gamesList.get(gameID - 1).game();
+
+                DrawBoard.printOutBoard(game, "WHITE");
                 return "Game Joined!";
             } catch (Exception e) {
-                return "Error: " + e.getMessage();
+                return e.getMessage();
             }
 
         }
