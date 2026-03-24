@@ -104,7 +104,7 @@ public class PostLogin {
                     int gameNumber = gamesList.get(gameID - 1).gameID();
                     facade.joinGame(new JoinGameRequest(authToken, playerColor, gameNumber), authToken);
 
-                    ChessGame game = gamesList.get(gameNumber).game();
+                    ChessGame game = gamesList.get(gameID - 1).game();
                     DrawBoard.printOutBoard(game, playerColor);
 
                     return "Game Joined!";

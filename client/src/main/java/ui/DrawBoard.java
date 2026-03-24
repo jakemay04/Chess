@@ -31,7 +31,7 @@ public class DrawBoard {
             }
         }
 
-
+        printBorder(columns,playerColor);
     }
 
     private static void printRow(ChessBoard board, int row, String playerColor) {
@@ -62,15 +62,34 @@ public class DrawBoard {
 
         ChessPiece piece = board.getPiece(new ChessPosition(row + 1, col + 1));
         String symbol = "";
-        switch(piece.getPieceType()) {
-            case KING -> symbol = "K";
-            case QUEEN -> symbol = "Q";
-            case BISHOP -> symbol = "B";
-            case KNIGHT -> symbol = "N";
-            case ROOK -> symbol = "R";
-            case PAWN -> symbol = "P";
+        if (piece == null) {
+            symbol = "";
+        } else {
+            switch(piece.getPieceType()) {
+                case KING -> symbol = "K";
+                case QUEEN -> symbol = "Q";
+                case BISHOP -> symbol = "B";
+                case KNIGHT -> symbol = "N";
+                case ROOK -> symbol = "R";
+                case PAWN -> symbol = "P";
+            }
         }
 
+
         System.out.print(background + symbol);
+    }
+
+    private static void printBorder(String[] cols, String playerColor) {
+        System.out.print(SET_BG_COLOR_BLUE + SET_TEXT_COLOR_WHITE + "   ");
+        if (playerColor.equals("WHITE")) {
+            for (String col : cols) {
+                System.out.print(" " + col + " ");
+            }
+        } else {
+            for (int i = cols.length - 1; i >= 0; i--) {
+                System.out.print(" " + cols[i] + " ");
+            }
+        }
+        System.out.println("   " + RESET_BG_COLOR + RESET_TEXT_COLOR);
     }
 }
