@@ -33,7 +33,7 @@ public class PostLogin {
             //call logout from server facade
             try {
                 var result = facade.logout(new LogoutRequest(authToken), authToken);
-                return "Logged out!";
+                return "loggedout";
             } catch (Exception e) {
                 return "Error: " + e.getMessage();
             }
@@ -53,7 +53,10 @@ public class PostLogin {
             //call List Game from server facade
             try {
                 var result = facade.listGames(new ListGamesRequest(authToken), authToken);
-                return result;
+                var gamesList = result.games();
+                for (int i = 0; i < gamesList.size(); i++) {
+                    System.out.println(gamesList.get(i));
+                }
             } catch (Exception e) {
                 return "Error: " + e.getMessage();
             }
@@ -61,9 +64,14 @@ public class PostLogin {
         } else if (line.equalsIgnoreCase("Join")) {
             //call Join Game from server facade
             System.out.print("Game number: ");
-            int gameNumber = Integer.parseInt(scanner.nextLine());
+            int gameID;
+            try {
+                gameID = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                return "Please enter a valid number.";
+            }
             System.out.print("Color (WHITE/BLACK): ");
-            String color = scanner.nextLine().toUpperCase();
+            String playerColor = scanner.nextLine().toUpperCase();
             try {
                 facade.joinGame(new JoinGameRequest(authToken, playerColor, gameID), authToken);
                 return "Game Joined!";
