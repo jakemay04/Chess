@@ -66,6 +66,12 @@ public class PostLogin {
                     String gameName = gamesList.get(i).gameName();
                     String whitePlayer = gamesList.get(i).whiteUsername();
                     String blackPlayer = gamesList.get(i).blackUsername();
+                    if (whitePlayer == null) {
+                        whitePlayer = "open";
+                    }
+                    if (blackPlayer == null) {
+                        blackPlayer = "open";
+                    }
 
                     sb.append(i + 1).append(". ").append(gameName).append(" | White: ").append(whitePlayer).append(" | Black: ").append(blackPlayer).append("\n");
 
