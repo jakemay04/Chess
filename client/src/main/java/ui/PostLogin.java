@@ -1,8 +1,11 @@
 package ui;
 
 import client.ServerFacade;
+import model.GameData;
 import records.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class PostLogin {
@@ -10,6 +13,7 @@ public class PostLogin {
     private final ServerFacade facade;
     private final String authToken;
     private final Scanner scanner = new Scanner(System.in);
+    private List<GameData> gamesList = new ArrayList<>();
 
     public PostLogin(ServerFacade facade, String authToken) {
         this.facade = facade;
@@ -32,7 +36,7 @@ public class PostLogin {
         } else if (line.equalsIgnoreCase("Logout")) {
             //call logout from server facade
             try {
-                var result = facade.logout(new LogoutRequest(authToken), authToken);
+                facade.logout(new LogoutRequest(authToken), authToken);
                 return "loggedout";
             } catch (Exception e) {
                 return "Error: " + e.getMessage();
@@ -50,13 +54,17 @@ public class PostLogin {
             }
 
         } else if (line.equalsIgnoreCase("List")) {
-            //call List Game from server facade
             try {
-                var result = facade.listGames(new ListGamesRequest(authToken), authToken);
-                var gamesList = result.games();
-                for (int i = 0; i < gamesList.size(); i++) {
-                    System.out.println(gamesList.get(i));
+                var result = facade.listGames(new ListGamesRequest(authToken),authToken);
+                gamesList = new ArrayList<>(result.games());
+                if (gamesList.isEmpty()) {
+                    return "No games available.";
                 }
+                var sb = new StringBuilder();
+                for (int i = 0; i < gamesList.size(); i++) {
+                    sb.append(i + 1).append(". ").append(gamesList.get(i).gameName()).append("\n");
+                }
+                return sb.toString();
             } catch (Exception e) {
                 return "Error: " + e.getMessage();
             }
@@ -79,7 +87,25 @@ public class PostLogin {
                 return "Error: " + e.getMessage();
             }
 
-        } else if (line.equalsIgnoreCase("Quit")) {
+        } else if (line.equalsIgnoreCase("Observe")) {
+            //call Join Game from server facade
+            System.out.print("Game number: ");
+            int gameID;
+            try {
+                gameID = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                return "Please enter a valid number.";
+            }
+            try {
+                facade.observeGame(new JoinGameRequest(authToken, playerColor, gameID), authToken);
+                return "Game Joined!";
+            } catch (Exception e) {
+                return "Error: " + e.getMessage();
+            }
+
+        }
+
+        else if (line.equalsIgnoreCase("Quit")) {
             return "Quit";
 
         } else {
