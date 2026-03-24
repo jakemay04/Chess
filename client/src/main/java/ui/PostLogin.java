@@ -40,7 +40,7 @@ public class PostLogin {
                 facade.logout(new LogoutRequest(authToken), authToken);
                 return "loggedout";
             } catch (Exception e) {
-                return "Error: " + e.getMessage();
+                return e.getMessage();
             }
 
         } else if (line.equalsIgnoreCase("Create")) {
@@ -51,7 +51,7 @@ public class PostLogin {
                 var result = facade.createGame(new CreateGameRequest(authToken, gameName), authToken);
                 return "Game Created!";
             } catch (Exception e) {
-                return "Error: " + e.getMessage();
+                return e.getMessage();
             }
 
         } else if (line.equalsIgnoreCase("List")) {
@@ -67,31 +67,41 @@ public class PostLogin {
                     String whitePlayer = gamesList.get(i).whiteUsername();
                     String blackPlayer = gamesList.get(i).blackUsername();
 
-                    sb.append(i + 1).append(". ").append(gameName).append("- White: ").append(whitePlayer).append("- Black: ").append(blackPlayer).append("\n");
+                    sb.append(i + 1).append(". ").append(gameName).append(" | White: ").append(whitePlayer).append(" | Black: ").append(blackPlayer).append("\n");
 
                 }
                 return sb.toString();
             } catch (Exception e) {
-                return "Error: " + e.getMessage();
+                return e.getMessage();
             }
 
         } else if (line.equalsIgnoreCase("Join")) {
             //call Join Game from server facade
-            System.out.print("Game number: ");
-            int gameID;
-            try {
-                gameID = Integer.parseInt(scanner.nextLine());
-            } catch (NumberFormatException e) {
-                return "Please enter a valid number.";
+            if (gamesList.isEmpty()) {
+                System.out.println("Please list games first");
             }
-            System.out.print("Color (WHITE/BLACK): ");
-            String playerColor = scanner.nextLine().toUpperCase();
-            try {
-                facade.joinGame(new JoinGameRequest(authToken, playerColor, gameID), authToken);
-                return "Game Joined!";
-            } catch (Exception e) {
-                return "Error: " + e.getMessage();
+            else {
+                System.out.print("Game number: ");
+                int gameID;
+                try {
+                    gameID = Integer.parseInt(scanner.nextLine());
+                    if (gameID < 1 || gameID > gamesList.size()) {
+                        return "Invalid game number. Please run 'list' to see available games.";
+                    }
+                } catch (NumberFormatException e) {
+                    return "Please enter a valid number.";
+                }
+                try {
+                    System.out.print("Color (WHITE/BLACK): ");
+                    String playerColor = scanner.nextLine().toUpperCase();
+                    int game = gamesList.get(gameID - 1).gameID();
+                    facade.joinGame(new JoinGameRequest(authToken, playerColor, game), authToken);
+                    return "Game Joined!";
+                } catch (Exception e) {
+                    return e.getMessage();
+                }
             }
+
 
         } else if (line.equalsIgnoreCase("Observe")) {
             //call Join Game from server facade

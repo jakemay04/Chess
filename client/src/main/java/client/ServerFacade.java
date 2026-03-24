@@ -79,6 +79,8 @@ public class ServerFacade {
         }
 
         if (responseClass != null) {
+            System.out.println("Raw JSON: " + response.body());
+
             return new Gson().fromJson(response.body(), responseClass);
         }
 

@@ -43,7 +43,7 @@ public class Repl {
                 }
                 System.out.println(result);
             } catch (Throwable e) {
-                System.out.print("Oops! There was an error.");
+                System.out.print("Oops!" + e.getMessage());
             }
         }
         System.out.println("Quitting...");

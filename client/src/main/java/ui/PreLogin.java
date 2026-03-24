@@ -38,7 +38,7 @@ public class PreLogin {
                 var result = facade.register(new RegisterRequest(username, password, email));
                 return "loggedin:" + result.authToken();
             } catch (Exception e) {
-                return "Error: " + e.getMessage();
+                return "Oops! " + e.getMessage();
             }
 
         } else if (line.equals("login")) {
@@ -52,7 +52,7 @@ public class PreLogin {
                 var result = facade.login(new LoginRequest(username, password));
                 return "loggedin:" + result.authToken();
             } catch (Exception e) {
-                return "Error: " + e.getMessage();
+                return "Oops! " + e.getMessage();
             }
 
         } else if (line.equals("quit")) {
