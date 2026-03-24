@@ -62,7 +62,12 @@ public class PostLogin {
                 }
                 var sb = new StringBuilder();
                 for (int i = 0; i < gamesList.size(); i++) {
-                    sb.append(i + 1).append(". ").append(gamesList.get(i).gameName()).append("\n");
+                    String gameName = gamesList.get(i).gameName();
+                    String whitePlayer = gamesList.get(i).whiteUsername();
+                    String blackPlayer = gamesList.get(i).blackUsername();
+
+                    sb.append(i + 1).append(". ").append(gameName).append(" White: ").append(whitePlayer).append(" Black: ").append(blackPlayer).append("\n");
+
                 }
                 return sb.toString();
             } catch (Exception e) {
