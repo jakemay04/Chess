@@ -3,10 +3,13 @@ package ui;
 import client.ServerFacade;
 import records.*;
 
+import java.util.Scanner;
+
 public class PostLogin {
 
     private final ServerFacade facade;
     private final String authToken;
+    private final Scanner scanner = new Scanner(System.in);
 
     public PostLogin(ServerFacade facade, String authToken) {
         this.facade = facade;
@@ -34,24 +37,46 @@ public class PostLogin {
             } catch (Exception e) {
                 return "Error: " + e.getMessage();
             }
-            return line;
+
         } else if (line.equalsIgnoreCase("Create")) {
             //call Create Game from server facade
-            String gameName;
+            System.out.print("Enter game name: ");
+            String gameName = scanner.nextLine();
             try {
                 var result = facade.createGame(new CreateGameRequest(authToken, gameName), authToken);
-                return "Logged out!";
+                return "Game Created!";
             } catch (Exception e) {
                 return "Error: " + e.getMessage();
             }
+
         } else if (line.equalsIgnoreCase("List")) {
             //call List Game from server facade
+            try {
+                var result = facade.listGames(new ListGamesRequest(authToken), authToken);
+                return result;
+            } catch (Exception e) {
+                return "Error: " + e.getMessage();
+            }
+
         } else if (line.equalsIgnoreCase("Join")) {
             //call Join Game from server facade
+            System.out.print("Game number: ");
+            int gameNumber = Integer.parseInt(scanner.nextLine());
+            System.out.print("Color (WHITE/BLACK): ");
+            String color = scanner.nextLine().toUpperCase();
+            try {
+                facade.joinGame(new JoinGameRequest(authToken, playerColor, gameID), authToken);
+                return "Game Joined!";
+            } catch (Exception e) {
+                return "Error: " + e.getMessage();
+            }
+
         } else if (line.equalsIgnoreCase("Quit")) {
             return "Quit";
+
         } else {
             System.out.println("Unknown command. Type 'Help' for options.");
+
         }
         return line;
     }
