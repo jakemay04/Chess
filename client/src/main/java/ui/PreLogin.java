@@ -2,6 +2,7 @@ package ui;
 import java.util.Scanner;
 import client.ServerFacade;
 import exception.ResponseException;
+import records.LoginRequest;
 import records.RegisterRequest;
 
 public class PreLogin {
@@ -16,12 +17,13 @@ public class PreLogin {
     public String eval(String line) {
         line = line.trim().toLowerCase();
         if (line.equals("help")) {
-            System.out.println("Here is how to navigate the Chess Game: ");
-            System.out.println("If you already have an account, simply type Login. " +
-                    "Then, you will be prompted for your username and password");
-            System.out.println("If you would like to register, type Register");
-            System.out.println("You will then be prompted for your Username, Email and Password");
-            System.out.println("If you would like to quit the program, simply type Quit.");
+            return """
+            Available commands:
+              register - create a new account
+              login    - login to existing account
+              quit     - exit the program
+              help     - show this message
+            """;
 
         } else if (line.equals("register")) {
             System.out.print("Username: ");
@@ -34,9 +36,9 @@ public class PreLogin {
 
             try {
                 var result = facade.register(new RegisterRequest(username, password, email));
-                return "Registered as" + username;
+                return "Registered as " + username;
             } catch (Exception e) {
-                return "Something went wrong...";
+                return "Error: " + e.getMessage();
             }
 
         } else if (line.equals("login")) {
@@ -47,10 +49,10 @@ public class PreLogin {
             //call login from server facade
 
             try {
-                var result = facade.login(new RegisterRequest(username, password, email));
-                return "Logged in as" + username;
+                var result = facade.login(new LoginRequest(username, password));
+                return "Logged in as " + username;
             } catch (Exception e) {
-                return "Something went wrong...";
+                return "Error: " + e.getMessage();
             }
 
         } else if (line.equals("quit")) {

@@ -1,16 +1,19 @@
 package ui;
 
 import client.ServerFacade;
+import records.*;
 
 public class PostLogin {
 
     private final ServerFacade facade;
+    private final String authToken;
 
-    public PostLogin(ServerFacade facade) {
+    public PostLogin(ServerFacade facade, String authToken) {
         this.facade = facade;
+        this.authToken = authToken;
     }
 
-    static String eval(String line) {
+    public String eval(String line) {
         if (line.equals("Help") || line.equals("help")) {
             System.out.println("Here is how to navigate the Chess Game: ");
             System.out.println("To Logout, simply type Logout");
@@ -23,11 +26,24 @@ public class PostLogin {
             System.out.println("If you would like to quit the program, simply type Quit.");
 
 
-        } else if (line.equalsIgnoreCase("Register")) {
+        } else if (line.equalsIgnoreCase("Logout")) {
             //call logout from server facade
+            try {
+                var result = facade.logout(new LogoutRequest(authToken), authToken);
+                return "Logged out!";
+            } catch (Exception e) {
+                return "Error: " + e.getMessage();
+            }
             return line;
         } else if (line.equalsIgnoreCase("Create")) {
             //call Create Game from server facade
+            String gameName;
+            try {
+                var result = facade.createGame(new CreateGameRequest(authToken, gameName), authToken);
+                return "Logged out!";
+            } catch (Exception e) {
+                return "Error: " + e.getMessage();
+            }
         } else if (line.equalsIgnoreCase("List")) {
             //call List Game from server facade
         } else if (line.equalsIgnoreCase("Join")) {
