@@ -80,7 +80,6 @@ public class ServerFacadeTests {
         int gameID = facade.createGame(testCreate, authToken).gameID();
         facade.joinGame(new JoinGameRequest(authToken, "WHITE", gameID), authToken);
         assertNotNull(result);
-        assertNotNull(result.authToken());
     }
 
     @Test
@@ -97,22 +96,67 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void createTestSuccess() {}
+    public void createTestSuccess() throws ResponseException {
+        var result = facade.register(testRegister);
+        String authToken = result.authToken();
+        int gameID = facade.createGame(testCreate, authToken).gameID();
+        facade.joinGame(new JoinGameRequest(authToken, "WHITE", gameID), authToken);
+        assertNotNull(result);
+        assertNotNull(result.authToken());
+    }
 
     @Test
-    public void createTestFail() {}
+    public void createTestFail() throws ResponseException {
+        var result = facade.register(testRegister);
+        String authToken = result.authToken();
+        try {
+            int gameID = facade.createGame(testCreate, "WRONG").gameID();
+            fail("Test should have failed here");
+        } catch (ResponseException e) {
+            assertNotNull(e.getMessage());
+        }
+    }
 
     @Test
-    public void listTestSuccess() {}
+    public void listTestSuccess() throws ResponseException {
+        var result = facade.register(testRegister);
+        String authToken = result.authToken();
+        int gameID = facade.createGame(testCreate, authToken).gameID();
+        var gameList = facade.listGames(new ListGamesRequest(authToken), authToken);
+        assertNotNull(result);
+        assertNotNull(result.authToken());
+    }
 
     @Test
-    public void listTestFail() {}
+    public void listTestFail() throws ResponseException {
+        var result = facade.register(testRegister);
+        String authToken = result.authToken();
+        facade.createGame(testCreate, authToken);
+        try {
+            var gameList = facade.listGames(new ListGamesRequest("WRONG"), "WRONG");
+            fail("Test should have failed here");
+        } catch (ResponseException e) {
+            assertNotNull(e.getMessage());
+        }
+    }
 
     @Test
-    public void logoutTestSuccess() {}
+    public void logoutTestSuccess() throws ResponseException {
+        var result = facade.register(testRegister);
+        String authToken = result.authToken();
+        facade.logout(new LogoutRequest(authToken), authToken);
+    }
 
     @Test
-    public void logoutTestFail() {}
+    public void logoutTestFail() throws ResponseException {
+        var result = facade.register(testRegister);
+        String authToken = result.authToken();
+        try {
+            facade.logout(new LogoutRequest("WRONG"), "WRONG");
+            fail("Test should have failed here");
+        } catch (ResponseException e) {
+            assertNotNull(e.getMessage());
+        }
+    }
 
-
-}
+    }
