@@ -7,6 +7,7 @@ import model.GameData;
 import records.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
@@ -25,17 +26,7 @@ public class PostLogin {
     public String eval(String line) {
 
         if (line.equals("Help") || line.equals("help")) {
-            System.out.println("Here is how to navigate the Chess Game: ");
-            System.out.println("To Logout, simply type Logout");
-            System.out.println("To start a new game, type Create");
-            System.out.println("If you would like to see all games in session, type List");
-            System.out.println("If you would like to Join a Game from the list of games,");
-            System.out.println("Type Join. You will then be prompted with the game number and the color you wish to be.");
-            System.out.println("If you would like to Observe a game from the list of games, type Observe");
-            System.out.println("You will then be prompted for the game number");
-            System.out.println("If you would like to quit the program, simply type Quit.");
-
-
+            help();
         } else if (line.equalsIgnoreCase("Logout")) {
             //call logout from server facade
             try {
@@ -75,7 +66,8 @@ public class PostLogin {
                         blackPlayer = "open";
                     }
 
-                    sb.append(i + 1).append(". ").append(gameName).append(" | White: ").append(whitePlayer).append(" | Black: ").append(blackPlayer).append("\n");
+                    sb.append(i + 1).append(". ").append(gameName).append(" | White: ").
+                            append(whitePlayer).append(" | Black: ").append(blackPlayer).append("\n");
 
                 }
                 return sb.toString();
@@ -85,34 +77,7 @@ public class PostLogin {
 
         } else if (line.equalsIgnoreCase("Join")) {
             //call Join Game from server facade
-            if (gamesList.isEmpty()) {
-                System.out.println("Please list games first");
-            }
-            else {
-                System.out.print("Game number: ");
-                int gameID;
-                try {
-                    gameID = Integer.parseInt(scanner.nextLine());
-                    if (gameID < 1 || gameID > gamesList.size()) {
-                        return "Invalid game number. Please run 'list' to see available games.";
-                    }
-                } catch (NumberFormatException e) {
-                    return "Please enter a valid number.";
-                }
-                try {
-                    System.out.print("Color (WHITE/BLACK): ");
-                    String playerColor = scanner.nextLine().toUpperCase();
-                    int gameNumber = gamesList.get(gameID - 1).gameID();
-                    facade.joinGame(new JoinGameRequest(authToken, playerColor, gameNumber), authToken);
-
-                    ChessGame game = gamesList.get(gameID - 1).game();
-                    DrawBoard.printOutBoard(game, playerColor);
-
-                    return "Game Joined!";
-                } catch (Exception e) {
-                    return e.getMessage();
-                }
-            }
+            return join(gamesList, scanner);
 
 
         } else if (line.equalsIgnoreCase("Observe")) {
@@ -146,6 +111,51 @@ public class PostLogin {
 
         }
         return line;
+    }
+
+    private String join(List<GameData> gamesList, Scanner scanner) {
+        //call Join Game from server facade
+        if (gamesList.isEmpty()) {
+            System.out.println("Please list games first");
+        }
+        else {
+            System.out.print("Game number: ");
+            int gameID;
+            try {
+                gameID = Integer.parseInt(scanner.nextLine());
+                if (gameID < 1 || gameID > gamesList.size()) {
+                    return "Invalid game number. Please run 'list' to see available games.";
+                }
+            } catch (NumberFormatException e) {
+                return "Please enter a valid number.";
+            }
+            try {
+                System.out.print("Color (WHITE/BLACK): ");
+                String playerColor = scanner.nextLine().toUpperCase();
+                int gameNumber = gamesList.get(gameID - 1).gameID();
+                facade.joinGame(new JoinGameRequest(authToken, playerColor, gameNumber), authToken);
+
+                ChessGame game = gamesList.get(gameID - 1).game();
+                DrawBoard.printOutBoard(game, playerColor);
+
+                return "Game Joined!";
+            } catch (Exception e) {
+                return e.getMessage();
+            }
+        }
+        return "";
+    }
+
+    private static void help() {
+        System.out.println("Here is how to navigate the Chess Game: ");
+        System.out.println("To Logout, simply type Logout");
+        System.out.println("To start a new game, type Create");
+        System.out.println("If you would like to see all games in session, type List");
+        System.out.println("If you would like to Join a Game from the list of games,");
+        System.out.println("Type Join. You will then be prompted with the game number and the color you wish to be.");
+        System.out.println("If you would like to Observe a game from the list of games, type Observe");
+        System.out.println("You will then be prompted for the game number");
+        System.out.println("If you would like to quit the program, simply type Quit.");
     }
 
 }
