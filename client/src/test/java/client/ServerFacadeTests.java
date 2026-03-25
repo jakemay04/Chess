@@ -15,6 +15,7 @@ public class ServerFacadeTests {
             new RegisterRequest("user1", "password", "user1@email.com");
     private final LoginRequest testLogin =
             new LoginRequest("user1", "password");
+    private final CreateGameRequest testCreate = new CreateGameRequest("TEST", "TESTGAME");
 
 
     @BeforeAll
@@ -44,7 +45,7 @@ public class ServerFacadeTests {
 
     @Test
     public void registerTestFail() throws exception.ResponseException {
-        var result = facade.register(testUser);
+        var result = facade.register(testRegister);
         try {
             var resultFail = facade.register(testRegister);
             fail("Test should have failed here");
@@ -56,19 +57,44 @@ public class ServerFacadeTests {
     @Test
     public void loginTestSuccess() throws ResponseException {
         var result = facade.register(testRegister);
-        var login = facade.login()
+        var login = facade.login(testLogin);
         assertNotNull(result);
         assertNotNull(result.authToken());
     }
 
     @Test
-    public void loginTestFail() {}
+    public void loginTestFail() throws ResponseException {
+        var result = facade.register(testRegister);
+        try {
+            var resultFail = facade.login(new LoginRequest("WRONG", "WRONG"));
+            fail("Test should have failed here");
+        } catch (ResponseException e) {
+            assertNotNull(e.getMessage());
+        }
+    }
 
     @Test
-    public void joinTestSuccess() {}
+    public void joinTestSuccess() throws ResponseException {
+        var result = facade.register(testRegister);
+        String authToken = result.authToken();
+        int gameID = facade.createGame(testCreate, authToken).gameID();
+        facade.joinGame(new JoinGameRequest(authToken, "WHITE", gameID), authToken);
+        assertNotNull(result);
+        assertNotNull(result.authToken());
+    }
 
     @Test
-    public void joinTestFail() {}
+    public void joinTestFail() throws ResponseException {
+        var result = facade.register(testRegister);
+        String authToken = result.authToken();
+        int gameID = facade.createGame(testCreate, authToken).gameID();
+        try {
+            facade.joinGame(new JoinGameRequest(authToken, "WHITE", -256), authToken);
+            fail("Test should have failed here");
+        } catch (ResponseException e) {
+            assertNotNull(e.getMessage());
+        }
+    }
 
     @Test
     public void createTestSuccess() {}
