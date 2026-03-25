@@ -1,20 +1,22 @@
 package client;
 
 import org.junit.jupiter.api.*;
+import records.RegisterRequest;
 import server.Server;
 
 
 public class ServerFacadeTests {
 
     private static Server server;
-    private static ServerFacade;
+    private static ServerFacade facade;
+    private final RegisterRequest testUser = new RegisterRequest("user1", "password", "user1@email.com");
 
     @BeforeAll
     public static void init() {
         server = new Server();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
-        facade = new ServerFacade("http://localhost:" + port")
+        facade = new ServerFacade("http://localhost:" + port);
     }
 
     @AfterAll
@@ -22,14 +24,15 @@ public class ServerFacadeTests {
         server.stop();
     }
 
-
-    @Test
-    public void sampleTest() {
-        Assertions.assertTrue(true);
+    @BeforeEach
+    void clearDatabase() throws Exception{
+        facade.clear();
     }
 
     @Test
-    public void registerTestSuccess() {}
+    public void registerTestSuccess() {
+        var result = facade.register(new testuser)
+    }
 
     @Test
     public void registerTestFail() {}

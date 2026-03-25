@@ -53,6 +53,11 @@ public class ServerFacade {
         handleResponse(response, null);
     }
 
+    public void clear() throws ResponseException {
+        var httpRequest = buildRequest("DELETE", "/db", null, null);
+        var response = sendRequest(httpRequest);
+        handleResponse(response, null);
+    }
     //helper functions
     private HttpRequest buildRequest(String method, String path, Object body, String authToken) {
         var request = HttpRequest.newBuilder()
@@ -104,4 +109,6 @@ public class ServerFacade {
     private boolean isSuccessful(int status) {
         return status / 100 == 2;
     }
+
+
 }
