@@ -31,6 +31,11 @@ public class Server {
         javalin.post("/game", handler::createGame);
         javalin.get("/game", handler::listGames);
         javalin.put("/game", handler::joinGame);
+        javalin.ws("/ws", ws -> {
+            ws.onConnect(webSocketHandler);
+            ws.onMessage(webSocketHandler);
+            ws.onClose(webSocketHandler);
+        });
 
 
     }
