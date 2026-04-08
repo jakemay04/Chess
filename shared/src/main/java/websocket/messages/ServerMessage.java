@@ -1,5 +1,7 @@
 package websocket.messages;
 
+import model.GameData;
+
 import java.util.Objects;
 
 /**
@@ -31,7 +33,9 @@ public class ServerMessage {
         return message;
     }
 
-    public loadGame();
+//    public loadGame() {
+//
+//    }
 
     @Override
     public boolean equals(Object o) {

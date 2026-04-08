@@ -2,6 +2,8 @@ package server;
 
 import dataaccess.*;
 import io.javalin.*;
+import io.javalin.websocket.WsConnectHandler;
+import org.jetbrains.annotations.NotNull;
 import service.ClearService;
 import service.GameService;
 import service.UserService;
@@ -12,9 +14,11 @@ public class Server {
     private final UserDAO userDAO = new SQLUserDAO();
     private final GameDAO gameDAO = new SQLGameDAO();
     private final AuthDAO authDAO = new SQLAuthDAO();
+    private final WebSocketHandler webSocketHandler;
 
 
     public Server() {
+        this.webSocketHandler = new WebSocketHandler(authDAO);
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
         // Register your endpoints and exception handlers here.

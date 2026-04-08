@@ -87,7 +87,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void makeMove(String authToken, Integer gameID, ChessMove move, Session session) throws IOException, DataAccessException {
         String playerName = authDAO.getAuth(authToken).username();
         var message = String.format("%s has made a move", playerName);
-        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, message);
         //call make move from server
         connections.broadcast(session, serverMessage);
     }
