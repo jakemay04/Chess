@@ -30,11 +30,11 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     public void handleMessage(WsMessageContext ctx) {
         try {
             UserGameCommand action = new Gson().fromJson(ctx.message(), UserGameCommand.class);
-            switch (action.type()) {
-                case CONNECT -> connect(action.playerName(), ctx.session);
+            switch (action.getCommandType()) {
+                case CONNECT -> connect(action.authToken(), action.gameID(), ctx.session);
                 case LEAVE -> leave(action.playerName(), ctx.session);
                 case RESIGN -> resign(action.playerName(), ctx.session);
-                case MAKE_MOVE -> makeMove(action.playerName(), ChessMove move, ctx.session);
+                case MAKE_MOVE -> makeMove(action.playerName(), move, ctx.session);
 
             }
         } catch (IOException ex) {
@@ -50,20 +50,20 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void connect(String playerName, Session session) throws IOException {
         connections.add(session);
         var message = String.format("%s has entered the game", playerName);
-        var notification = new ServerMessage(ServerMessage.Type.CONNECT, message);
+        var serverMessage = new ServerMessage(ServerMessage.Type.CONNECT, message);
         connections.broadcast(session, serverMessage);
     }
 
     private void leave(String playerName, Session session) throws IOException {
         var message = String.format("%s has left the game", playerName);
-        var notification = new ServerMessage(ServerMessage.Type.LEAVE, message);
+        var serverMessage = new ServerMessage(ServerMessage.Type.LEAVE, message);
         connections.broadcast(session, serverMessage);
         connections.remove(session);
     }
 
     private void resign(String playerName, Session session) throws IOException {
         var message = String.format("%s has resigned", playerName);
-        var notification = new ServerMessage(ServerMessage.Type.LEAVE, message);
+        var serverMessage = new ServerMessage(ServerMessage.Type.RESIGN, message);
         connections.broadcast(session, serverMessage);
         connections.remove(session);
         //END GAME HERE after leaving
@@ -72,9 +72,25 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private void makeMove(String playerName, ChessMove move, Session session) throws IOException {
         var message = String.format("%s has resigned", playerName);
-        var notification = new ServerMessage(ServerMessage.Type.LEAVE, message);
+        var serverMessage = new ServerMessage(ServerMessage.Type.MAKE_MOVE, message);
         //call make move from server
         connections.broadcast(session, serverMessage);
     }
+
+}
+
+public class MakeMoveCommand extends UserGameCommand {
+
+    private final ChessMove move;
+
+    public MakeMoveCommand(String authToken, Integer gameID, ChessMove move) {
+        super(CommandType.MAKE_MOVE, authToken, gameID);
+        this.move = move;
+    }
+
+    public ChessMove getMove() {
+        return move;
+    }
+
 
 }

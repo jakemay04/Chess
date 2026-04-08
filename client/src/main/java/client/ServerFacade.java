@@ -9,6 +9,7 @@ import java.net.http.HttpResponse;
 import com.google.gson.Gson;
 import java.net.http.*;
 import exception.ResponseException;
+import websocket.commands.UserGameCommand;
 
 public class ServerFacade {
     private final HttpClient client = HttpClient.newHttpClient();
@@ -58,6 +59,7 @@ public class ServerFacade {
         var response = sendRequest(httpRequest);
         handleResponse(response, null);
     }
+
     //helper functions
     private HttpRequest buildRequest(String method, String path, Object body, String authToken) {
         var request = HttpRequest.newBuilder()
