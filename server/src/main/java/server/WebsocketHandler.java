@@ -1,3 +1,6 @@
+package server;
+
+import chess.ChessMove;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import io.javalin.websocket.WsCloseContext;
@@ -8,8 +11,8 @@ import io.javalin.websocket.WsMessageContext;
 import io.javalin.websocket.WsMessageHandler;
 import org.eclipse.jetty.websocket.api.Session;
 import server.ConnectionManager;
-import webSocketMessages.Action;
-import webSocketMessages.Notification;
+import websocket.messages.ServerMessage;
+import websocket.commands.UserGameCommand;
 
 import java.io.IOException;
 
@@ -26,10 +29,13 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     @Override
     public void handleMessage(WsMessageContext ctx) {
         try {
-            Action action = new Gson().fromJson(ctx.message(), Action.class);
+            UserGameCommand action = new Gson().fromJson(ctx.message(), UserGameCommand.class);
             switch (action.type()) {
-                case ENTER -> enter(action.visitorName(), ctx.session);
-                case EXIT -> exit(action.visitorName(), ctx.session);
+                case CONNECT -> connect(action.playerName(), ctx.session);
+                case LEAVE -> leave(action.playerName(), ctx.session);
+                case RESIGN -> resign(action.playerName(), ctx.session);
+                case MAKE_MOVE -> makeMove(action.playerName(), ChessMove move, ctx.session);
+
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -41,24 +47,37 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         System.out.println("Websocket closed");
     }
 
-    private void enter(String visitorName, Session session) throws IOException {
+    private void connect(String playerName, Session session) throws IOException {
         connections.add(session);
-        var message = String.format("%s is in the shop", visitorName);
-        var notification = new Notification(Notification.Type.ARRIVAL, message);
-        connections.broadcast(session, notification);
+        var message = String.format("%s has entered the game", playerName);
+        var notification = new ServerMessage(ServerMessage.Type.CONNECT, message);
+        connections.broadcast(session, serverMessage);
     }
 
-    private void exit(String visitorName, Session session) throws IOException {
-        var message = String.format("%s left the shop", visitorName);
-        var notification = new Notification(Notification.Type.DEPARTURE, message);
-        connections.broadcast(session, notification);
+    private void leave(String playerName, Session session) throws IOException {
+        var message = String.format("%s has left the game", playerName);
+        var notification = new ServerMessage(ServerMessage.Type.LEAVE, message);
+        connections.broadcast(session, serverMessage);
         connections.remove(session);
     }
 
-    public void makeNoise(String petName, String sound) throws ResponseException {
+    private void resign(String playerName, Session session) throws IOException {
+        var message = String.format("%s has resigned", playerName);
+        var notification = new ServerMessage(ServerMessage.Type.LEAVE, message);
+        connections.broadcast(session, serverMessage);
+        connections.remove(session);
+    }
+
+    private void makeMove(String playerName, ChessMove move, Session session) throws IOException {
+
+    }
+
+
+
+        public void makeNoise(String petName, String sound) throws ResponseException {
         try {
             var message = String.format("%s says %s", petName, sound);
-            var notification = new Notification(Notification.Type.NOISE, message);
+            var notification = new Notification(Notification.Type.RESIGN, message);
             connections.broadcast(null, notification);
         } catch (Exception ex) {
             throw new ResponseException(ResponseException.Code.ServerError, ex.getMessage());
