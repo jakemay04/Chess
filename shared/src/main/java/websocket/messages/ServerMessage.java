@@ -25,6 +25,8 @@ public class ServerMessage {
         return this.serverMessageType;
     }
 
+    public loadGame();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

@@ -66,21 +66,15 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         var notification = new ServerMessage(ServerMessage.Type.LEAVE, message);
         connections.broadcast(session, serverMessage);
         connections.remove(session);
+        //END GAME HERE after leaving
+
     }
 
     private void makeMove(String playerName, ChessMove move, Session session) throws IOException {
-
+        var message = String.format("%s has resigned", playerName);
+        var notification = new ServerMessage(ServerMessage.Type.LEAVE, message);
+        //call make move from server
+        connections.broadcast(session, serverMessage);
     }
 
-
-
-        public void makeNoise(String petName, String sound) throws ResponseException {
-        try {
-            var message = String.format("%s says %s", petName, sound);
-            var notification = new Notification(Notification.Type.RESIGN, message);
-            connections.broadcast(null, notification);
-        } catch (Exception ex) {
-            throw new ResponseException(ResponseException.Code.ServerError, ex.getMessage());
-        }
-    }
 }
