@@ -2,23 +2,19 @@ package server;
 
 import chess.ChessMove;
 import com.google.gson.Gson;
+import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
-import exception.ResponseException;
 import io.javalin.websocket.WsCloseContext;
 import io.javalin.websocket.WsCloseHandler;
 import io.javalin.websocket.WsConnectContext;
 import io.javalin.websocket.WsConnectHandler;
 import io.javalin.websocket.WsMessageContext;
 import io.javalin.websocket.WsMessageHandler;
-import model.UserData;
 import org.eclipse.jetty.websocket.api.Session;
-import server.ConnectionManager;
-import service.UserService;
 import websocket.commands.MakeMoveCommand;
 import websocket.messages.ServerMessage;
 import websocket.commands.UserGameCommand;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 
@@ -26,10 +22,10 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private final ConnectionManager connections = new ConnectionManager();
     private final Gson gson = new Gson();
-    private final UserDAO userDAO;
+    private final AuthDAO authDAO;
 
-    public WebSocketHandler(UserDAO userDAO) {
-        this.userDAO = userDAO;
+    public WebSocketHandler(AuthDAO authDAO) {
+        this.authDAO = authDAO;
     }
 
     @Override
@@ -52,7 +48,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 }
 
             }
-        } catch (IOException ex) {
+        } catch (IOException | DataAccessException ex) {
             ex.printStackTrace();
         }
     }
@@ -64,24 +60,24 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private void connect(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
         connections.add(session);
-        UserData playerName = userDAO.getUser(authToken);
+        String playerName = authDAO.getAuth(authToken).username();
         var message = String.format("%s has entered the game", playerName);
-        var serverMessage = new ServerMessage(ServerMessage.Type.CONNECT, message);
+        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
         connections.broadcast(session, serverMessage);
     }
 
     private void leave(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
-        UserData playerName = userDAO.getUser(authToken);
+        String playerName = authDAO.getAuth(authToken).username();
         var message = String.format("%s has left the game", playerName);
-        var serverMessage = new ServerMessage(ServerMessage.Type.LEAVE, message);
+        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
         connections.broadcast(session, serverMessage);
         connections.remove(session);
     }
 
     private void resign(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
-        UserData playerName = userDAO.getUser(authToken);
+        String playerName = authDAO.getAuth(authToken).username();
         var message = String.format("%s has resigned", playerName);
-        var serverMessage = new ServerMessage(ServerMessage.Type.RESIGN, message);
+        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
         connections.broadcast(session, serverMessage);
         connections.remove(session);
         //END GAME HERE after leaving
@@ -89,9 +85,9 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
     private void makeMove(String authToken, Integer gameID, ChessMove move, Session session) throws IOException, DataAccessException {
-        UserData playerName = userDAO.getUser(authToken);
-        var message = String.format("%s has resigned", playerName);
-        var serverMessage = new ServerMessage(ServerMessage.Type.MAKE_MOVE, message);
+        String playerName = authDAO.getAuth(authToken).username();
+        var message = String.format("%s has made a move", playerName);
+        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
         //call make move from server
         connections.broadcast(session, serverMessage);
     }
