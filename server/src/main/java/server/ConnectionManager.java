@@ -6,7 +6,12 @@ import websocket.messages.ServerMessage;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.google.gson.Gson;
+
+
 public class ConnectionManager {
+
+    private final Gson gson = new Gson();
     public final ConcurrentHashMap<Session, Session> connections = new ConcurrentHashMap<>();
 
     public void add(Session session) {
@@ -18,7 +23,7 @@ public class ConnectionManager {
     }
 
     public void broadcast(Session excludeSession, ServerMessage serverMessage) throws IOException {
-        String msg = serverMessage.toString();
+        String msg = gson.toJson(serverMessage);
         for (Session c : connections.values()) {
             if (c.isOpen()) {
                 if (!c.equals(excludeSession)) {
