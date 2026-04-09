@@ -12,6 +12,7 @@ import io.javalin.websocket.WsConnectContext;
 import io.javalin.websocket.WsConnectHandler;
 import io.javalin.websocket.WsMessageContext;
 import io.javalin.websocket.WsMessageHandler;
+import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.commands.MakeMoveCommand;
@@ -69,8 +70,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             //validate authtoken
             if (auth == null) {
                 //if invalid, throw error and leave session
-                var errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: Unauthorized");
-                session.getRemote().sendString(new Gson().toJson(errorMessage));
+                sendError(session, "Error: Unauthorized");
                 connections.remove(session);
                 return;
             }
@@ -78,8 +78,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             GameData game = gameDAO.getGame(gameID);
             if (game == null) {
                 //if invalid, throw error and leave session
-                var errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: Unauthorized");
-                session.getRemote().sendString(new Gson().toJson(errorMessage));
+                sendError(session, "Error: Bad game ID");
                 connections.remove(session);
                 return;
             }
@@ -90,9 +89,12 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             session.getRemote().sendString(new Gson().toJson(loadGameMessage));
 
             //send notification to all other players
-            var message = String.format("%s has entered the game", playerName);
-            var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-            connections.broadcast(session, serverMessage);
+//            var message = String.format("%s has entered the game", playerName);
+//            var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+//            connections.broadcast(session, serverMessage);
+
+            sendMessage(session, "%s has entered the game", playerName);
+
         } catch (Exception e) {
             sendError(session, "Error: " + e.getMessage());
         }
@@ -101,33 +103,76 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private void leave(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
         String playerName = authDAO.getAuth(authToken).username();
-        var message = String.format("%s has left the game", playerName);
-        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-        connections.broadcast(session, serverMessage);
+
+//        var message = String.format("%s has left the game", playerName);
+//        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+//        connections.broadcast(session, serverMessage);
+
+        sendMessage(session, "%s has left the game", playerName);
+
         connections.remove(session);
     }
 
     private void resign(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
         String playerName = authDAO.getAuth(authToken).username();
-        var message = String.format("%s has resigned", playerName);
-        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-        connections.broadcast(session, serverMessage);
+
+//        var message = String.format("%s has resigned", playerName);
+//        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+//        connections.broadcast(session, serverMessage);
+        sendMessage(session, "%s has resigned", playerName);
+
         connections.remove(session);
         //END GAME HERE after leaving
 
     }
 
     private void makeMove(String authToken, Integer gameID, ChessMove move, Session session) throws IOException, DataAccessException {
-        String playerName = authDAO.getAuth(authToken).username();
-        var message = String.format("%s has made a move", playerName);
-        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, message);
-        //call make move from server
+        try {
+            //validate auth and game
+            validate(authToken, gameID, session);
+
+            //apply move
+
+            //send message
+            var message = String.format("%s has made a move", playerName);
+            var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, message);
+            //call make move from server
+        } catch () {
+
+        }
+
+
+
         connections.broadcast(session, serverMessage);
     }
 
     private void sendError(Session session, String msg) throws IOException {
         var errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, new Exception(msg));
         session.getRemote().sendString(new Gson().toJson(errorMessage));
+    }
+
+    private void sendMessage(Session session, String msg, String playerName) throws IOException {
+        var message = String.format(msg, playerName);
+        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        connections.broadcast(session, serverMessage);
+    }
+
+    private void validate(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
+        AuthData auth = authDAO.getAuth(authToken);
+        if (auth == null) {
+            //if invalid, throw error and leave session
+            sendError(session, "Error: Unauthorized");
+            connections.remove(session);
+            return;
+        }
+        //validate gameid
+        GameData game = gameDAO.getGame(gameID);
+        if (game == null) {
+            //if invalid, throw error and leave session
+            sendError(session, "Error: Bad game ID");
+            connections.remove(session);
+            return;
+        }
     }
 
 }
