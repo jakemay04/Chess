@@ -34,6 +34,7 @@ public class GameUI implements MsgHandler {
         this.wsFacade = new WebSocketFacade(url, this);
         //immedietly join game when entering
         wsFacade.joinGame(authToken, gameID);
+        help();
     }
 
     public String evalInput(String line) {
@@ -54,6 +55,17 @@ public class GameUI implements MsgHandler {
 
         } else if (line.equalsIgnoreCase("move")) {
             try {
+                var turn = gameData.game().getTeamTurn();
+                chess.ChessGame.TeamColor myColor;
+                if (playerColor.equals("WHITE")) {
+                    myColor = chess.ChessGame.TeamColor.WHITE;
+                } else {
+                    myColor = chess.ChessGame.TeamColor.BLACK;
+                }
+                if (gameData == null || gameData.game().getTeamTurn() != myColor) {
+                    System.out.println("It is not your turn");
+                    return line;
+                }
                 System.out.println("From (Ex. a2): ");
                 String from = scanner.nextLine();
 
@@ -90,11 +102,11 @@ public class GameUI implements MsgHandler {
 
     private void help() {
         System.out.println("Possible options: ");
-        System.out.println("Redraw Board - draw the current board in the terminal");
+        System.out.println("Redraw - draw the current board in the terminal");
         System.out.println("Leave - leave the current game");
-        System.out.println("Make Move - declare a move against your opponent");
+        System.out.println("Move - declare a move against your opponent");
         System.out.println("Resign - forfeit the current game let your opponent win");
-        System.out.println("Highlight Legal Moves - redraw the board with the highlighted possible moves");
+        System.out.println("Highlight - redraw the board with the highlighted possible moves");
     }
 
     private ChessPosition chessPosition(String pos) {
