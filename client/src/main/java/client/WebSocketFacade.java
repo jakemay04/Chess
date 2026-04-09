@@ -1,7 +1,10 @@
-package client.websocket;
+package client;
 
+import chess.ChessMove;
+import client.MsgHandler;
 import com.google.gson.Gson;
 import exception.ResponseException;
+import websocket.commands.MakeMoveCommand;
 import websocket.messages.ServerMessage;
 import websocket.commands.UserGameCommand;
 
@@ -15,13 +18,13 @@ import java.net.URISyntaxException;
 public class WebSocketFacade extends Endpoint {
 
     Session session;
-    ServerMessage serverMessage;
+    MsgHandler messageHandler;
 
-    public WebSocketFacade(String url, ServerMessage serverMessage) throws ResponseException {
+    public WebSocketFacade(String url,  MsgHandler messageHandler) throws ResponseException {
         try {
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/ws");
-            this.session = serverMessage;
+            this.messageHandler = messageHandler;
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, socketURI);
@@ -31,7 +34,7 @@ public class WebSocketFacade extends Endpoint {
                 @Override
                 public void onMessage(String message) {
                     ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
-                    serverMessage.notify(notification);
+                    messageHandler.notify(notification);
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {
@@ -44,27 +47,36 @@ public class WebSocketFacade extends Endpoint {
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 
-    public void joinGame(String visitorName) throws ResponseException {
+    public void joinGame(String authToken, Integer gameID) throws ResponseException {
         try {
-            var action = new UserGameCommand(UserGameCommand.CommandType.CONNECT, String authToken, Integer gameID);
+            var action = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
             this.session.getBasicRemote().sendText(new Gson().toJson(action));
         } catch (IOException ex) {
             throw new ResponseException(ResponseException.Code.ServerError, ex.getMessage());
         }
     }
 
-    public void leaveGame(String visitorName) throws ResponseException {
+    public void leaveGame(String authToken, Integer gameID) throws ResponseException {
         try {
-            var action = new UserGameCommand(UserGameCommand.CommandType.LEAVE, String authToken, Integer gameID);
+            var action = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
             this.session.getBasicRemote().sendText(new Gson().toJson(action));
         } catch (IOException ex) {
             throw new ResponseException(ResponseException.Code.ServerError, ex.getMessage());
         }
     }
 
-    public void resignGame(String visitorName) throws ResponseException {
+    public void resignGame(String authToken, Integer gameID) throws ResponseException {
         try {
-            var action = new UserGameCommand(UserGameCommand.CommandType.RESIGN, String authToken, Integer gameID);
+            var action = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(action));
+        } catch (IOException ex) {
+            throw new ResponseException(ResponseException.Code.ServerError, ex.getMessage());
+        }
+    }
+
+    public void makeMove(String authToken, Integer gameID, ChessMove move) throws ResponseException {
+        try {
+            var action = new MakeMoveCommand(authToken, gameID, move);
             this.session.getBasicRemote().sendText(new Gson().toJson(action));
         } catch (IOException ex) {
             throw new ResponseException(ResponseException.Code.ServerError, ex.getMessage());
