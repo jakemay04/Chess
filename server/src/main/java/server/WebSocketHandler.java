@@ -84,9 +84,6 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             session.getRemote().sendString(new Gson().toJson(loadGameMessage));
 
             //send notification to all other players
-//            var message = String.format("%s has entered the game", playerName);
-//            var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-//            connections.broadcast(session, serverMessage);
 
             String role = playerName.equals(game.whiteUsername()) ? "white" :
                     playerName.equals(game.blackUsername()) ? "black" : "observer";
@@ -116,9 +113,6 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             } else if (playerName.equals(game.blackUsername())) {
                 gameDAO.updateGame("BLACK", gameID, null);
             }
-//        var message = String.format("%s has left the game", playerName);
-//        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-//        connections.broadcast(session, serverMessage);
 
             sendMessage(session, "%s has left the game", playerName, gameID);
 
@@ -134,10 +128,6 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             AuthData auth = authDAO.getAuth(authToken);
             GameData game = gameDAO.getGame(gameID);
 
-//        var message = String.format("%s has resigned", playerName);
-//        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-//        connections.broadcast(session, serverMessage);
-            //END GAME HERE after leaving
             if (!validate(auth, game, session)) {
                 return;
             }
