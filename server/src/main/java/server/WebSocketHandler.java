@@ -187,17 +187,22 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             //send updated game
             var loadGameMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
             connections.broadcastToAll(gameID, loadGameMessage);
-            //send message
-            String gameMessage = "";
-            if (game.game().isInCheckmate(ChessGame.TeamColor.WHITE)) {
-                gameMessage = "Checkmate, black wins!";
-            } else if (game.game().isInCheckmate(ChessGame.TeamColor.BLACK)) {
-                gameMessage = "Checkmate, white wins!";
-            } else {
-                gameMessage = String.format("%s has made a move", playerName);
-            }
+            //send message for that dub
+            if (game.game().isInCheckmate(ChessGame.TeamColor.WHITE) ||
+                    game.game().isInCheckmate(ChessGame.TeamColor.BLACK)) {
 
-            connections.broadcast(session, gameID, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, gameMessage));
+                String winner = game.game().isInCheckmate(ChessGame.TeamColor.WHITE) ? "black" : "white";
+
+                connections.broadcast(session, gameID, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                        String.format("%s has made a move", playerName)));
+
+                connections.broadcastToAll(gameID, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                        String.format("Checkmate, %s wins!", winner)));
+
+            } else {
+                connections.broadcast(session, gameID, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                        String.format("%s has made a move", playerName)));
+            }
 
         } catch (Exception e) {
             sendError(session, "Error: " + e.getMessage());
