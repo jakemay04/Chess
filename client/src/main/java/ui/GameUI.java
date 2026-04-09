@@ -10,6 +10,7 @@ import model.GameData;
 import websocket.messages.ServerMessage;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -89,7 +90,14 @@ public class GameUI implements MsgHandler {
 
         } else if (line.equalsIgnoreCase("highlight")) {
             System.out.println("Which piece position would you like to highlight legal moves for?");
-                String pos = scanner.nextLine();
+            String pos = scanner.nextLine();
+            try {
+                ChessPosition position = chessPosition(pos);
+                Collection<ChessMove> validMoves = gameData.game().validMoves(position);
+                DrawBoard.printOutBoardHighlighted(gameData.game(), playerColor, position, validMoves);
+            } catch (Exception e) {
+                return e.getMessage();
+            }
 
         } else if (line.equalsIgnoreCase("quit")) {
             return "quit";

@@ -1,9 +1,9 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
+import model.GameData;
+
+import java.util.Collection;
 
 import static ui.EscapeSequences.*;
 
@@ -101,5 +101,17 @@ public class DrawBoard {
             }
         }
         System.out.println("   " + RESET_BG_COLOR + RESET_TEXT_COLOR);
+    }
+
+    private static void printOutBoardHighlighted(
+            GameData game, String playerColor,
+            ChessPosition position, Collection<ChessMove> validMoves) {
+
+            ChessBoard board = game.game().getBoard();
+            String[] columns = {"a", "b", "c", "d", "e", "f", "g", "h"};
+            printBorder(columns, playerColor);
+
+            int start
+
     }
 }
