@@ -2,6 +2,7 @@ package ui;
 
 import client.ServerFacade;
 import client.WebSocketFacade;
+import exception.ResponseException;
 import model.GameData;
 
 import java.util.Scanner;
@@ -37,7 +38,33 @@ public class GameUI {
             if (gameData != null) {
                 DrawBoard.printOutBoard(gameData.game(),playerColor);
             }
+        } else if (line.equalsIgnoreCase("leave")) {
+            try {
+                wsFacade.leaveGame(authToken, gameID);
+            } catch (Exception e) {
+                return e.getMessage();
+            }
+
+        } else if (line.equalsIgnoreCase("move")) {
+
+        } else if (line.equalsIgnoreCase("resign")) {
+            try {
+                wsFacade.resignGame(authToken, gameID);
+            } catch (Exception e) {
+                return e.getMessage();
+            }
+
+        } else if (line.equalsIgnoreCase("highlight")) {
+            System.out.println("Which piece position would you like to highlight legal moves for?");
+                String pos = scanner.nextLine();
+
+        } else if (line.equalsIgnoreCase("quit")) {
+            return "quit";
+        } else {
+            System.out.println("Invalid command, please type help for options.");
         }
+
+        return line;
     }
 
     private void help() {
