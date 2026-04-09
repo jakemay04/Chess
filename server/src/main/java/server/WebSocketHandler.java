@@ -125,8 +125,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         connections.broadcast(session, serverMessage);
     }
 
-    private void sendError(Session session, String message) throws IOException {
-        var errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, message);
+    private void sendError(Session session, String msg) throws IOException {
+        var errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, new Exception(msg));
         session.getRemote().sendString(new Gson().toJson(errorMessage));
     }
 
