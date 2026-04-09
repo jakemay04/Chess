@@ -173,6 +173,23 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 sendError(session, "Error: Game over");
                 return;
             }
+            //check whos turn
+            //check white turn
+            if (playerName.equals(game.whiteUsername()) && game.game().getTeamTurn() != ChessGame.TeamColor.WHITE) {
+                sendError(session, "Error: not your turn");
+                return;
+            }
+            //check black turn
+            if (playerName.equals(game.blackUsername()) && game.game().getTeamTurn() != ChessGame.TeamColor.BLACK) {
+                sendError(session, "Error: not your turn");
+                return;
+            }
+            //check observer
+            if (!playerName.equals(game.whiteUsername()) && !playerName.equals(game.blackUsername())) {
+                sendError(session, "Error: Observers cannot make moves");
+            }
+
+
             //apply move
             try  {
                 game.game().makeMove(move);
