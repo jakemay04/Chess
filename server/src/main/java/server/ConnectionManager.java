@@ -15,20 +15,24 @@ public class ConnectionManager {
     public final ConcurrentHashMap<Integer, ConcurrentHashMap.KeySetView<Session, Boolean>> connections
             = new ConcurrentHashMap<>();
 
-    public void add(Session session) {
-        connections.put(session, session);
+    public void add(Session session, Integer gameID) {
+        connections.putIfAbsent(gameID, ConcurrentHashMap.newKeySet());
+        connections.get(gameID).add(session);
     }
 
-    public void remove(Session session) {
-        connections.remove(session);
+    public void remove(Session session, Integer gameID) {
+        if (connections.containsKey(gameID)) {
+            connections.get(gameID).remove(session);
+        }
     }
 
-    public void broadcast(Session excludeSession, ServerMessage serverMessage) throws IOException {
+    public void broadcast(Session excludeSession, Integer gameID, ServerMessage serverMessage) throws IOException {
         String msg = gson.toJson(serverMessage);
-        for (Connection c : connections) {
-            if (c.isOpen()) {
-                if (!c.equals(excludeSession)) {
-                    c.getRemote().sendString(msg);
+        var sessions = connections.getOrDefault(gameID, ConcurrentHashMap.newKeySet());
+        for (Session s : sessions) {
+            if (s.isOpen()) {
+                if (!s.equals(excludeSession)) {
+                    s.getRemote().sendString(msg);
                 }
             }
         }

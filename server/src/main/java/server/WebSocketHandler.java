@@ -68,7 +68,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private void connect(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
         try {
-            connections.add(session);
+            connections.add(session, gameID);
             var auth = authDAO.getAuth(authToken);
             GameData game = gameDAO.getGame(gameID);
             //validate authtoken
@@ -86,7 +86,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 //            var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
 //            connections.broadcast(session, serverMessage);
 
-            sendMessage(session, "%s has entered the game", playerName);
+            sendMessage(session, "%s has entered the game", playerName, gameID);
 
         } catch (Exception e) {
             sendError(session, "Error: " + e.getMessage());
@@ -97,7 +97,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void leave(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
         try {
             AuthData auth = authDAO.getAuth(authToken);
-            String playerName = authDAO.getAuth(authToken).username();
+            String playerName = auth.username();
             GameData game = gameDAO.getGame(gameID);
 
             if (!validate(auth, game, session)) {
@@ -113,9 +113,9 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 //        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
 //        connections.broadcast(session, serverMessage);
 
-            sendMessage(session, "%s has left the game", playerName);
+            sendMessage(session, "%s has left the game", playerName, gameID);
 
-            connections.remove(session);
+            connections.remove(session, gameID);
         } catch (Exception e) {
             sendError(session, "Error: " + e.getMessage());
         }
@@ -150,7 +150,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             game.game().setTeamTurn(null); //reset game turn
             gameDAO.updateGame(game);
 
-            connections.broadcastToAll(new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+            connections.broadcastToAll(gameID, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
                     String.format("%s has resigned", playerName)));
         } catch (Exception e) {
             sendError(session, "Error: " + e.getMessage());
@@ -209,24 +209,22 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         session.getRemote().sendString(new Gson().toJson(errorMessage));
     }
 
-    private void sendMessage(Session session, String msg, String playerName) throws IOException {
+    private void sendMessage(Session session, String msg, String playerName, Integer gameID) throws IOException {
         var message = String.format(msg, playerName);
         var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-        connections.broadcast(session, serverMessage);
+        connections.broadcast(session, gameID, serverMessage);
     }
 
-    private boolean validate(AuthData auth, GameData game, Session session) throws IOException, DataAccessException {
+    private boolean validate(AuthData auth, GameData game, Session session) throws IOException {
         if (auth == null) {
             //if invalid, throw error and leave session
             sendError(session, "Error: Unauthorized");
-            connections.remove(session);
             return false;
         }
         //validate gameid
         if (game == null) {
             //if invalid, throw error and leave session
             sendError(session, "Error: Bad game ID");
-            connections.remove(session);
             return false;
         }
         return true;
