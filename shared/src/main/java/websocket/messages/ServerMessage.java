@@ -13,6 +13,7 @@ import java.util.Objects;
 public class ServerMessage {
     ServerMessageType serverMessageType;
     String message;
+    String errorMessage;
     GameData game;
 
     public enum ServerMessageType {
@@ -21,18 +22,26 @@ public class ServerMessage {
         NOTIFICATION
     }
 
-    //only runs with message
+    public ServerMessage(ServerMessageType type) {
+        this.serverMessageType = type;
+    }
+
+    //only runs with server message
     public ServerMessage(ServerMessageType type, String message) {
         this.serverMessageType = type;
         this.message = message;
-        this.game = null;
+    }
+
+    //only runs with error message
+    public ServerMessage(ServerMessageType type, Exception e) {
+        this.serverMessageType = type;
+        this.errorMessage = e.getMessage();
     }
 
     //only runs with game data
     public ServerMessage(ServerMessageType type, GameData game) {
         this.serverMessageType = type;
         this.game = game;
-        this.message = null;
     }
 
     public ServerMessageType getServerMessageType() {
@@ -40,7 +49,7 @@ public class ServerMessage {
     }
 
     public String getMessage() {
-        return message;
+        return errorMessage;
     }
 
 //    public loadGame() {

@@ -63,37 +63,40 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
     private void connect(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
-        connections.add(session);
-        var auth = authDAO.getAuth(authToken);
-        System.out.println("this is auth " + auth);
-        //validate authtoken
-        if (auth == null) {
-            //if invalid, throw error and leave session
-            var errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: Unauthorized");
-            session.getRemote().sendString(new Gson().toJson(errorMessage));
-            connections.remove(session);
-            return;
-        }
-        //validate gameid
-        GameData game = gameDAO.getGame(gameID);
-        System.out.println("this is auth " + game);
-        if (game == null) {
-            //if invalid, throw error and leave session
-            var errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: Unauthorized");
-            session.getRemote().sendString(new Gson().toJson(errorMessage));
-            connections.remove(session);
-            return;
+        try {
+            connections.add(session);
+            var auth = authDAO.getAuth(authToken);
+            //validate authtoken
+            if (auth == null) {
+                //if invalid, throw error and leave session
+                var errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: Unauthorized");
+                session.getRemote().sendString(new Gson().toJson(errorMessage));
+                connections.remove(session);
+                return;
+            }
+            //validate gameid
+            GameData game = gameDAO.getGame(gameID);
+            if (game == null) {
+                //if invalid, throw error and leave session
+                var errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: Unauthorized");
+                session.getRemote().sendString(new Gson().toJson(errorMessage));
+                connections.remove(session);
+                return;
+            }
+
+            //send load_game to root player
+            String playerName = auth.username();
+            var loadGameMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
+            session.getRemote().sendString(new Gson().toJson(loadGameMessage));
+
+            //send notification to all other players
+            var message = String.format("%s has entered the game", playerName);
+            var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+            connections.broadcast(session, serverMessage);
+        } catch (Exception e) {
+            sendError(session, "Error: " + e.getMessage());
         }
 
-        //send load_game to root player
-        String playerName = auth.username();
-        var loadGameMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
-        session.getRemote().sendString(new Gson().toJson(loadGameMessage));
-
-        //send notification to all other players
-        var message = String.format("%s has entered the game", playerName);
-        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-        connections.broadcast(session, serverMessage);
     }
 
     private void leave(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
@@ -120,6 +123,11 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, message);
         //call make move from server
         connections.broadcast(session, serverMessage);
+    }
+
+    private void sendError(Session session, String message) throws IOException {
+        var errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, message);
+        session.getRemote().sendString(new Gson().toJson(errorMessage));
     }
 
 }
