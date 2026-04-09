@@ -70,7 +70,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         try {
             connections.add(session, gameID);
             System.out.println("sessions in game " + gameID + ": " + connections.connections.get(gameID).size());
-            var auth = authDAO.getAuth(authToken);
+            String playerNameDebug = authDAO.getAuth(authToken) != null ? authDAO.getAuth(authToken).username() : "unknown";
+            System.out.println("connecting player: " + playerNameDebug);            var auth = authDAO.getAuth(authToken);
             GameData game = gameDAO.getGame(gameID);
             //validate authtoken
             if (!validate(auth, game, session)) {
@@ -89,7 +90,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
             String role = playerName.equals(game.whiteUsername()) ? "white" :
                     playerName.equals(game.blackUsername()) ? "black" : "observer";
-            connections.broadcastToAll(gameID, new ServerMessage(
+            connections.broadcast(session, gameID, new ServerMessage(
                     ServerMessage.ServerMessageType.NOTIFICATION,
                     String.format("%s has joined as %s", playerName, role)));
 
@@ -197,7 +198,6 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 return;
             }
 
-
             //apply move
             try  {
                 game.game().makeMove(move);
@@ -224,9 +224,16 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 connections.broadcastToAll(gameID, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
                         String.format("Checkmate, %s wins!", winner)));
 
+            } else if (game.game().isInCheck(ChessGame.TeamColor.WHITE)) {
+                connections.broadcastToAll(gameID, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                        "White is in check!"));
+            } else if (game.game().isInCheck(ChessGame.TeamColor.BLACK)) {
+                connections.broadcastToAll(gameID, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                        "Black is in check!"));
             } else {
                 connections.broadcast(session, gameID, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
-                        String.format("%s has made a move", playerName)));
+                        String.format("%s moved from %s to %s", playerName,
+                                moveToString(move.getStartPosition()), moveToString(move.getEndPosition()))));
             }
 
         } catch (Exception e) {
@@ -243,6 +250,11 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         var message = String.format(msg, playerName);
         var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
         connections.broadcast(session, gameID, serverMessage);
+    }
+
+    private String moveToString(chess.ChessPosition pos) {
+        char col = (char) ('a' + pos.getColumn() - 1);
+        return "" + col + pos.getRow();
     }
 
     private boolean validate(AuthData auth, GameData game, Session session) throws IOException {

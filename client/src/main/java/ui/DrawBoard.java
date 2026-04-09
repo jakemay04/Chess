@@ -28,9 +28,9 @@ public class DrawBoard {
             for (int row = 7; row >= 0; row--) {
                 printRow(board, row, playerColor);
             }
-        } else if (playerColor.equals("BLACK")) {
+        } else {
             for (int row = 0; row <= 7; row++) {
-                printRow(board, row, playerColor);
+                printRow(board, row, "BLACK");
             }
         }
 

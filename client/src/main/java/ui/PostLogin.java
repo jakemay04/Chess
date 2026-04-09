@@ -98,7 +98,12 @@ public class PostLogin {
                 GameUI gameUI = new GameUI(facade,authToken,gameNumber,"OBSERVER",url);
                 String exitString = "";
 
-                return "Game Joined!";
+                while (!exitString.equals("left") && !exitString.equals("quit")) {
+                    System.out.print("Observing>>>");
+                    String input = scanner.nextLine();
+                    exitString = gameUI.evalInput(input);
+                }
+                return "Stopped Observing.";
             } catch (Exception e) {
                 return e.getMessage();
             }

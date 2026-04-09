@@ -130,22 +130,26 @@ public class GameUI implements MsgHandler {
         return new ChessPosition(row, col);
     }
 
+    private String prompt() {
+        return playerColor.equals("OBSERVER") ? "[OBSERVING] >>> " : "[IN GAME] >>> ";
+    }
+
     @Override
     public void notify(ServerMessage message) {
         switch (message.getServerMessageType()) {
             case NOTIFICATION -> {
                 System.out.println("\n" + message.getMessage());
-                System.out.print("[IN GAME] >>> ");
+                System.out.print(prompt());
             }
             case ERROR -> {
                 System.out.println("\nError: " + message.getErrorMessage());
-                System.out.print("[IN GAME] >>> ");
+                System.out.print(prompt());
             }
             case LOAD_GAME -> {
                 gameData = message.getGame();
                 System.out.println();
                 DrawBoard.printOutBoard(gameData.game(), playerColor);
-                System.out.print("[IN GAME] >>> ");
+                System.out.print(prompt());
             }
         }
     }
