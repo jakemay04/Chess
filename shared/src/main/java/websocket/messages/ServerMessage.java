@@ -23,6 +23,13 @@ public class ServerMessage {
     public ServerMessage(ServerMessageType type, String message) {
         this.serverMessageType = type;
         this.message = message;
+        this.game = null;
+    }
+
+    public ServerMessage(ServerMessageType type, GameData game) {
+        this.serverMessageType = type;
+        this.game = game;
+        this.message = null;
     }
 
     public ServerMessageType getServerMessageType() {

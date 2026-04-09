@@ -4,6 +4,7 @@ import chess.ChessMove;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
+import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import io.javalin.websocket.WsCloseContext;
 import io.javalin.websocket.WsCloseHandler;
@@ -11,6 +12,7 @@ import io.javalin.websocket.WsConnectContext;
 import io.javalin.websocket.WsConnectHandler;
 import io.javalin.websocket.WsMessageContext;
 import io.javalin.websocket.WsMessageHandler;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.commands.MakeMoveCommand;
 import websocket.messages.ServerMessage;
@@ -23,9 +25,11 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private final ConnectionManager connections = new ConnectionManager();
     private final Gson gson = new Gson();
     private final AuthDAO authDAO;
+    private final GameDAO gameDAO;
 
-    public WebSocketHandler(AuthDAO authDAO) {
+    public WebSocketHandler(AuthDAO authDAO, GameDAO gameDAO) {
         this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
     }
 
     @Override
@@ -61,6 +65,12 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void connect(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
         connections.add(session);
         String playerName = authDAO.getAuth(authToken).username();
+        //send load_game to root player
+        GameData game = gameDAO.getGame(gameID);
+        var loadGameMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
+        session.getRemote().sendString(new Gson().toJson(loadGameMessage));
+
+        //send notification to all other players
         var message = String.format("%s has entered the game", playerName);
         var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
         connections.broadcast(session, serverMessage);
