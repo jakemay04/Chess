@@ -70,19 +70,9 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         try {
             connections.add(session);
             var auth = authDAO.getAuth(authToken);
-            //validate authtoken
-            if (auth == null) {
-                //if invalid, throw error and leave session
-                sendError(session, "Error: Unauthorized");
-                connections.remove(session);
-                return;
-            }
-            //validate gameid
             GameData game = gameDAO.getGame(gameID);
-            if (game == null) {
-                //if invalid, throw error and leave session
-                sendError(session, "Error: Bad game ID");
-                connections.remove(session);
+            //validate authtoken
+            if (validate(auth, game, session)) {
                 return;
             }
 
@@ -106,11 +96,18 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private void leave(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
         String playerName = authDAO.getAuth(authToken).username();
+        GameData game = gameDAO.getGame(gameID);
 
+        if (playerName.equals(game.whiteUsername())) {
+            gameDAO.updateGame("WHITE", gameID, null);
+        } else if (playerName.equals(game.blackUsername())) {
+            gameDAO.updateGame("BLACK", gameID, null);
+        }
 //        var message = String.format("%s has left the game", playerName);
 //        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
 //        connections.broadcast(session, serverMessage);
 
+        gameDAO.updateGame();
         sendMessage(session, "%s has left the game", playerName);
 
         connections.remove(session);
@@ -125,8 +122,9 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 //        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
 //        connections.broadcast(session, serverMessage);
             //END GAME HERE after leaving
-            validate(auth, game, session);
-
+            if (validate(auth, game, session)) {
+                return;
+            }
             String playerName = auth.username();
             game.game().setTeamTurn(null); //reset game turn
             gameDAO.updateGame(game);
@@ -145,11 +143,14 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             AuthData auth = authDAO.getAuth(authToken);
             GameData game = gameDAO.getGame(gameID);
 
-            validate(auth, game, session);
+            if (validate(auth, game, session)) {
+                return;
+            }
             String playerName = auth.username();
             //check if game is over
             if (game.game().getTeamTurn() == null) {
                 sendError(session, "Error: Game over");
+                return;
             }
             //apply move
             try  {
@@ -194,20 +195,21 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         connections.broadcast(session, serverMessage);
     }
 
-    private void validate(AuthData auth, GameData game, Session session) throws IOException, DataAccessException {
+    private boolean validate(AuthData auth, GameData game, Session session) throws IOException, DataAccessException {
         if (auth == null) {
             //if invalid, throw error and leave session
             sendError(session, "Error: Unauthorized");
             connections.remove(session);
-            return;
+            return false;
         }
         //validate gameid
         if (game == null) {
             //if invalid, throw error and leave session
             sendError(session, "Error: Bad game ID");
             connections.remove(session);
-            return;
+            return false;
         }
+        return true;
     }
 
 }
