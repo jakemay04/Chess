@@ -43,11 +43,13 @@ public class DrawBoard {
 
         if (playerColor.equals("WHITE")) {
             for (int column = 0; column <= 7; column++) {
-                printSquare(board, row, column);
+                String bg = (row + column) % 2 == 1 ? SET_BG_COLOR_LIGHT_GREY : SET_BG_COLOR_DARK_GREY;
+                printSquare(board, row, column, bg);
             }
         } else if (playerColor.equals("BLACK")) {
             for (int column = 7; column >= 0; column--) {
-                printSquare(board, row, column);
+                String bg = (row + column) % 2 == 1 ? SET_BG_COLOR_LIGHT_GREY : SET_BG_COLOR_DARK_GREY;
+                printSquare(board, row, column, bg);
             }
         }
 
@@ -55,15 +57,7 @@ public class DrawBoard {
         System.out.println(RESET_TEXT_COLOR);
     }
 
-    private static void printSquare(ChessBoard board, int row, int col) {
-        boolean isLight = (row + col) % 2 == 1;
-        String background;
-        if (isLight) {
-            background = SET_BG_COLOR_LIGHT_GREY;
-        } else {
-            background = SET_BG_COLOR_DARK_GREY;
-        }
-
+    private static void printSquare(ChessBoard board, int row, int col, String backg) {
         ChessPiece piece = board.getPiece(new ChessPosition(row + 1, col + 1));
         String textColor = "";
         String symbol = "";
@@ -86,7 +80,7 @@ public class DrawBoard {
             }
         }
 
-        System.out.print(background + textColor + symbol + RESET_TEXT_COLOR);
+        System.out.print(backg + textColor + symbol + RESET_TEXT_COLOR);
     }
 
     private static void printBorder(String[] cols, String playerColor) {
@@ -104,14 +98,36 @@ public class DrawBoard {
     }
 
     private static void printOutBoardHighlighted(
-            GameData game, String playerColor,
+            ChessGame game, String playerColor,
             ChessPosition position, Collection<ChessMove> validMoves) {
 
-            ChessBoard board = game.game().getBoard();
-            String[] columns = {"a", "b", "c", "d", "e", "f", "g", "h"};
-            printBorder(columns, playerColor);
+        ChessBoard board = game.game().getBoard();
+        String[] columns = {"a", "b", "c", "d", "e", "f", "g", "h"};
+        printBorder(columns, playerColor);
 
-            int start
+        int start = playerColor.equals("WHITE") ? 7 : 0;
+        int end = playerColor.equals("WHITE") ? -1 : 8;
+        int step = playerColor.equals("WHITE") ? -1 : 1;
+
+        for (int row = start; row != end; row += step) {
+            System.out.print(SET_BG_COLOR_BLUE + SET_TEXT_COLOR_WHITE + " " + (row + 1) + " " + RESET_BG_COLOR);
+            int colStart = playerColor.equals("WHITE") ? 0 : 7;
+            int colEnd = playerColor.equals("WHITE") ? 8 : -1;
+            int colStep = playerColor.equals("WHITE") ? 1 : -1;
+            for (int col = colStart; col != colEnd; col += colStep) {
+                ChessPosition cur = new ChessPosition(row + 1, col + 1);
+                boolean isLight = (row + col) % 2 == 1;
+                String bg = cur.equals(position) ? SET_BG_COLOR_YELLOW
+                        : validMoves.stream().anyMatch(m -> m.getEndPosition().equals(cur)) ? SET_BG_COLOR_GREEN
+                        : isLight ? SET_BG_COLOR_LIGHT_GREY : SET_BG_COLOR_DARK_GREY;
+                printSquare(board, row, col, bg);
+            }
+            System.out.print(SET_BG_COLOR_BLUE + SET_TEXT_COLOR_WHITE + " " + (row + 1) + " " + RESET_BG_COLOR);
+            System.out.println(RESET_TEXT_COLOR);
+        }
+        printBorder(columns, playerColor);
+
+
 
     }
 }
