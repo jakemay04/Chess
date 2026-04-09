@@ -64,8 +64,15 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private void connect(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
         connections.add(session);
-        String playerName = authDAO.getAuth(authToken).username();
+        var auth = authDAO.getAuth(authToken);
+        //validate authtoken
+        if (auth)
+
+        //validate gameid
+
+
         //send load_game to root player
+        String playerName = auth.username();
         GameData game = gameDAO.getGame(gameID);
         var loadGameMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
         session.getRemote().sendString(new Gson().toJson(loadGameMessage));
