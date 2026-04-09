@@ -95,6 +95,8 @@ public class PostLogin {
             }
             try {
                 int gameNumber = gamesList.get(gameID - 1).gameID();
+                System.out.println("observing game with ID: " + gameNumber);
+
                 GameUI gameUI = new GameUI(facade,authToken,gameNumber,"OBSERVER",url);
                 String exitString = "";
 
@@ -140,6 +142,8 @@ public class PostLogin {
                 System.out.print("Color (WHITE/BLACK): ");
                 String playerColor = scanner.nextLine().toUpperCase();
                 int gameNumber = gamesList.get(gameID - 1).gameID();
+                System.out.println("joining game with ID: " + gameNumber);
+
                 facade.joinGame(new JoinGameRequest(authToken, playerColor, gameNumber), authToken);
 
                 GameUI gameUI = new GameUI(facade, authToken, gameNumber, playerColor, url);
