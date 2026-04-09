@@ -156,7 +156,7 @@ public class PostLogin {
                     }
                 }
 
-                return "Game Joined!";
+                return "Game Left!";
             } catch (Exception e) {
                 return e.getMessage();
             }

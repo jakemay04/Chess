@@ -157,8 +157,9 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             game.game().setTeamTurn(null); //reset game turn
             gameDAO.updateGame(game);
 
+            String winner = playerName.equals(game.whiteUsername()) ? "black" : "white";
             connections.broadcastToAll(gameID, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
-                    String.format("%s has resigned", playerName)));
+                    String.format("%s has resigned. %s wins!", playerName, winner)));
         } catch (Exception e) {
             sendError(session, "Error: " + e.getMessage());
         }
