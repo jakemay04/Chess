@@ -65,15 +65,28 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void connect(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
         connections.add(session);
         var auth = authDAO.getAuth(authToken);
+        System.out.println("this is auth " + auth);
         //validate authtoken
-        if (auth)
-
+        if (auth == null) {
+            //if invalid, throw error and leave session
+            var errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: Unauthorized");
+            session.getRemote().sendString(new Gson().toJson(errorMessage));
+            connections.remove(session);
+            return;
+        }
         //validate gameid
-
+        GameData game = gameDAO.getGame(gameID);
+        System.out.println("this is auth " + game);
+        if (game == null) {
+            //if invalid, throw error and leave session
+            var errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: Unauthorized");
+            session.getRemote().sendString(new Gson().toJson(errorMessage));
+            connections.remove(session);
+            return;
+        }
 
         //send load_game to root player
         String playerName = auth.username();
-        GameData game = gameDAO.getGame(gameID);
         var loadGameMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
         session.getRemote().sendString(new Gson().toJson(loadGameMessage));
 
