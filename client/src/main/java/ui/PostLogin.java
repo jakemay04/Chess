@@ -136,7 +136,6 @@ public class PostLogin {
                 int gameNumber = gamesList.get(gameID - 1).gameID();
                 facade.joinGame(new JoinGameRequest(authToken, playerColor, gameNumber), authToken);
 
-                ChessGame game = gamesList.get(gameID - 1).game();
                 GameUI gameUI = new GameUI(facade, authToken, gameNumber, playerColor, url);
                 String exitString = "";
                 while (!exitString.equals("left") && !exitString.equals("quit")) {

@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 public class Repl {
 
+    private static final String url = "http://localhost:8080";
     private final ServerFacade facade = new ServerFacade("http://localhost:8080");
     private final PreLogin preLogin = new PreLogin(facade);
     private PostLogin postLogin = null;
@@ -37,7 +38,7 @@ public class Repl {
                     if (result.startsWith("loggedin:")) {
                         authToken = result.split(":")[1];
                         loggedIn = true;
-                        postLogin = new PostLogin(facade, authToken);
+                        postLogin = new PostLogin(facade, authToken, url);
                         result = "You are now Logged in! Type Help, List, Join, Create, Observe or Quit to continue";
                     }
                 }

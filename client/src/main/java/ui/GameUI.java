@@ -110,11 +110,19 @@ public class GameUI implements MsgHandler {
     @Override
     public void notify(ServerMessage message) {
         switch (message.getServerMessageType()) {
-            case NOTIFICATION -> System.out.println("\n" + message.getMessage());
-            case ERROR -> System.out.println("\nError: " + message.getErrorMessage());
+            case NOTIFICATION -> {
+                System.out.println("\n" + message.getMessage());
+                System.out.print("[IN GAME] >>> ");
+            }
+            case ERROR -> {
+                System.out.println("\nError: " + message.getErrorMessage());
+                System.out.print("[IN GAME] >>> ");
+            }
             case LOAD_GAME -> {
                 gameData = message.getGame();
+                System.out.println();
                 DrawBoard.printOutBoard(gameData.game(), playerColor);
+                System.out.print("[IN GAME] >>> ");
             }
         }
     }
