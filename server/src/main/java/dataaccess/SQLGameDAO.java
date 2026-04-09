@@ -89,6 +89,13 @@ public class SQLGameDAO implements GameDAO{
         //create statement based on which player joins;
     }
 
+    //updating a game after joining
+    public void updateGame(GameData game) throws DataAccessException {
+        String statement = "UPDATE game SET game = ? WHERE gameID = ?";
+        var json = new Gson().toJson(game.game());
+        executeUpdate(statement, json, game.gameID());
+    }
+
     public Collection<GameData> gameList() throws DataAccessException {
         String statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM game";
         Collection<GameData> games = new ArrayList<>();

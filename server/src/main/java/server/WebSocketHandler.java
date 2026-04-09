@@ -1,6 +1,8 @@
 package server;
 
+import chess.ChessGame;
 import chess.ChessMove;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
@@ -20,6 +22,7 @@ import websocket.messages.ServerMessage;
 import websocket.commands.UserGameCommand;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
 
@@ -129,21 +132,34 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void makeMove(String authToken, Integer gameID, ChessMove move, Session session) throws IOException, DataAccessException {
         try {
             //validate auth and game
-            validate(authToken, gameID, session);
+            AuthData auth = authDAO.getAuth(authToken);
+            GameData game = gameDAO.getGame(gameID);
+            String playerName = auth.username();
+
+            validate(auth, game, session);
 
             //apply move
+            try  {
+                game.game().makeMove(move);
+
+            } catch (InvalidMoveException e) {
+                sendError(session, "Error: invalid move - " + e.getMessage());
+                return;
+            }
+            //update game
+            gameDAO.updateGame(authToken, gameID, auth.username());
+
+            //send updated game
+            var loadGameMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
+            connections.broadcast(session, loadGameMessage);
 
             //send message
             var message = String.format("%s has made a move", playerName);
-            var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, message);
-            //call make move from server
-        } catch () {
-
+            var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+            connections.broadcast(session, serverMessage);
+        } catch (Exception e) {
+            sendError(session, "Error: " + e.getMessage());
         }
-
-
-
-        connections.broadcast(session, serverMessage);
     }
 
     private void sendError(Session session, String msg) throws IOException {
@@ -157,8 +173,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         connections.broadcast(session, serverMessage);
     }
 
-    private void validate(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
-        AuthData auth = authDAO.getAuth(authToken);
+    private void validate(AuthData auth, GameData game, Session session) throws IOException, DataAccessException {
         if (auth == null) {
             //if invalid, throw error and leave session
             sendError(session, "Error: Unauthorized");
@@ -166,7 +181,6 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             return;
         }
         //validate gameid
-        GameData game = gameDAO.getGame(gameID);
         if (game == null) {
             //if invalid, throw error and leave session
             sendError(session, "Error: Bad game ID");
