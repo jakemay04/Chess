@@ -2,6 +2,7 @@ package dataaccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mysql.cj.xdevapi.PreparableStatement;
 import model.GameData;
 
@@ -17,7 +18,7 @@ import java.util.Map;
 import static dataaccess.SQLFunctions.executeUpdate;
 
 public class SQLGameDAO implements GameDAO{
-    private final Gson gson =  new Gson();
+    private final Gson gson = new GsonBuilder().serializeNulls().create();
 
     public SQLGameDAO() {
         try {
@@ -92,7 +93,8 @@ public class SQLGameDAO implements GameDAO{
     //updating a game after joining
     public void updateGame(GameData game) throws DataAccessException {
         String statement = "UPDATE game SET game = ? WHERE gameID = ?";
-        var json = new Gson().toJson(game.game());
+        Gson gsonWithNulls = new GsonBuilder().serializeNulls().create();
+        var json = gsonWithNulls.toJson(game.game());
         executeUpdate(statement, json, game.gameID());
     }
 

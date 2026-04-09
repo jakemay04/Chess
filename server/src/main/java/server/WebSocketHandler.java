@@ -163,6 +163,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             //validate auth and game
             AuthData auth = authDAO.getAuth(authToken);
             GameData game = gameDAO.getGame(gameID);
+            System.out.println("teamTurn: " + game.game().getTeamTurn());
 
             if (!validate(auth, game, session)) {
                 return;
@@ -187,6 +188,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             //check observer
             if (!playerName.equals(game.whiteUsername()) && !playerName.equals(game.blackUsername())) {
                 sendError(session, "Error: Observers cannot make moves");
+                return;
             }
 
 
