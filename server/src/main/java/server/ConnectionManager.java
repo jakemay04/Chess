@@ -12,7 +12,8 @@ import com.google.gson.Gson;
 public class ConnectionManager {
 
     private final Gson gson = new Gson();
-    public final ConcurrentHashMap<Session, Session> connections = new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<Integer, ConcurrentHashMap.KeySetView<Session, Boolean>> connections
+            = new ConcurrentHashMap<>();
 
     public void add(Session session) {
         connections.put(session, session);
@@ -24,7 +25,7 @@ public class ConnectionManager {
 
     public void broadcast(Session excludeSession, ServerMessage serverMessage) throws IOException {
         String msg = gson.toJson(serverMessage);
-        for (Session c : connections.values()) {
+        for (Connection c : connections) {
             if (c.isOpen()) {
                 if (!c.equals(excludeSession)) {
                     c.getRemote().sendString(msg);
@@ -33,11 +34,12 @@ public class ConnectionManager {
         }
     }
 
-    public void broadcastToAll(ServerMessage serverMessage) throws IOException {
-        String msg = gson.toJson(serverMessage);
-        for (Session c : connections.values()) {
-            if (c.isOpen()) {
-                c.getRemote().sendString(msg);
+    public void broadcastToAll(Integer gameID, ServerMessage serverMessage) throws IOException {
+        String msg = new Gson().toJson(serverMessage);
+        var gameSessions = connections.getOrDefault(gameID, ConcurrentHashMap.newKeySet());
+        for (Session s : gameSessions) {
+            if (s.isOpen()) {
+                s.getRemote().sendString(msg);
             }
         }
     }

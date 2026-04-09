@@ -186,8 +186,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
             //send updated game
             var loadGameMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
-            connections.broadcastToAll(loadGameMessage);
-
+            connections.broadcastToAll(gameID, loadGameMessage);
             //send message
             String gameMessage = "";
             if (game.game().isInCheckmate(ChessGame.TeamColor.WHITE)) {
@@ -198,7 +197,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 gameMessage = String.format("%s has made a move", playerName);
             }
 
-            connections.broadcastToAll(new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, gameMessage));
+            connections.broadcast(session, gameID, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, gameMessage));
 
         } catch (Exception e) {
             sendError(session, "Error: " + e.getMessage());
