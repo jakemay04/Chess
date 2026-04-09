@@ -69,6 +69,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void connect(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
         try {
             connections.add(session, gameID);
+            System.out.println("sessions in game " + gameID + ": " + connections.connections.get(gameID).size());
             var auth = authDAO.getAuth(authToken);
             GameData game = gameDAO.getGame(gameID);
             //validate authtoken
@@ -86,7 +87,12 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 //            var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
 //            connections.broadcast(session, serverMessage);
 
-            sendMessage(session, "%s has entered the game", playerName, gameID);
+            String role = playerName.equals(game.whiteUsername()) ? "white" :
+                    playerName.equals(game.blackUsername()) ? "black" : "observer";
+            connections.broadcastToAll(gameID, new ServerMessage(
+                    ServerMessage.ServerMessageType.NOTIFICATION,
+                    String.format("%s has joined as %s", playerName, role)));
+
 
         } catch (Exception e) {
             sendError(session, "Error: " + e.getMessage());

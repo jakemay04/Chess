@@ -56,14 +56,17 @@ public class GameUI implements MsgHandler {
 
         } else if (line.equalsIgnoreCase("move")) {
             try {
-                var turn = gameData.game().getTeamTurn();
+                if (gameData == null) {
+                    System.out.println("Error loading game");
+                    return line;
+                }
                 chess.ChessGame.TeamColor myColor;
                 if (playerColor.equals("WHITE")) {
                     myColor = chess.ChessGame.TeamColor.WHITE;
                 } else {
                     myColor = chess.ChessGame.TeamColor.BLACK;
                 }
-                if (gameData == null || gameData.game().getTeamTurn() != myColor) {
+                if (gameData.game().getTeamTurn() != myColor) {
                     System.out.println("It is not your turn");
                     return line;
                 }

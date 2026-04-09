@@ -97,11 +97,11 @@ public class DrawBoard {
         System.out.println("   " + RESET_BG_COLOR + RESET_TEXT_COLOR);
     }
 
-    private static void printOutBoardHighlighted(
+    public static void printOutBoardHighlighted(
             ChessGame game, String playerColor,
             ChessPosition position, Collection<ChessMove> validMoves) {
 
-        ChessBoard board = game.game().getBoard();
+        ChessBoard board = game.getBoard();
         String[] columns = {"a", "b", "c", "d", "e", "f", "g", "h"};
         printBorder(columns, playerColor);
 

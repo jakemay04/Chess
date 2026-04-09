@@ -94,9 +94,10 @@ public class PostLogin {
                 return "Please enter a valid number.";
             }
             try {
-                ChessGame game = gamesList.get(gameID - 1).game();
+                int gameNumber = gamesList.get(gameID - 1).gameID();
+                GameUI gameUI = new GameUI(facade,authToken,gameNumber,"OBSERVER",url);
+                String exitString = "";
 
-                DrawBoard.printOutBoard(game, "WHITE");
                 return "Game Joined!";
             } catch (Exception e) {
                 return e.getMessage();
