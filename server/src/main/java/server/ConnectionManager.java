@@ -33,7 +33,7 @@ public class ConnectionManager {
         }
     }
 
-    public void broadcastToAll(Session excludeSession, ServerMessage serverMessage) throws IOException {
+    public void broadcastToAll(ServerMessage serverMessage) throws IOException {
         String msg = gson.toJson(serverMessage);
         for (Session c : connections.values()) {
             if (c.isOpen()) {

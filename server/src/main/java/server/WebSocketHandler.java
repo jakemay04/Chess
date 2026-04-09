@@ -117,27 +117,40 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
     private void resign(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
-        String playerName = authDAO.getAuth(authToken).username();
+        try {
+            AuthData auth = authDAO.getAuth(authToken);
+            GameData game = gameDAO.getGame(gameID);
 
 //        var message = String.format("%s has resigned", playerName);
 //        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
 //        connections.broadcast(session, serverMessage);
-        sendMessage(session, "%s has resigned", playerName);
+            //END GAME HERE after leaving
+            validate(auth, game, session);
 
-        connections.remove(session);
-        //END GAME HERE after leaving
+            String playerName = auth.username();
+            game.game().setTeamTurn(null); //reset game turn
+            gameDAO.updateGame(game);
 
+            connections.broadcastToAll(new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                    String.format("%s has resigned", playerName)));
+        } catch (Exception e) {
+            sendError(session, "Error: " + e.getMessage());
+        }
     }
 
     private void makeMove(String authToken, Integer gameID, ChessMove move, Session session) throws IOException, DataAccessException {
         try {
+
             //validate auth and game
             AuthData auth = authDAO.getAuth(authToken);
             GameData game = gameDAO.getGame(gameID);
-            String playerName = auth.username();
 
             validate(auth, game, session);
-
+            String playerName = auth.username();
+            //check if game is over
+            if (game.game().getTeamTurn() == null) {
+                sendError(session, "Error: Game over");
+            }
             //apply move
             try  {
                 game.game().makeMove(move);
@@ -151,12 +164,20 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
             //send updated game
             var loadGameMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
-            connections.broadcast(session, loadGameMessage);
+            connections.broadcastToAll(loadGameMessage);
 
             //send message
-            var message = String.format("%s has made a move", playerName);
-            var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-            connections.broadcast(session, serverMessage);
+            String gameMessage = "";
+            if (game.game().isInCheckmate(ChessGame.TeamColor.WHITE)) {
+                gameMessage = "Checkmate, black wins!";
+            } else if (game.game().isInCheckmate(ChessGame.TeamColor.BLACK)) {
+                gameMessage = "Checkmate, white wins!";
+            } else {
+                gameMessage = String.format("%s has made a move", playerName);
+            }
+
+            connections.broadcastToAll(new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, gameMessage));
+
         } catch (Exception e) {
             sendError(session, "Error: " + e.getMessage());
         }
