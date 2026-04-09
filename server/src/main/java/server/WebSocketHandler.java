@@ -72,7 +72,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             var auth = authDAO.getAuth(authToken);
             GameData game = gameDAO.getGame(gameID);
             //validate authtoken
-            if (validate(auth, game, session)) {
+            if (!validate(auth, game, session)) {
                 return;
             }
 
@@ -95,22 +95,31 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
     private void leave(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
-        String playerName = authDAO.getAuth(authToken).username();
-        GameData game = gameDAO.getGame(gameID);
+        try {
+            AuthData auth = authDAO.getAuth(authToken);
+            String playerName = authDAO.getAuth(authToken).username();
+            GameData game = gameDAO.getGame(gameID);
 
-        if (playerName.equals(game.whiteUsername())) {
-            gameDAO.updateGame("WHITE", gameID, null);
-        } else if (playerName.equals(game.blackUsername())) {
-            gameDAO.updateGame("BLACK", gameID, null);
-        }
+            if (!validate(auth, game, session)) {
+                return;
+            }
+
+            if (playerName.equals(game.whiteUsername())) {
+                gameDAO.updateGame("WHITE", gameID, null);
+            } else if (playerName.equals(game.blackUsername())) {
+                gameDAO.updateGame("BLACK", gameID, null);
+            }
 //        var message = String.format("%s has left the game", playerName);
 //        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
 //        connections.broadcast(session, serverMessage);
 
-        gameDAO.updateGame();
-        sendMessage(session, "%s has left the game", playerName);
+            sendMessage(session, "%s has left the game", playerName);
 
-        connections.remove(session);
+            connections.remove(session);
+        } catch (Exception e) {
+            sendError(session, "Error: " + e.getMessage());
+        }
+
     }
 
     private void resign(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
@@ -122,10 +131,22 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 //        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
 //        connections.broadcast(session, serverMessage);
             //END GAME HERE after leaving
-            if (validate(auth, game, session)) {
+            if (!validate(auth, game, session)) {
                 return;
             }
+            //check game status
+            if (game.game().getTeamTurn() == null) {
+                sendError(session, "Error: Game already over");
+                return;
+            }
+
+            // check if is observer
             String playerName = auth.username();
+            if (!playerName.equals(game.whiteUsername()) && !playerName.equals(game.blackUsername())) {
+                sendError(session, "Error: Observers cannot resign");
+                return;
+            }
+
             game.game().setTeamTurn(null); //reset game turn
             gameDAO.updateGame(game);
 
@@ -143,7 +164,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             AuthData auth = authDAO.getAuth(authToken);
             GameData game = gameDAO.getGame(gameID);
 
-            if (validate(auth, game, session)) {
+            if (!validate(auth, game, session)) {
                 return;
             }
             String playerName = auth.username();
