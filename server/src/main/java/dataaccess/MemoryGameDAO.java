@@ -46,6 +46,10 @@ public class MemoryGameDAO implements GameDAO {
         games.put(gameID, newGame);
     }
 
+    public void updateGame(GameData game) {
+        System.out.println("game memory dao");
+    }
+
     public Collection<GameData> gameList() throws DataAccessException {
         return games.values();
     }

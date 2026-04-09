@@ -147,7 +147,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 return;
             }
             //update game
-            gameDAO.updateGame(authToken, gameID, auth.username());
+            gameDAO.updateGame(game);
 
             //send updated game
             var loadGameMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);

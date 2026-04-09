@@ -32,4 +32,14 @@ public class ConnectionManager {
             }
         }
     }
+
+    public void broadcastToAll(Session excludeSession, ServerMessage serverMessage) throws IOException {
+        String msg = gson.toJson(serverMessage);
+        for (Session c : connections.values()) {
+            if (c.isOpen()) {
+                c.getRemote().sendString(msg);
+            }
+        }
+    }
+
 }
