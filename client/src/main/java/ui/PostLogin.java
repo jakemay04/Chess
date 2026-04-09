@@ -17,10 +17,12 @@ public class PostLogin {
     private final String authToken;
     private final Scanner scanner = new Scanner(System.in);
     private List<GameData> gamesList = new ArrayList<>();
+    private final String url;
 
-    public PostLogin(ServerFacade facade, String authToken) {
+    public PostLogin(ServerFacade facade, String authToken, String url) {
         this.facade = facade;
         this.authToken = authToken;
+        this.url = url;
     }
 
     public String eval(String line) {
@@ -76,7 +78,6 @@ public class PostLogin {
             }
 
         } else if (line.equalsIgnoreCase("Join")) {
-            //call Join Game from server facade
             return join(gamesList, scanner);
 
 
@@ -136,7 +137,15 @@ public class PostLogin {
                 facade.joinGame(new JoinGameRequest(authToken, playerColor, gameNumber), authToken);
 
                 ChessGame game = gamesList.get(gameID - 1).game();
-                DrawBoard.printOutBoard(game, playerColor);
+                GameUI gameUI = new GameUI(facade, authToken, gameNumber, playerColor, url);
+                String exitString = "";
+                while (!exitString.equals("left") && !exitString.equals("quit")) {
+                    String input = scanner.nextLine();
+                    exitString = gameUI.evalInput(input);
+                    if (exitString.equals(input)) {
+                        System.out.println(exitString);
+                    }
+                }
 
                 return "Game Joined!";
             } catch (Exception e) {

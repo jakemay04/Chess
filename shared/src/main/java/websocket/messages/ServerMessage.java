@@ -44,11 +44,19 @@ public class ServerMessage {
         this.game = game;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public GameData getGame() {
+        return game;
+    }
+
     public ServerMessageType getServerMessageType() {
         return this.serverMessageType;
     }
 
-    public String getMessage() {
+    public String getErrorMessage() {
         return errorMessage;
     }
 
